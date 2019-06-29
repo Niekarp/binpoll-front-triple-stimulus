@@ -1,0 +1,19 @@
+@import "../../../sass/colors.scss";
+
+.question {
+	width: 100%;
+	// line-height: 75px;
+}
+
+.answer {
+	width: 55%;
+	font-size: 18px;
+}
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 24px;
+}
+
+::ng-deep mat-grid-tile:last-of-type > .mat-figure {
+	align-items: baseline !important;
+}

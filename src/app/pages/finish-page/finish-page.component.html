@@ -1,0 +1,17 @@
+<header class="page-header">
+  You’ve completed the test. Thank you!
+</header>
+<section class="page-content" id="finish-page-content">
+  We hope you have enjoyed our test. Please leave your comment in the box below. Your effort will be appreciated.
+  <mat-card id="comment-area">
+    <mat-form-field>
+      <textarea matInput [(ngModel)]="comment" placeholder="leave a comment here"></textarea>
+    </mat-form-field>
+  </mat-card>
+</section>
+<nav class="page-navigation">
+  <a mat-raised-button class="navigation-button" (click)="onSendCommentButtonClick()">Submit</a>
+  <div class="credits-info">
+    <b>Credits:</b> to see a list of credits, <a routerLink="/credits" target="_blank">click here</a>
+  </div>
+</nav>

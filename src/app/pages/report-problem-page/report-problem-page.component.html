@@ -1,0 +1,17 @@
+<header class="page-header">
+  Report your problem
+</header>
+<section class="page-content" id="finish-page-content">
+  We are sorry that you weren't able to complete the test due to technical problems. Please describe the problem below.
+  <mat-card id="comment-area">
+    <mat-form-field>
+      <textarea matInput [(ngModel)]="message" placeholder="report the problem here"></textarea>
+    </mat-form-field>
+  </mat-card>
+</section>
+<nav class="page-navigation">
+  <a mat-raised-button class="navigation-button" (click)="onSendCommentButtonClick()">Send report</a>
+  <div class="credits-info">
+    <b>Credits:</b> to see a list of credits, <a routerLink="/credits" target="_blank">click here</a>
+  </div>
+</nav>

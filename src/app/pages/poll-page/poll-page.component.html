@@ -1,0 +1,45 @@
+<mat-progress-bar id="progress-bar" [value]="(currentTestIndex + 1) * (100 / testCount)"></mat-progress-bar>
+
+<header class="page-header">
+  <span *ngIf="currentTestIndex === 0; else regularHeader">
+    OK, let’s start. Click Play button or press spacebar to hear the music clip. Then indicate the scene which fits best what you hear and press the Next button.
+  </span>
+  <ng-template #regularHeader>
+    Indicate the scene which fits best what you hear. You can use the spacebar to turn the audio off and on.
+  </ng-template>
+</header>
+<section class="page-content">
+  <div id="audio-toggle-button-container">
+    <app-play-audio-button #audioButton (onClick)="onAudioButtonClick()"></app-play-audio-button>
+  </div>
+  <div id="scene-select-container" fxLayout="row">
+    <div fxFlex="33%" fxLayoutAlign="center center">
+      <button mat-button id="front" class="scene-select-button" (click)="selectScene($event.currentTarget)">
+        <img class="grayscale" src="../../../assets/acoustic scenes/front scene.png">
+      </button>
+    </div>
+    <div fxFlex="33%" fxLayoutAlign="center center">
+      <button mat-button id="back" class="scene-select-button" (click)="selectScene($event.currentTarget)">
+        <img class="grayscale" src="../../../assets/acoustic scenes/back scene.png">
+      </button>
+    </div>
+    <div fxFlex="33%" fxLayoutAlign="center center">
+      <button mat-button id="front-back" class="scene-select-button" (click)="selectScene($event.currentTarget)">
+        <img class="grayscale" src="../../../assets/acoustic scenes/all around.png">
+      </button>
+    </div>
+  </div>
+  <div id="test-counter">Test {{ currentTestIndex + 1 }} out of {{ testCount }}</div>
+</section>
+<nav class="page-navigation">
+  <a mat-raised-button class="navigation-button" (click)="goToNextTest()">Next</a>
+  <a mat-raised-button class="navigation-button" (click)="goToPreviousTest()">Previous</a>
+  <div id="help-note">
+    If you encounter problems with the audio playback, check your audio setting on your device, and refresh this page. 
+    <span class="link-like" (click)="onFurtherHelpClick()">Further help</span>
+  </div>
+</nav>
+
+<ngx-spinner [fullScreen]="false" type="ball-spin-clockwise" size="medium">
+	<span #spinnerText class="spinner-text"></span>
+</ngx-spinner>

@@ -1,0 +1,62 @@
+<header class="page-header">
+  First, we need to ask you four questions
+</header>
+<section class="page-content">
+  <mat-grid-list cols="10" rowHeight="75px" (keydown)="$event.stopPropagation()">
+    <mat-grid-tile rowspan="1" colspan="7">
+      <div class="question">What is your age?*</div>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1" colspan="3">
+      <mat-form-field class="answer">
+        <mat-select placeholder="Please select" [(ngModel)]="model.age">
+          <mat-option *ngFor="let age of ages" [value]="age.value">
+            {{ age.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1" colspan="7">
+      <div class="question">Do you have difficulties with your hearing?*</div>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1" colspan="3">
+      <mat-radio-group class="answer" [(ngModel)]="model.hearingDifficulties">
+        <mat-radio-button value="1">Yes</mat-radio-button>
+        <mat-radio-button value="0">No</mat-radio-button>
+      </mat-radio-group>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1" colspan="7">
+      <div class="question">Have you ever participated in a listening test?*</div>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1" colspan="3">
+      <mat-radio-group class="answer" [(ngModel)]="model.listeningTestParticipation">
+        <mat-radio-button value="1">Yes</mat-radio-button>
+        <mat-radio-button value="0">No</mat-radio-button>
+      </mat-radio-group>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1" colspan="10">
+      <div class="question">What is the make and model of your headphones?</div>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="2" colspan="10">
+      <mat-card class="textarea">
+        <mat-form-field>
+          <textarea matInput placeholder="type in here" [(ngModel)]="model.typedHeadphonesMakeAndModel">
+          </textarea>
+        </mat-form-field>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</section>
+<nav class="page-navigation">
+  <app-navigation-button text="Next" destinationUrl="/poll-description" [condition]="formValid" 
+                         [disabled]="!formValid" (failure)="showProblemMessage()">
+  </app-navigation-button>
+  <app-navigation-button text="Previous" destinationUrl="/">
+  </app-navigation-button>
+</nav>
+
+<!-- 
+<p>{{ model.age }}</p>
+<p>{{ model.hearingDifficulties }}</p>
+<p>{{ model.listeningTestParticipation }}</p>
+<p>{{ model.typedHeadphonesMakeAndModel }}</p>
+ -->
