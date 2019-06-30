@@ -8,27 +8,40 @@
     Indicate the scene which fits best what you hear. You can use the spacebar to turn the audio off and on.
   </ng-template>
 </header>
-<section class="page-content">
-  <div id="audio-toggle-button-container">
-    <app-play-audio-button #audioButton (onClick)="onAudioButtonClick()"></app-play-audio-button>
-  </div>
-  <div id="scene-select-container" fxLayout="row">
-    <div fxFlex="33%" fxLayoutAlign="center center">
-      <button mat-button id="front" class="scene-select-button" (click)="selectScene($event.currentTarget)">
-        <img class="grayscale" src="../../../assets/acoustic scenes/front scene.png">
-      </button>
-    </div>
-    <div fxFlex="33%" fxLayoutAlign="center center">
-      <button mat-button id="back" class="scene-select-button" (click)="selectScene($event.currentTarget)">
-        <img class="grayscale" src="../../../assets/acoustic scenes/back scene.png">
-      </button>
-    </div>
-    <div fxFlex="33%" fxLayoutAlign="center center">
-      <button mat-button id="front-back" class="scene-select-button" (click)="selectScene($event.currentTarget)">
-        <img class="grayscale" src="../../../assets/acoustic scenes/all around.png">
-      </button>
+<section class="page-content" cdkDropListGroup>
+  <div id="audio-toggle-button-pool" cdkDropList [cdkDropListData]="audio_pool" cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)" fxLayout="row" fxLayoutAlign="center center">
+    <div *ngFor="let audio of audio_pool" class="audio-toggle-button-poll-item" cdkDrag>
+      <app-play-audio-button [text]="audio" (onClick)="onAudioButtonClick()"></app-play-audio-button>
     </div>
   </div>
+  
+  <div id="scenes-container" fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxFlex="32%" class="scene-audio-container">
+      <div class="audio-drop-zone" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="fbDropZone" [cdkDropListEnterPredicate]="emptyPredicate" (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let audio of fbDropZone" class="audio-toggle-button-poll-item" cdkDrag>
+          <app-play-audio-button [text]="audio" (onClick)="onAudioButtonClick()"></app-play-audio-button>
+        </div>
+      </div>
+      <img class="scene-image" src="../../../assets/acoustic scenes/front scene.png">
+    </div>
+    <div fxFlex="32%" class="scene-audio-container">
+      <div class="audio-drop-zone" cdkDropList [cdkDropListData]="bfDropZone" (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let audio of bfDropZone" class="audio-toggle-button-poll-item" cdkDrag>
+          <app-play-audio-button [text]="audio" (onClick)="onAudioButtonClick()"></app-play-audio-button>
+        </div>
+      </div>
+      <img class="scene-image" src="../../../assets/acoustic scenes/back scene.png">
+    </div>
+    <div fxFlex="32%" class="scene-audio-container">
+      <div class="audio-drop-zone" cdkDropList [cdkDropListData]="ffDropZone" (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let audio of ffDropZone" class="audio-toggle-button-poll-item" cdkDrag>
+          <app-play-audio-button [text]="audio" (onClick)="onAudioButtonClick()"></app-play-audio-button>
+        </div>
+      </div>
+      <img class="scene-image" src="../../../assets/acoustic scenes/all around.png">
+    </div>
+  </div>
+  
   <div id="test-counter">Test {{ currentTestIndex + 1 }} out of {{ testCount }}</div>
 </section>
 <nav class="page-navigation">
@@ -41,5 +54,5 @@
 </nav>
 
 <ngx-spinner [fullScreen]="false" type="ball-spin-clockwise" size="medium">
-	<span #spinnerText class="spinner-text"></span>
+  <span #spinnerText class="spinner-text"></span>
 </ngx-spinner>

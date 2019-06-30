@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { 
   MatIconModule,
@@ -83,7 +84,8 @@ import { CreditsPageComponent } from './pages/credits-page/credits-page.componen
     MatListModule,
     MatCheckboxModule,
     HttpClientModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    DragDropModule
   ],
   providers: [],
   entryComponents: [

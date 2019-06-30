@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input } from '@angular/core';
 import { MatIcon } from '@angular/material';
 
 @Component({
@@ -10,10 +10,13 @@ export class PlayAudioButtonComponent implements OnInit {
 
   @ViewChild('buttonIcon') buttonIcon: MatIcon;
 
+  @Input()
+  public text = '';
+
   @Output()
   public onClick = new EventEmitter();
 
-  constructor() { }
+  constructor() { console.log('audio button created'); }
 
   ngOnInit() {
   }

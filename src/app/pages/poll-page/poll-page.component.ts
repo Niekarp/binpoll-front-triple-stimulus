@@ -9,12 +9,60 @@ import { PlayAudioButtonComponent } from 'src/app/common/ui-elements/play-audio-
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DataService } from 'src/app/services/data/data.service';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
+import { moveItemInArray, CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-poll-page',
   templateUrl: './poll-page.component.html',
   styleUrls: ['./poll-page.component.scss']
 })
+export class PollPageComponent implements OnInit {
+
+  // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
+  // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
+  // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
+
+  audio_pool = [
+    'audio 1',
+    'audio 2',
+    'audio 3'
+  ];
+  fbDropZone = [];
+  bfDropZone = [];
+  ffDropZone = [];
+
+  constructor() { }
+  
+  ngOnInit() { }
+
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } 
+    else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+
+      
+      // let swapPredicate = event.container.id === 'audio-toggle-button-pool' 
+      //                 ||  event.container.data.length === 1;
+      if (event.container.id !== 'audio-toggle-button-pool' && event.container.data.length === 2) {
+        transferArrayItem(event.container.data,
+                          event.previousContainer.data,
+                          event.currentIndex + 1,
+                          event.previousIndex);
+      }
+    }
+  }
+
+  emptyPredicate(item: CdkDrag<number>, drop: CdkDropList) {
+    // if (drop._draggables.length > 0) return false;
+    return true;
+  }
+}
+/* 
 export class PollPageComponent implements OnInit {
 
   @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
@@ -221,3 +269,4 @@ export class PollPageComponent implements OnInit {
     }
   }
 }
+*/
