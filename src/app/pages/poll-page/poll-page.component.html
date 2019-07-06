@@ -14,7 +14,7 @@
 </header>
 <section class="page-content" cdkDropListGroup>
   <div id="audioPool" cdkDropList [cdkDropListData]="audioPool" cdkDropListOrientation="horizontal"
-    (cdkDropListDropped)="drop($event)" fxLayout="row" fxLayoutAlign="center center">
+    (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)" fxLayout="row" fxLayoutAlign="center center">
     <div *ngFor="let audio of audioPool" class="audio-poll-item" cdkDrag (cdkDragStarted)="onDragStart($event)"
       (cdkDragReleased)="onDragReleased($event)">
       <app-play-audio-button [text]="audio" (onClick)="onAudioButtonClick()"></app-play-audio-button>
