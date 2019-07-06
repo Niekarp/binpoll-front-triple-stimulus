@@ -41,8 +41,13 @@ export class PollPageComponent implements OnInit {
     isOverNewContainer: boolean = false;
     stopTheDrop: boolean = false;
     draggingData: string;
+
+    public testCount: number;
+    public currentTestIndex: number = 6;
     
-    constructor() { }
+    constructor(sharedConfig: SharedConfig) {
+        this.testCount = sharedConfig.testCount;
+     }
     
     ngOnInit() {
         var style = document.createElement('style');

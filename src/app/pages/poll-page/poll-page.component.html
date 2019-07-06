@@ -1,4 +1,5 @@
 <mat-progress-bar id="progress-bar" [value]="(currentTestIndex + 1) * (100 / testCount)"></mat-progress-bar>
+<div id="test-counter">Test {{ currentTestIndex + 1 }} out of {{ testCount }}</div>
 
 <!-- <div style="width: 100px; height: 50px; background-color: blue;">test</div> -->
 
@@ -60,7 +61,6 @@
     </div>
   </div>
 
-  <div id="test-counter">Test {{ currentTestIndex + 1 }} out of {{ testCount }}</div>
 </section>
 <nav class="page-navigation">
   <a mat-raised-button class="navigation-button" (click)="goToNextTest()">Next</a>

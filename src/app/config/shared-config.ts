@@ -3,6 +3,6 @@ import { Injectable } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class SharedConfig {
 
-	public appVersion = "4.1";
-	public testCount = 30;
+	public appVersion = "1.0";
+	public testCount = 10;
 }
