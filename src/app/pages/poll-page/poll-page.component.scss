@@ -25,7 +25,7 @@
 }
 
 .audio-poll-item {
-	margin: 0 20px;
+	margin: 0 8px;
 }
 
 #scenes-container {
@@ -54,7 +54,7 @@
 }
 
 .audio-dropped {
-	width: 100%;
+	// width: 287px;
 	position: relative;
 	left: 0;
 	background-color: $primary-color-light;
@@ -113,6 +113,7 @@ button:hover img.grayscale {
 }
 
 .cdk-drag-preview {
+	margin: 0px;
 	box-sizing: border-box;
 	border-radius: 4px;
 	box-shadow: 
@@ -122,6 +123,7 @@ button:hover img.grayscale {
 }
 
 .cdk-drag-placeholder {
+	margin: 0px;
 	opacity: 0;
 }
 
@@ -157,7 +159,7 @@ button:hover img.grayscale {
 }
 
 .cdk-drag-placeholder {
-	width: 250px;
+	width: 287px;
 }
 
 #moveit:hover {

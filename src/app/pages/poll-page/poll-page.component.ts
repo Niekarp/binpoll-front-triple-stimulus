@@ -86,9 +86,6 @@ export class PollPageComponent implements OnInit {
                     event.currentIndex ? 0 : 1,
                     event.previousIndex);
                 }
-                    
-                // let swapPredicate = event.container.id === 'audio-toggle-button-pool' 
-                //                 ||  event.container.data.length === 1;
         }
 
         this.dragging = false;
@@ -105,12 +102,9 @@ export class PollPageComponent implements OnInit {
         
         this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
         document.getElementById('audioPool').style.animationName = '';
-        // let placeholder = event.source.getRootElement().getClientRects().item(0);
-        // let placeholderRect = placeholder.getClientRects();
     }
     
     onDragReleased(event: CdkDragRelease) {
-        console.log('drag released');
         
         if (this.draggingConteinerChanged && this.isOverNewContainer === false) {
             
@@ -120,7 +114,6 @@ export class PollPageComponent implements OnInit {
             const audioRect = (dragPreview as Element).getBoundingClientRect();
             const containerRect = document.getElementById(this.draggingContainer.id).getBoundingClientRect();
             
-            // debugger
             let style = document.getElementById('move');
             style.innerHTML = '.move { transform: translate3d(' + this.dragInitialPositionRect.left + 'px ,' + this.dragInitialPositionRect.top + 'px, 0px) !important; }';
             
@@ -128,7 +121,6 @@ export class PollPageComponent implements OnInit {
             dragPreview.classList.add('move');
             
             this.stopTheDrop = true;
-            // this.fbDropZoneElement.drop(event.source, 0, event.source.dropContainer, false); 
         }
         this.dragging = false;
         this.draggingData = null;
@@ -164,9 +156,6 @@ export class PollPageComponent implements OnInit {
         
         audioElement.classList.add('no-mouse-transition');
         audioElement.classList.add('move');
-        
-        // audioElement.classList.add('no-transform');
-        // audioElement.style.left = containerRect.left - audioRect.left + 'px';
     }
     
     onMouseLeave(event: MouseEvent) {
@@ -184,10 +173,7 @@ export class PollPageComponent implements OnInit {
         let audioElement = document.getElementById(dropZoneId).lastElementChild as HTMLElement;
         if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
         
-        // audioElement.classList.remove('no-mouse-transition');
         audioElement.classList.remove('move');
-        // audioElement.style.left = '0';
-        // audioElement.classList.remove('no-transform');
     }
 }
 
