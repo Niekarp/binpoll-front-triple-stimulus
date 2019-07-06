@@ -128,6 +128,7 @@ export class PollPageComponent implements OnInit {
             this.stopTheDrop = true;
             // this.fbDropZoneElement.drop(event.source, 0, event.source.dropContainer, false); 
         }
+        this.dragging = false;
     }
     
     onMouseEnter(event: MouseEvent) {
