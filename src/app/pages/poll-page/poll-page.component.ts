@@ -9,7 +9,9 @@ import { PlayAudioButtonComponent } from 'src/app/common/ui-elements/play-audio-
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DataService } from 'src/app/services/data/data.service';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
-import { moveItemInArray, CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
+import { moveItemInArray, CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, CdkDragStart, CdkDragRelease } from '@angular/cdk/drag-drop';
+
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-poll-page',
@@ -21,8 +23,9 @@ export class PollPageComponent implements OnInit {
   // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
   // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
   // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
+  @ViewChild('fb') fbDropZoneElement: CdkDropList;
 
-  audio_pool = [
+  audioPool = [
     'audio 1',
     'audio 2',
     'audio 3'
@@ -36,30 +39,121 @@ export class PollPageComponent implements OnInit {
   ngOnInit() { }
 
   drop(event: CdkDragDrop<string[]>) {
+    console.log('cdkDropListDropped');
+
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } 
     else {
+      // move item: old container -> new container
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
 
+      // move item: new container -> old container
+      if (event.container.id !== 'audio-pool' && event.container.data.length === 2) {
+        transferArrayItem(event.container.data,
+                          event.previousContainer.data,
+                          event.currentIndex ? 0 : 1,
+                          event.previousIndex);
+      }
       
       // let swapPredicate = event.container.id === 'audio-toggle-button-pool' 
       //                 ||  event.container.data.length === 1;
-      if (event.container.id !== 'audio-toggle-button-pool' && event.container.data.length === 2) {
-        transferArrayItem(event.container.data,
-                          event.previousContainer.data,
-                          event.currentIndex + 1,
-                          event.previousIndex);
-      }
     }
+  }
+
+  dragging: boolean = false;
+  draggingContainer: CdkDropList = null;
+  draggingConteinerChanged: boolean = false;
+
+  onDragStart(event: CdkDragStart) {
+    console.log('drag started');
+
+    this.dragging = true;
+    this.draggingContainer = event.source.dropContainer;
+  }
+
+  onDragReleased(event: CdkDragRelease) {
+    console.log('drag released');
+
+    if (this.draggingConteinerChanged) {
+      console.log('need my own animation');
+      
+      let dragPreview = document.getElementsByClassName('cdk-drag-preview').item(0) as HTMLElement;
+      const audioRect = (dragPreview as Element).getBoundingClientRect();
+      const containerRect = document.getElementById(this.draggingContainer.id).getBoundingClientRect();
+      
+      // debugger
+      const translation = dragPreview.style.transform;
+      dragPreview.style.transform = 'translateZ(0)';
+      dragPreview.style.left = '0px'; 
+      dragPreview.style.top = '0px';
+      dragPreview.classList.add('no-transform');
+
+      dragPreview.style.left = containerRect.left + 'px';
+      dragPreview.style.top = containerRect.top + 'px';
+
+      // $(dragPreview).off();
+
+      setTimeout(() => {
+        // dragPreview.style.left = containerRect.left + 'px';
+        // dragPreview.style.top = containerRect.top + 'px';
+      }, 200);
+
+      /* dragPreview.style.left = '0px';
+      dragPreview.style.top = '0px'; */
+      // dragPreview.style.transition = 'transform3d(400px, 400px, 0px)';
+
+      this.fbDropZoneElement.drop(event.source, 0, event.source.dropContainer, false); 
+    }
+
+    this.dragging = false;
+    this.draggingContainer = null;    
+    this.draggingConteinerChanged = false;
+  }
+
+  onMouseEnter(event: MouseEvent) {
+    console.log('mouse enter event');
+    
+    const dropZoneId = (event.target as HTMLElement).id;
+    
+    if (this.dragging === false)       return;
+    this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
+    if (this[dropZoneId].length === 0) return;
+    if (this.draggingConteinerChanged === false) return;
+
+    let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
+    if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
+
+    const audioRect = (audioElement as Element).getBoundingClientRect();
+    const containerRect = document.getElementById(this.draggingContainer.id).getBoundingClientRect();
+
+    audioElement.classList.add('no-transform');
+    audioElement.style.left = containerRect.left - audioRect.left + 'px';
+  }
+
+  onMouseLeave(event: MouseEvent) {
+    console.log('mouse leave event');
+    
+    const dropZoneId = (event.target as HTMLElement).id;
+    
+    if (this.dragging === false)       return;
+    if (this[dropZoneId].length === 0) return;
+    if (this.draggingContainer.id === dropZoneId) return;
+
+    let audioElement = document.getElementById(dropZoneId).lastElementChild as HTMLElement;
+    if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
+
+    audioElement.style.left = '0';
+    audioElement.classList.remove('no-transform');
   }
 
   emptyPredicate(item: CdkDrag<number>, drop: CdkDropList) {
     // if (drop._draggables.length > 0) return false;
     return true;
+    // new Draggabl
   }
 }
 /* 
