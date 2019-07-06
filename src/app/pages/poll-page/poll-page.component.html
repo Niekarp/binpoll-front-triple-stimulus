@@ -15,7 +15,7 @@
 <section class="page-content" cdkDropListGroup>
   <div id="audioPool" cdkDropList [cdkDropListData]="audioPool" cdkDropListOrientation="horizontal"
     (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)" fxLayout="row" fxLayoutAlign="center center">
-    <div *ngFor="let audio of audioPool" class="audio-poll-item" cdkDrag (cdkDragStarted)="onDragStart($event)"
+    <div *ngFor="let audio of audioPool" class="audio-poll-item" cdkDrag [cdkDragData]="audio" (cdkDragStarted)="onDragStart($event)"
       (cdkDragReleased)="onDragReleased($event)">
       <app-play-audio-button [text]="audio" (onClick)="onAudioButtonClick()"></app-play-audio-button>
     </div>
@@ -25,7 +25,7 @@
   <div id="scenes-container" fxLayout="row" fxLayoutAlign="space-between center">
     <div fxFlex="32%" class="scene-audio-container">
       <div #fb="cdkDropList" id="fbDropZone" class="audio-drop-zone" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="fbDropZone"
-        [cdkDropListEnterPredicate]="emptyPredicate" (cdkDropListDropped)="drop($event)"
+         (cdkDropListDropped)="drop($event)"
         (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
         <!-- DROPZONE 1 -->
         <div class="audio-dropped" *ngFor="let audio of fbDropZone" cdkDrag (cdkDragStarted)="onDragStart($event)"
@@ -37,7 +37,7 @@
     </div>
     <div fxFlex="32%" class="scene-audio-container">
       <div id="bfDropZone" class="audio-drop-zone" cdkDropList [cdkDropListData]="bfDropZone"
-        (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="emptyPredicate"
+        (cdkDropListDropped)="drop($event)" 
         (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
         <!-- DROPZONE 2 -->
         <div class="audio-dropped" *ngFor="let audio of bfDropZone" cdkDrag (cdkDragStarted)="onDragStart($event)"

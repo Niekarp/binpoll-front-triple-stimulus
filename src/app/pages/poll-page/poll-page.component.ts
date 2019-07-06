@@ -40,6 +40,7 @@ export class PollPageComponent implements OnInit {
     draggingConteinerChanged: boolean = false;
     isOverNewContainer: boolean = false;
     stopTheDrop: boolean = false;
+    draggingData: string;
     
     constructor() { }
     
@@ -100,6 +101,7 @@ export class PollPageComponent implements OnInit {
         
         this.dragging = true;
         this.draggingContainer = event.source.dropContainer;
+        this.draggingData = event.source.data;
         
         this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
         document.getElementById('audioPool').style.animationName = '';
@@ -129,6 +131,7 @@ export class PollPageComponent implements OnInit {
             // this.fbDropZoneElement.drop(event.source, 0, event.source.dropContainer, false); 
         }
         this.dragging = false;
+        this.draggingData = null;
     }
     
     onMouseEnter(event: MouseEvent) {
@@ -154,8 +157,10 @@ export class PollPageComponent implements OnInit {
         
         let style = document.getElementById('move');
 
-        // style.innerHTML = '.move { transform: translate3d(' + (containerRect.left - audioRect.left) + 'px , 0px, 0px) !important; }';
-        style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
+        let bias = 0;
+        if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) bias += (this.audioPool.findIndex((value) => { return value === this.draggingData }) === 0 ? -1 : 1) * 150;
+
+        style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
         
         audioElement.classList.add('no-mouse-transition');
         audioElement.classList.add('move');
@@ -184,13 +189,9 @@ export class PollPageComponent implements OnInit {
         // audioElement.style.left = '0';
         // audioElement.classList.remove('no-transform');
     }
-    
-    emptyPredicate(item: CdkDrag<number>, drop: CdkDropList) {
-        // if (drop._draggables.length > 0) return false;
-        return true;
-        // new Draggabl
-    }
 }
+
+// GARBAGE
 
 // dragPreview.classList.add('no-mouse-transition');
             // dragPreview.classList.add('move');
