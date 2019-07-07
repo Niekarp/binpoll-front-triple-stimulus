@@ -13,6 +13,9 @@ export class PlayAudioButtonComponent implements OnInit {
   @Input()
   public text = '';
 
+  @Input()
+  public audioId = '';
+
   @Output()
   public onClick = new EventEmitter();
 
@@ -22,7 +25,7 @@ export class PlayAudioButtonComponent implements OnInit {
   }
 
   public onButtonClick() {
-    this.onClick.emit();
+    this.onClick.emit(this.audioId);
   }
 
   public toggle() {
