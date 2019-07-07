@@ -164,6 +164,7 @@ button:hover img.grayscale {
 	.cdk-drag-placeholder {
 		height: 0px;
 		transform: none !important;
+		pointer-events: none;
 	}
 }
 
@@ -196,4 +197,7 @@ button:hover img.grayscale {
 	0%   {background-color: rgb(217, 219, 222); opacity: 1;}
 	50%  {background-color: white; opacity: 0;}
 	100% {background-color: rgb(217, 219, 222); opacity: 1;}
+}
+img {
+	pointer-events: none;
 }

@@ -122,6 +122,7 @@ export class PollPageComponent implements OnInit {
             let style = document.getElementById('move');
             style.innerHTML = '.move { transform: translate3d(' + this.dragInitialPositionRect.left + 'px ,' + this.dragInitialPositionRect.top + 'px, 0px) !important; }';
             
+            console.log('move applied');
             dragPreview.classList.add('no-mouse-transition');
             dragPreview.classList.add('move');
             
@@ -131,6 +132,7 @@ export class PollPageComponent implements OnInit {
         if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
             let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
             let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
+            
             
             if (audioAndPlaceholder.length < 2) return;
             if (placeholder.classList.contains('cdk-drag-placeholder')) {
@@ -172,6 +174,7 @@ export class PollPageComponent implements OnInit {
 
         style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
         
+        console.log('move applied');
         audioElement.classList.add('no-mouse-transition');
         audioElement.classList.add('move');
     }
@@ -189,7 +192,7 @@ export class PollPageComponent implements OnInit {
         if (this.draggingContainer.id === dropZoneId) return;
         if (dropZoneId === 'audioPool') return;
         
-        let audioElement = document.getElementById(dropZoneId).lastElementChild as HTMLElement;
+        let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
         if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
         
         audioElement.classList.remove('move');
