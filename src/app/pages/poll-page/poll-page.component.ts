@@ -23,24 +23,24 @@ export class PollPageComponent implements OnInit {
     // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
     // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
     // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
-    @ViewChild('fb') fbDropZoneElement: CdkDropList;
     
-    audioPool = [
+    public audioPool = [
         'audio 1',
         'audio 2',
         'audio 3'
     ];
-    fbDropZone = [];
-    bfDropZone = [];
-    ffDropZone = [];
+    public fbDropZone = [];
+    public bfDropZone = [];
+    public ffDropZone = [];
     
-    dragInitialPositionRect: ClientRect;
-    dragging: boolean = false;
-    draggingContainer: CdkDropList = null;
-    draggingConteinerChanged: boolean = false;
-    isOverNewContainer: boolean = false;
-    stopTheDrop: boolean = false;
-    draggingData: string;
+    private currentDropZoneId: string;
+    private dragInitialPositionRect: ClientRect;
+    private dragging: boolean = false;
+    private draggingContainer: CdkDropList = null;
+    private draggingConteinerChanged: boolean = false;
+    private isOverNewContainer: boolean = false;
+    private stopTheDrop: boolean = false;
+    private draggingData: string;
 
     public testCount: number;
     public currentTestIndex: number = 6;
@@ -127,6 +127,18 @@ export class PollPageComponent implements OnInit {
             
             this.stopTheDrop = true;
         }
+
+        if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
+            let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
+            let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
+            
+            if (audioAndPlaceholder.length < 2) return;
+            if (placeholder.classList.contains('cdk-drag-placeholder')) {
+                // it really is a placeholder
+                placeholder.style.top = '-50px';
+            }
+        }
+
         this.dragging = false;
         this.draggingData = null;
     }
@@ -135,6 +147,7 @@ export class PollPageComponent implements OnInit {
         console.log('mouse enter event');
         
         const dropZoneId = (event.target as HTMLElement).id;
+        this.currentDropZoneId = dropZoneId;
         
         if (this.dragging === false)       return;
         console.log('mouse enter: ', dropZoneId);
@@ -167,6 +180,7 @@ export class PollPageComponent implements OnInit {
         console.log('mouse leave event');
         
         const dropZoneId = (event.target as HTMLElement).id;
+        this.currentDropZoneId = null;
         
         if (this.isOverNewContainer) this.isOverNewContainer = false;
         
