@@ -25,9 +25,9 @@ export class PollPageComponent implements OnInit {
     // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
     
     public audioPool = [
-        'audio 1',
-        'audio 2',
-        'audio 3'
+        {text:'audio 1', id:1},
+        {text:'audio 2', id:2},
+        {text:'audio 3', id:3}
     ];
     public fbDropZone = [];
     public bfDropZone = [];
@@ -45,8 +45,9 @@ export class PollPageComponent implements OnInit {
     public testCount: number;
     public currentTestIndex: number = 6;
     
-    constructor(sharedConfig: SharedConfig) {
+    constructor(sharedConfig: SharedConfig, private audio: AudioService) {
         this.testCount = sharedConfig.testCount;
+        this.audio.loadAudioPlayers();
      }
     
     ngOnInit() {
@@ -170,7 +171,7 @@ export class PollPageComponent implements OnInit {
         let style = document.getElementById('move');
 
         let bias = 0;
-        if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) bias += (this.audioPool.findIndex((value) => { return value === this.draggingData }) === 0 ? -1 : 1) * 150;
+        if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) bias += (this.audioPool.findIndex((value) => { return value.text === this.draggingData }) === 0 ? -1 : 1) * 150;
 
         style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
         
@@ -196,6 +197,19 @@ export class PollPageComponent implements OnInit {
         if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
         
         audioElement.classList.remove('move');
+    }
+
+    public onAudioButtonClick(id) {
+        console.log(id);
+        if(id === 1) {
+            this.audio.playPollAudio(1);
+        } else if(id === 2) {
+            this.audio.playPollAudio(2);
+        } else if(id === 3) {
+            this.audio.playPollAudio(3);
+        } else {
+            console.error('invalid audio id');
+        }
     }
 }
 
