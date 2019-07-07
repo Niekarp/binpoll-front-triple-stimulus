@@ -122,6 +122,7 @@ button:hover img.grayscale {
 }
 
 .cdk-drag-preview {
+	pointer-events: none;
 	margin: 0px;
 	box-sizing: border-box;
 	border-radius: 4px;
@@ -168,8 +169,14 @@ button:hover img.grayscale {
 	}
 }
 
-.cdk-drag-placeholder {
-	width: 287px;
+#audioPool {
+	.cdk-drag-placeholder {
+		width: 287px;
+		// display: none;
+		background-color: red;
+		opacity: 1 !important;
+		pointer-events: none;
+	}
 }
 
 #moveit:hover {

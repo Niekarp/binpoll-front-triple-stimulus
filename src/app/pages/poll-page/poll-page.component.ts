@@ -153,13 +153,37 @@ export class PollPageComponent implements OnInit {
         
         if (this.dragging === false)       return;
         console.log('mouse enter: ', dropZoneId);
+
+        if (dropZoneId === 'audioPool') {
+            
+            let $placeholder = $('.cdk-drag-placeholder');
+            $placeholder.detach().css('transform', 'none');
+
+            let $poolItems = $('.audio-poll-item').not('.cdk-drag-preview').not('.cdk-drag-dragging');
+            $poolItems.css('transform', 'none');
+
+            if (event.x < 650) {
+                $('#' + dropZoneId).prepend($placeholder);
+            }
+            else if (event.x > 1050) {
+                $('#' + dropZoneId).append($placeholder);
+            }
+            else {
+                let $test = $('#' + dropZoneId).children().first().after($placeholder);
+                // $('#' + dropZoneId).children().after($placeholder);
+            }
+            console.log('show it');
+            $placeholder.show('slow', () => {  console.log('showed');});
+        };
         
         this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
         if (this.draggingConteinerChanged) this.isOverNewContainer = true;
         
         if (this[dropZoneId].length === 0) return;
         if (this.draggingConteinerChanged === false) return;
-        if (dropZoneId === 'audioPool') return;
+        if (dropZoneId === 'audioPool') {
+            return;
+        };
 
         let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
         if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
@@ -188,6 +212,29 @@ export class PollPageComponent implements OnInit {
         if (this.isOverNewContainer) this.isOverNewContainer = false;
         
         if (this.dragging === false)       return;
+
+        if (dropZoneId === 'audioPool') {
+            console.log('hide it');
+            let $placeholder = $('.cdk-drag-placeholder');
+            // let $clonePlaceholder = $($placeholder).clone();
+
+            // let poolItems = $('.audio-poll-item');
+            let $poolItems = $('.audio-poll-item').not('.cdk-drag-preview').not('.cdk-drag-dragging');
+            $placeholder.hide('slow', () => {
+                // $placeholder.remove();
+                $placeholder.css('transform', 'none');
+                $poolItems.css('transform', 'none');
+            });
+
+            // $placeholder.replaceWith($clonePlaceholder).remove();
+            // $placeholder.after($clonePlaceholder);
+            // $placeholder.remove();
+
+            // $clonePlaceholder.hide('slow', () => {
+                // $clonePlaceholder.remove();
+            // });
+        };
+
         if (this[dropZoneId].length === 0) return;
         if (this.draggingContainer.id === dropZoneId) return;
         if (dropZoneId === 'audioPool') return;
