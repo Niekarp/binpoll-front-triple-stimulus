@@ -14,10 +14,12 @@ export class PlayAudioButtonComponent implements OnInit {
   public text = '';
 
   @Input()
-  public audioId = '';
+  public audioId = 0;
 
   @Output()
   public onClick = new EventEmitter();
+
+  private playState: boolean = false;
 
   constructor() { console.log('audio button created'); }
 
@@ -25,20 +27,29 @@ export class PlayAudioButtonComponent implements OnInit {
   }
 
   public onButtonClick() {
-    this.onClick.emit(this.audioId);
+    this.onClick.emit(this);
   }
 
   public toggle() {
-    let currentIcon = this.buttonIcon._elementRef.nativeElement.textContent;
-
-    if (currentIcon === 'play_circle_outline') 
-      this.buttonIcon._elementRef.nativeElement.textContent = 'pause';
-    else
-      this.buttonIcon._elementRef.nativeElement.textContent = 'play_circle_outline'
+    if(this.playState) {
+      this.pause();
+    } else {
+      this.play();
+    }
   }
 
   public pause() {
     this.buttonIcon._elementRef.nativeElement.textContent = 'play_circle_outline';
+    this.playState = false;
+  }
+
+  public play() {
+    this.buttonIcon._elementRef.nativeElement.textContent = 'pause';
+    this.playState = true;
+  }
+
+  public isPlaying(): boolean {
+    return this.playState;
   }
 
   public blur() {

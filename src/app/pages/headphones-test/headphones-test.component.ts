@@ -24,15 +24,15 @@ export class HeadphonesTestComponent implements OnInit {
               public keyboardNav: KeyboardNavigationService) { }
 
   ngOnInit() {
-    this.keyboardNav.goBackCondition = () => { return this.audio.isAllTestAudioLoaded(); };
-    this.keyboardNav.goNextCondition = () => { return this.audio.isAllTestAudioLoaded(); };
-    this.keyboardNav.onGoNextConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
-    this.keyboardNav.onGoBackConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
+    this.keyboardNav.goBackCondition = () => { return /*this.audio.isAllTestAudioLoaded();*/ true; };
+    this.keyboardNav.goNextCondition = () => { return /*this.audio.isAllTestAudioLoaded();*/ true; };
+    this.keyboardNav.onGoNextConditionOK = () => { /*this.audio.pauseHeadphonesTestAudio();*/ };
+    this.keyboardNav.onGoBackConditionOK = () => { /*this.audio.pauseHeadphonesTestAudio();*/ };
     this.keyboardNav.deactivateOnNext = true;
 
     this.audio.loadAudioPlayers();
 
-    if (this.audio.isAllTestAudioLoaded() === false) {
+    /*if (this.audio.isAllTestAudioLoaded() === false) {
       setTimeout(() => {
         this.spinner.show();
       }, 100);
@@ -54,31 +54,31 @@ export class HeadphonesTestComponent implements OnInit {
     }
     this.audio.headphonesTestRightChannelAudio.onended = () => {
       this.rightAudioButton.toggle();
-    }
+    }*/
   }
 
   public onLeftAudioButtonClick() {
-    if (this.audio.headphonesTestRightChannelAudio.paused === false) this.toggleRightAudioButtonAndAudio();
-    this.toggleLeftAudioButtonAndAudio();
+    /*if (this.audio.headphonesTestRightChannelAudio.paused === false) this.toggleRightAudioButtonAndAudio();
+    this.toggleLeftAudioButtonAndAudio();*/
   }
 
   public onRightAudioButtonClick() {
-    if (this.audio.headphonesTestLeftChannelAudio.paused === false) this.toggleLeftAudioButtonAndAudio();
-    this.toggleRightAudioButtonAndAudio();
+    /*if (this.audio.headphonesTestLeftChannelAudio.paused === false) this.toggleLeftAudioButtonAndAudio();
+    this.toggleRightAudioButtonAndAudio();*/
   }
 
   public toggleLeftAudioButtonAndAudio() {
-    this.leftAudioButton.toggle();
-    this.audio.toggleHeadphonesTestLeftChannelAudio();
+    /*this.leftAudioButton.toggle();
+    this.audio.toggleHeadphonesTestLeftChannelAudio();*/
   }
 
   public toggleRightAudioButtonAndAudio() {
-    this.rightAudioButton.toggle();
-    this.audio.toggleHeadphonesTestRightChannelAudio();
+    /*this.rightAudioButton.toggle();
+    this.audio.toggleHeadphonesTestRightChannelAudio();*/
   }
 
   public onFurtherHelpClick() {
-    this.audio.pauseHeadphonesTestAudio();
+    /*this.audio.pauseHeadphonesTestAudio();
     this.leftAudioButton.pause();
     this.rightAudioButton.pause();
     this.keyboardNav.active = false;
@@ -89,7 +89,7 @@ export class HeadphonesTestComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(() => {
       this.keyboardNav.active = true;
-    });
+    });*/
   }
 
   onNavigationButtonSuccess() {
@@ -98,6 +98,6 @@ export class HeadphonesTestComponent implements OnInit {
   }
 
   stopAudio() {
-    this.audio.pauseHeadphonesTestAudio();
+    //this.audio.pauseHeadphonesTestAudio();
   }
 }
