@@ -152,7 +152,7 @@ export class PollPageComponent implements OnInit {
         if (this.dragging === false)       return;
         console.log('mouse enter: ', dropZoneId);
 
-        if (dropZoneId === 'audioPool') {
+        if (dropZoneId === 'audioPool' && false) {
             
             let $placeholder = $('.cdk-drag-placeholder');
             $placeholder.detach().css('transform', 'none');
@@ -211,7 +211,7 @@ export class PollPageComponent implements OnInit {
         
         if (this.dragging === false)       return;
 
-        if (dropZoneId === 'audioPool') {
+        if (dropZoneId === 'audioPool' && false) {
             console.log('hide it');
             let $placeholder = $('.cdk-drag-placeholder');
             // let $clonePlaceholder = $($placeholder).clone();
