@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedConfig } from '../../config/shared-config';
 import { MatSnackBar, MatDialog } from '@angular/material';
@@ -20,9 +20,7 @@ import * as $ from 'jquery';
 })
 export class PollPageComponent implements OnInit {
     
-    // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
-    // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
-    // @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
+    @ViewChildren('audioButtons') audioButtons: QueryList<PlayAudioButtonComponent>;
     
     public audioPool = [
         {text:'audio 1', id:1},
@@ -246,17 +244,28 @@ export class PollPageComponent implements OnInit {
         audioElement.classList.remove('move');
     }
 
-    public onAudioButtonClick(id) {
-        console.log(id);
-        if(id === 1) {
-            this.audio.playPollAudio(1);
-        } else if(id === 2) {
-            this.audio.playPollAudio(2);
-        } else if(id === 3) {
-            this.audio.playPollAudio(3);
-        } else {
-            console.error('invalid audio id');
-        }
+    public onAudioButtonClick(clickedButton: PlayAudioButtonComponent) {
+        this.audioButtons.toArray().forEach((audioButton) => {           
+            if(audioButton === clickedButton) {
+                if(clickedButton.isPlaying() == true) {
+                    clickedButton.pause();
+                    this.audio.pause();
+                } else {
+                    clickedButton.play();
+                    if(clickedButton.audioId === 1) {
+                        this.audio.play(0);
+                    } else if(clickedButton.audioId === 2) {
+                        this.audio.play(1);
+                    } else if(clickedButton.audioId === 3) {
+                        this.audio.play(2);
+                    } else {
+                        console.error('invalid audio id');
+                    }
+                }
+            } else {
+                audioButton.pause();
+            }        
+        });
     }
 }
 

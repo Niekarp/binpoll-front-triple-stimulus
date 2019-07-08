@@ -15,7 +15,7 @@
   <!-- DROPZONE AUDIO POOL -->
   <div id="audioPool" cdkDropList [cdkDropListData]="audioPool" cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)" fxLayout="row" fxLayoutAlign="center center">
     <div class="audio-poll-item" *ngFor="let audio of audioPool" cdkDrag [cdkDragData]="audio" (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
-      <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="onAudioButtonClick($event)"></app-play-audio-button>
+      <app-play-audio-button #audioButtons [text]="audio.text" [audioId]="audio.id" (onClick)="onAudioButtonClick($event)"></app-play-audio-button>
     </div>
   </div>
   <div id="scenes-container" fxLayout="row" fxLayoutAlign="space-between center">

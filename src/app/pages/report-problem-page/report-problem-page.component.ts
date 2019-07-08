@@ -20,7 +20,7 @@ export class ReportProblemPageComponent implements OnInit {
     private data: DataService) { }
 
   ngOnInit() {
-    this.audio.stopAudioLoading();
+    //this.audio.stopAudioLoading();
     this.data.stupidThing = false;
   }
 
