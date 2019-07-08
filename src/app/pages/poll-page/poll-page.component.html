@@ -23,7 +23,7 @@
       <!-- DROPZONE FB -->
       <div id="fbDropZone" class="audio-drop-zone" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="fbDropZone" (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
         <div class="audio-dropped" *ngFor="let audio of fbDropZone" cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
-          <app-play-audio-button [text]="audio" (onClick)="xxx()"></app-play-audio-button>
+          <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="onAudioButtonClick($event)"></app-play-audio-button>
         </div>
       </div>
       <img class="scene-image" src="../../../assets/acoustic scenes/front scene.png">
@@ -32,7 +32,7 @@
       <!-- DROPZONE BF -->
       <div id="bfDropZone" class="audio-drop-zone" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="bfDropZone" (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
         <div class="audio-dropped" *ngFor="let audio of bfDropZone" cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
-          <app-play-audio-button [text]="audio" (onClick)="xxx()"></app-play-audio-button>
+          <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="onAudioButtonClick($event)"></app-play-audio-button>
         </div>
       </div>
       <img class="scene-image" src="../../../assets/acoustic scenes/back scene.png">
@@ -41,7 +41,7 @@
       <!-- DROPZONE FF -->
       <div id="ffDropZone" class="audio-drop-zone" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="ffDropZone" (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
         <div class="audio-dropped" *ngFor="let audio of ffDropZone" cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
-          <app-play-audio-button [text]="audio" (onClick)="xxx()"></app-play-audio-button>
+          <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="onAudioButtonClick($event)"></app-play-audio-button>
         </div>
       </div>
       <img class="scene-image" src="../../../assets/acoustic scenes/all around.png">
