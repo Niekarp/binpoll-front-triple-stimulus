@@ -42,6 +42,7 @@ import { PlayAudioButtonComponent } from './common/ui-elements/play-audio-button
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NavigationButtonComponent } from './common/ui-elements/navigation-button/navigation-button.component';
 import { CreditsPageComponent } from './pages/credits-page/credits-page.component';
+import { PollExamplePageComponent } from './pages/poll-example-page/poll-example-page.component';
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import { CreditsPageComponent } from './pages/credits-page/credits-page.componen
     ReportProblemPageComponent,
     PlayAudioButtonComponent,
     NavigationButtonComponent,
-    CreditsPageComponent
+    CreditsPageComponent,
+    PollExamplePageComponent
   ],
   imports: [
     BrowserModule,
