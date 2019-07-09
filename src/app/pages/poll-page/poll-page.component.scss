@@ -51,6 +51,8 @@
 .audio-drop-zone {
 	width: 100%;
 	height: 50px;
+	background-color: #d9dbde;
+	border-radius: 4px;
 }
 
 .audio-dropped {
@@ -167,6 +169,15 @@ button:hover img.grayscale {
 		transform: none !important;
 		pointer-events: none;
 	}
+}
+
+.scene-audio-container {
+	.cdk-drag-placeholder {
+		height: 0px;
+		transform: none !important;
+		pointer-events: none;
+		// position: relative;
+	}	
 }
 
 #audioPool {

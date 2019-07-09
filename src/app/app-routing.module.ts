@@ -13,15 +13,15 @@ import { FinishPageComponent } from './pages/finish-page/finish-page.component';
 import { PolicyPageComponent } from './pages/policy-page/policy-page.component';
 import { ReportProblemPageComponent } from './pages/report-problem-page/report-problem-page.component';
 import { CreditsPageComponent } from './pages/credits-page/credits-page.component';
+import { PollExamplePageComponent } from './pages/poll-example-page/poll-example-page.component';
 
 const routes: Routes = [
   { path: 'credits', component: CreditsPageComponent },
   { path: '', component: WelcomePageComponent },
   { path: 'questionnaire', component: QuestionnairePageComponent },
   { path: 'poll-description', component: PollDescriptionPageComponent },
-  { path: 'terms-front-scene', component: TermsFrontScenePageComponent },
-  { path: 'terms-back-scene', component: TermsBackScenePageComponent },
-  { path: 'terms-all-around-scene', component: TermsAllAroundScenePageComponent },
+  { path: 'terms-acoustic-scenes', component: TermsSoundsPageComponent },
+  { path: 'poll-example', component: PollExamplePageComponent },
   { path: 'headphones-test', component: HeadphonesTestComponent },
   { path: 'poll', component: PollPageComponent },
   { path: 'finish', component: FinishPageComponent },
@@ -36,3 +36,9 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+
+/* 
+  { path: 'terms-front-scene', component: TermsFrontScenePageComponent },
+  { path: 'terms-back-scene', component: TermsBackScenePageComponent },
+  { path: 'terms-all-around-scene', component: TermsAllAroundScenePageComponent },
+*/
