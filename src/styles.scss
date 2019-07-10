@@ -5,14 +5,14 @@
 // -----------PAGE STRUCTURE-----------
 
 .page-header {
-	height: 60px;
+	height: 100px;
 	font-size: 36px;
 	font-weight: bold;
 	color: $primary-color-dark;
 }
 
 .page-content {
-	height: 500px;
+	height: 460px;
 	font-size: 26px;
 }
 
@@ -31,6 +31,12 @@
 	color: white;
 	span { 
 		line-height: $nav-button-height;
+	}
+}
+
+nav {
+	.navigation-button {
+		width: 266px;
 	}
 }
 

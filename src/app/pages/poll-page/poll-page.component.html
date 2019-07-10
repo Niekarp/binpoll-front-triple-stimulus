@@ -49,6 +49,16 @@
   </div>
 </section>
 
+<!-- <nav class="page-navigation">
+  <app-navigation-button text="Next" destinationUrl="/poll" (success)="onNavigationButtonSuccess()">
+  </app-navigation-button>
+  <app-navigation-button text="Previous" destinationUrl="/terms-all-around-scene" (success)="stopAudio()">
+  </app-navigation-button>
+  <div id="help-note">
+    If you encounter problems with the audio playback, check your audio setting on your device, and refresh this page. 
+    <span class="link-like" (click)="onFurtherHelpClick()">Further help</span>
+  </div>
+</nav> -->
 <nav class="page-navigation">
   <a mat-raised-button class="navigation-button" (click)="goToNextTest()">Next</a>
   <a mat-raised-button class="navigation-button" (click)="goToPreviousTest()">Previous</a>
