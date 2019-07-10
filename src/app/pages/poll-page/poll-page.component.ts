@@ -30,6 +30,8 @@ export class PollPageComponent implements OnInit {
     public fbDropZone = [];
     public bfDropZone = [];
     public ffDropZone = [];
+
+    private answers = Array(10);
     
     private currentDropZoneId: string;
     private dragInitialPositionRect: ClientRect;
@@ -41,9 +43,17 @@ export class PollPageComponent implements OnInit {
     private draggingData: string;
 
     public testCount: number;
-    public currentTestIndex: number = 6;
+    public currentTestIndex: number = 0;
     
-    constructor(sharedConfig: SharedConfig, private audio: AudioService) {
+    constructor(public snackbar: MatSnackBar,
+                public dialog: MatDialog,
+                public apiClient: ApiClientService,
+                public data: DataService,
+                public keyboardNav: KeyboardNavigationService,
+                private router: Router,
+                private spinner: NgxSpinnerService,
+                private audio: AudioService,
+                private sharedConfig: SharedConfig) {
         this.testCount = sharedConfig.testCount;
      }
     
@@ -52,6 +62,29 @@ export class PollPageComponent implements OnInit {
         style.id = 'move';
         style.type = 'text/css';
         document.getElementsByTagName('head')[0].appendChild(style);
+
+        for(let i = 0; i < this.testCount; ++i) {
+            this.answers[i] = 'none';
+        }
+        
+        // this.audio.loadAudioPlayers();
+        /* 
+        if (this.audio.isAllPollAudioLoaded() === false) {
+            setTimeout(() => {
+                this.spinner.show();
+            }, 100);
+            
+            this.audio.notifyOnAllPollAudioLoaded(() => { 
+                console.log('audio loaded'); 
+                this.spinner.hide();
+            }, () => { 
+                this.spinnerText.nativeElement.innerText = 'loading audio' 
+                + ' (' + this.audio.getPollLoadingProgressPercentage() + '%)';
+            }, () => {
+                console.error('loading audio timeout') 
+            });
+        }
+        */
     }
     
     drop(event: CdkDragDrop<string[]>) {
@@ -203,7 +236,6 @@ export class PollPageComponent implements OnInit {
             bias *= 150;   
         }
 
-        debugger
         style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
         
         console.log('move applied');
@@ -282,6 +314,122 @@ export class PollPageComponent implements OnInit {
             } else {
                 audioButton.pause();
             }        
+        });
+    }
+
+    public goToNextTest() {
+        /*
+        if (this.answers[this.currentTestIndex] === 'none') {
+            this.showMessage('select acoustic scene');
+            return;
+        }
+        
+        else if (this.wasAudioPlayed === false) {
+            this.showMessage('audio wasn\'t played');
+            return;
+        }
+        
+        let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
+        
+        this.unselectScenes();
+        this.audio.pauseAllPollAudio();
+        this.currentTestIndex += 1;
+        
+        if (this.currentTestIndex === this.testCount) {
+            // save results 
+            let answer = {};
+            this.audio.pollAudioSet.samples.forEach((sampleUrl, index) => { 
+                let sampleFilename = sampleUrl.split('/').reverse()[0];
+                answer[sampleFilename] = this.answers[index];
+            });
+            
+            this.apiClient.sendPollData({
+                startDate: this.startDate,
+                endDate: new Date(),
+                answer: answer,
+                assignedSetId: this.audio.pollAudioSet.id,
+                userInfo: {
+                    age: this.data.questionnaire.age,
+                    hearing_difficulties: this.data.questionnaire.hearingDifficulties,
+                    headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
+                    listening_test_participated: this.data.questionnaire.listeningTestParticipation
+                }
+            });
+            this.router.navigateByUrl('finish', { skipLocationChange: true });
+            return;
+        } 
+        else {
+            if(isAudioPlaying) {
+                this.audio.playPollAudio(this.currentTestIndex);
+            }
+        }
+        
+        if (this.answers[this.currentTestIndex] !== 'none') {
+            this.selectScene(document.getElementById(this.answers[this.currentTestIndex]));
+            this.wasAudioPlayed = true;
+        }
+        else if (this.audio.getPollAudio(this.currentTestIndex).paused === false) {
+            this.wasAudioPlayed = true;
+        }
+        else {
+            this.wasAudioPlayed = false;
+        }
+        */
+       this.currentTestIndex += 1;
+    }
+    
+    public goToPreviousTest(): void {
+        /*
+        let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
+        
+        this.unselectScenes();
+        this.audio.pauseAllPollAudio();
+        this.currentTestIndex -= 1;
+        
+        if (this.currentTestIndex === -1) {
+            this.keyboardNav.active = true;
+            this.router.navigateByUrl('headphones-test', { skipLocationChange: true });
+            return;
+        } 
+        else {
+            if(isAudioPlaying) {
+                this.audio.playPollAudio(this.currentTestIndex);
+            }
+        }
+        
+        if (this.answers[this.currentTestIndex] !== 'none') {
+            this.selectScene(document.getElementById(this.answers[this.currentTestIndex]));
+            this.wasAudioPlayed = true;
+        }
+         */
+    }
+    
+    public onFurtherHelpClick() {
+        /*
+        this.turnOffTheAudio();
+        this.enableKeyboard = false;
+        const dialogRef = this.dialog.open(FurtherHelpDialogComponent, {
+            height: '600px',
+            width: '400px',
+        });
+        dialogRef.afterClosed().subscribe(() => {
+            this.enableKeyboard = true;
+        });
+         */
+    }
+    
+    private turnOffTheAudio() {
+        /* 
+            this.audioButton.pause();
+            this.audio.pauseAllPollAudio();
+        */
+    }
+    
+    private showMessage(msg: string) {
+        this.snackbar.open(msg, null, {
+            duration: 2000,
+            verticalPosition: "top",
+            panelClass: ['my-snackbar-problem'],
         });
     }
 }

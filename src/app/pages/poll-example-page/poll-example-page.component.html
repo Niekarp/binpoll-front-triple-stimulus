@@ -1,31 +1,27 @@
 <header class="page-header">
-    Example & instructions
+    How to do the test
 </header>
 <section class="page-content smaller-font">
-    <div fxLayout="row">
-        <div fxFlex="40%">
-            <ul id="instructions-list">
-                <li>Listen recording by clicking on audio button</li>
-                <li>Decide its acoustic scene</li>
-                <li>Click and hold to drag audio buttons around</li>
-                <li>Drop them on gray fields above accoustic scene you selected</li>
-            </ul>
-        </div>
-        <div fxFlex="60%">
-            <video width="550" autoplay loop>
-                <source src="../../../assets/poll-example-movie.mov" type="video/mp4">
-            </video>
-            <!-- <img src="../../../assets/poll-example.png"> -->
-        </div>
-    </div>
+    <video width="100%" height="325px" autoplay loop>
+        <source src="../../../assets/poll-example-movie.mov" type="video/mp4">
+    </video>
+    <ul id="instructions-list">
+        <li>Listen to the recording by clicking on its audio button</li>
+        <li>Decide its acoustic scene</li>
+        <li>Click and hold the recording's audio button to drag it around</li>
+        <li>Drop the button on one of gray fields, above the accoustic scene you selected</li>
+    </ul>
+</section>
+<nav class="page-navigation">
+    <app-navigation-button text="Next" destinationUrl="/additional-information"></app-navigation-button>
+    <app-navigation-button text="Previous" destinationUrl="/terms-acoustic-scenes"></app-navigation-button>
+</nav>
+
+<!-- 
     <ul>
         <li>When you change listening recording the new one starts playing when the previous one stopped</li>
         <li>In case you change your mind, you can swap elements or place them in the initial gray box</li>
         <li>There is no audio replay limit</li>
         <li>There is no time limit to make a choice</li>
     </ul>
-</section>
-<nav class="page-navigation">
-    <app-navigation-button text="Next" destinationUrl="/headphones-test"></app-navigation-button>
-    <app-navigation-button text="Previous" destinationUrl="/terms-acoustic-scenes"></app-navigation-button>
-</nav>
+ -->

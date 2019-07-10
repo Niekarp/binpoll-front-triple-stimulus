@@ -2,7 +2,7 @@
 <div id="test-counter">Test {{ currentTestIndex + 1 }} out of {{ testCount }}</div>
 
 <header class="page-header">
-  <span *ngIf="currentTestIndex === 0; else regularHeader">
+  <span *ngIf="currentTestIndex === -1; else regularHeader">
     OK, let’s start. Click Play button or press spacebar to hear the music clip. Then indicate the scene which fits best
     what you hear and press the Next button.
   </span>
@@ -61,7 +61,7 @@
 </nav> -->
 <nav class="page-navigation">
   <a mat-raised-button class="navigation-button" (click)="goToNextTest()">Next</a>
-  <a mat-raised-button class="navigation-button" (click)="goToPreviousTest()">Previous</a>
+  <!-- <a mat-raised-button class="navigation-button" (click)="goToPreviousTest()">Previous</a> -->
   <div id="help-note">
     If you encounter problems with the audio playback, check your audio setting on your device, and refresh this page.
     <span class="link-like" (click)="onFurtherHelpClick()">Further help</span>
