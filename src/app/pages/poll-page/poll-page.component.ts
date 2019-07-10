@@ -105,6 +105,7 @@ export class PollPageComponent implements OnInit {
         this.draggingContainer = event.source.dropContainer;
         this.draggingData = event.source.data.text;
         
+        debugger
         this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
         document.getElementById('audioPool').style.animationName = '';
     }
@@ -130,7 +131,7 @@ export class PollPageComponent implements OnInit {
         }
 
         if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
-            debugger
+
             let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
             let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
             
@@ -197,15 +198,14 @@ export class PollPageComponent implements OnInit {
 
         let bias = 0;
         if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) {
-            // debugger
             let left = (this.audioPool.findIndex((value) => { 
-                debugger
                 return value.text === this.draggingData;
             })) === 0;
             bias += left ? -1 : 1;
             bias *= 150;   
         }
 
+        debugger
         style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
         
         console.log('move applied');
