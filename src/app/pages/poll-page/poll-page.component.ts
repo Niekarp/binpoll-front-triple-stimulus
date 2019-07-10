@@ -45,7 +45,6 @@ export class PollPageComponent implements OnInit {
     
     constructor(sharedConfig: SharedConfig, private audio: AudioService) {
         this.testCount = sharedConfig.testCount;
-        this.audio.loadAudioPlayers();
      }
     
     ngOnInit() {

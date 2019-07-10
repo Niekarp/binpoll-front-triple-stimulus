@@ -28,6 +28,7 @@ export class AudioService {
     this.audioContext = new AudioContext();
     //this.sourceNodes = [];
     this.gainNode = this.audioContext.createGain();
+    this.loadAudioPlayers();
   }
 
   // load audio methods
