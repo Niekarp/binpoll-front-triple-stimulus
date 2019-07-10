@@ -56,6 +56,7 @@ export class PollPageComponent implements OnInit {
     }
     
     drop(event: CdkDragDrop<string[]>) {
+        (event.container.element.nativeElement as HTMLElement).parentElement.style.boxShadow = null
 
         let audios = document.getElementsByClassName('audio-dropped');
         for (let i = 0; i < audios.length; ++i) {
@@ -152,6 +153,8 @@ export class PollPageComponent implements OnInit {
         if (this.dragging === false)       return;
         console.log('mouse enter: ', dropZoneId);
 
+        if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '5px 10px 18px #888888';
+
         if (dropZoneId === 'audioPool' && false) {
             
             let $placeholder = $('.cdk-drag-placeholder');
@@ -206,10 +209,12 @@ export class PollPageComponent implements OnInit {
         
         const dropZoneId = (event.target as HTMLElement).id;
         this.currentDropZoneId = null;
+
+        (event.target as HTMLElement).parentElement.style.boxShadow = null
         
         if (this.isOverNewContainer) this.isOverNewContainer = false;
         
-        if (this.dragging === false)       return;
+        if (this.dragging === false)       return;;
 
         if (dropZoneId === 'audioPool' && false) {
             console.log('hide it');
