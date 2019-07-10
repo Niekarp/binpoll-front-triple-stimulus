@@ -22,6 +22,7 @@ export class AudioService {
   private gainNode: GainNode;
   private audioLastStartTime: number = 0;
   private raisedCosineEnvelopeFadeInOut: Float32Array;
+  private currentlyPlayingAudioId: number = null;
 
   constructor(private http: HttpClient, private api: ApiClientService) {
     console.log('audio service created');
@@ -121,7 +122,8 @@ export class AudioService {
   public play(index: number) {
     this.audioContext.resume().then(() => {
       this.playAudioBuffer(this.audioBuffers[index]);
-    });    
+      this.currentlyPlayingAudioId = index + 1;
+    });
   }
 
   public pause() {
@@ -129,5 +131,11 @@ export class AudioService {
     for(let audioSource of this.currentlyPlayingSources) {
       audioSource.stop(startTime + fadeTimeSeconds);
     }
+    this.currentlyPlayingAudioId = null;
+  }
+
+  public isPlaying(index: number) {
+    if (this.currentlyPlayingAudioId === index) return true;
+    return false;
   }
 }

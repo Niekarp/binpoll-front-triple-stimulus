@@ -19,11 +19,15 @@ export class PlayAudioButtonComponent implements OnInit {
   @Output()
   public onClick = new EventEmitter();
 
+  @Output()
+  public onInit = new EventEmitter();
+
   private playState: boolean = false;
 
   constructor() { console.log('audio button created'); }
 
   ngOnInit() {
+    this.onInit.emit(this);
   }
 
   public onButtonClick() {

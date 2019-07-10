@@ -104,7 +104,6 @@ export class PollPageComponent implements OnInit {
         this.draggingContainer = event.source.dropContainer;
         this.draggingData = event.source.data.text;
         
-        debugger
         this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
         document.getElementById('audioPool').style.animationName = '';
     }
@@ -256,7 +255,13 @@ export class PollPageComponent implements OnInit {
         audioElement.classList.remove('move');
     }
 
+    public onAudioButtonInit(initedAudio: PlayAudioButtonComponent) {
+        // console.log('audio button inited: ', audioId);
+        if (this.audio.isPlaying(initedAudio.audioId)) initedAudio.play(); 
+    }
+
     public onAudioButtonClick(clickedButton: PlayAudioButtonComponent) {
+
         this.audioButtons.toArray().forEach((audioButton) => {           
             if(audioButton === clickedButton) {
                 if(clickedButton.isPlaying() == true) {
