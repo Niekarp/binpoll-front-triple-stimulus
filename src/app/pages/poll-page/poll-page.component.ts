@@ -55,6 +55,7 @@ export class PollPageComponent implements OnInit {
     }
     
     drop(event: CdkDragDrop<string[]>) {
+        (event.container.element.nativeElement as HTMLElement).parentElement.style.boxShadow = null
 
         let audios = document.getElementsByClassName('audio-dropped');
         for (let i = 0; i < audios.length; ++i) {
@@ -101,8 +102,9 @@ export class PollPageComponent implements OnInit {
         
         this.dragging = true;
         this.draggingContainer = event.source.dropContainer;
-        this.draggingData = event.source.data;
+        this.draggingData = event.source.data.text;
         
+        debugger
         this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
         document.getElementById('audioPool').style.animationName = '';
     }
@@ -128,6 +130,7 @@ export class PollPageComponent implements OnInit {
         }
 
         if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
+
             let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
             let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
             
@@ -150,6 +153,8 @@ export class PollPageComponent implements OnInit {
         
         if (this.dragging === false)       return;
         console.log('mouse enter: ', dropZoneId);
+
+        if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '5px 10px 18px #888888';
 
         if (dropZoneId === 'audioPool' && false) {
             
@@ -191,8 +196,15 @@ export class PollPageComponent implements OnInit {
         let style = document.getElementById('move');
 
         let bias = 0;
-        if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) bias += (this.audioPool.findIndex((value) => { return value.text === this.draggingData }) === 0 ? -1 : 1) * 150;
+        if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) {
+            let left = (this.audioPool.findIndex((value) => { 
+                return value.text === this.draggingData;
+            })) === 0;
+            bias += left ? -1 : 1;
+            bias *= 150;   
+        }
 
+        debugger
         style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
         
         console.log('move applied');
@@ -205,10 +217,12 @@ export class PollPageComponent implements OnInit {
         
         const dropZoneId = (event.target as HTMLElement).id;
         this.currentDropZoneId = null;
+
+        (event.target as HTMLElement).parentElement.style.boxShadow = null
         
         if (this.isOverNewContainer) this.isOverNewContainer = false;
         
-        if (this.dragging === false)       return;
+        if (this.dragging === false)       return;;
 
         if (dropZoneId === 'audioPool' && false) {
             console.log('hide it');

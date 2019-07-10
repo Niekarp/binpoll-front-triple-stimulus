@@ -22,8 +22,8 @@
     <div fxFlex="32%" class="scene-audio-container">
       <!-- DROPZONE FB -->
       <div id="fbDropZone" class="audio-drop-zone" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="fbDropZone" (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
-        <div class="audio-dropped" *ngFor="let audio of fbDropZone" cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
-          <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="onAudioButtonClick($event)"></app-play-audio-button>
+        <div class="audio-dropped" *ngFor="let audio of fbDropZone" cdkDrag [cdkDragData]="audio" (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
+          <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="xxx()"></app-play-audio-button>
         </div>
       </div>
       <img class="scene-image" src="../../../assets/acoustic scenes/front scene.png">
@@ -31,8 +31,8 @@
     <div fxFlex="32%" class="scene-audio-container">
       <!-- DROPZONE BF -->
       <div id="bfDropZone" class="audio-drop-zone" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="bfDropZone" (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
-        <div class="audio-dropped" *ngFor="let audio of bfDropZone" cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
-          <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="onAudioButtonClick($event)"></app-play-audio-button>
+        <div class="audio-dropped" *ngFor="let audio of bfDropZone" cdkDrag [cdkDragData]="audio" (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
+          <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="xxx()"></app-play-audio-button>
         </div>
       </div>
       <img class="scene-image" src="../../../assets/acoustic scenes/back scene.png">
@@ -40,8 +40,8 @@
     <div fxFlex="32%" class="scene-audio-container">
       <!-- DROPZONE FF -->
       <div id="ffDropZone" class="audio-drop-zone" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="ffDropZone" (cdkDropListDropped)="drop($event)" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
-        <div class="audio-dropped" *ngFor="let audio of ffDropZone" cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
-          <app-play-audio-button [text]="audio.text" [audioId]="audio.id" (onClick)="onAudioButtonClick($event)"></app-play-audio-button>
+        <div class="audio-dropped" *ngFor="let audio of ffDropZone" cdkDrag [cdkDragData]="audio" (cdkDragStarted)="onDragStart($event)" (cdkDragReleased)="onDragReleased($event)">
+          <app-play-audio-button [text]="audio.text" (onClick)="xxx()"></app-play-audio-button>
         </div>
       </div>
       <img class="scene-image" src="../../../assets/acoustic scenes/all around.png">
