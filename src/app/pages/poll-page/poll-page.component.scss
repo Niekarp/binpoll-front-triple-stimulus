@@ -173,6 +173,7 @@ button:hover img.grayscale {
 .audio-drop-zone {
 	.cdk-drag-placeholder {
 		height: 0px;
+		position: relative;
 		transform: none !important;
 		pointer-events: none;
 	}

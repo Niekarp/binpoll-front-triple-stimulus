@@ -130,6 +130,7 @@ export class PollPageComponent implements OnInit {
         }
 
         if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
+            debugger
             let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
             let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
             
