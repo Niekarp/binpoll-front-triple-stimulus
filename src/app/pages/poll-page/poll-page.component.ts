@@ -103,7 +103,7 @@ export class PollPageComponent implements OnInit {
         
         this.dragging = true;
         this.draggingContainer = event.source.dropContainer;
-        this.draggingData = event.source.data;
+        this.draggingData = event.source.data.text;
         
         this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
         document.getElementById('audioPool').style.animationName = '';
@@ -196,7 +196,15 @@ export class PollPageComponent implements OnInit {
         let style = document.getElementById('move');
 
         let bias = 0;
-        if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) bias += (this.audioPool.findIndex((value) => { return value.text === this.draggingData }) === 0 ? -1 : 1) * 150;
+        if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) {
+            // debugger
+            let left = (this.audioPool.findIndex((value) => { 
+                debugger
+                return value.text === this.draggingData;
+            })) === 0;
+            bias += left ? -1 : 1;
+            bias *= 150;   
+        }
 
         style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
         
