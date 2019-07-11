@@ -22,11 +22,7 @@ export class PollPageComponent implements OnInit {
     
     @ViewChildren('audioButtons') audioButtons: QueryList<PlayAudioButtonComponent>;
     
-    public audioPool = [
-        {text:'audio 1', id:1},
-        {text:'audio 2', id:2},
-        {text:'audio 3', id:3}
-    ];
+    public audioPool = [];
     public fbDropZone = [];
     public bfDropZone = [];
     public ffDropZone = [];
@@ -65,6 +61,15 @@ export class PollPageComponent implements OnInit {
 
         for(let i = 0; i < this.testCount; ++i) {
             this.answers[i] = 'none';
+
+            this.audioPool[i] = [
+                {text:'audio 1', id:1},
+                {text:'audio 2', id:2},
+                {text:'audio 3', id:3}
+            ]
+            this.fbDropZone[i] = [];
+            this.bfDropZone[i] = [];
+            this.ffDropZone[i] = [];
         }
         
         // this.audio.loadAudioPlayers();
@@ -88,6 +93,7 @@ export class PollPageComponent implements OnInit {
     }
     
     drop(event: CdkDragDrop<string[]>) {
+        debugger
         (event.container.element.nativeElement as HTMLElement).parentElement.style.boxShadow = null
 
         let audios = document.getElementsByClassName('audio-dropped');
@@ -228,8 +234,8 @@ export class PollPageComponent implements OnInit {
         let style = document.getElementById('move');
 
         let bias = 0;
-        if (this.draggingContainer.id === 'audioPool' && this.audioPool.length === 2) {
-            let left = (this.audioPool.findIndex((value) => { 
+        if (this.draggingContainer.id === 'audioPool' && this.audioPool[this.currentTestIndex].length === 2) {
+            let left = (this.audioPool[this.currentTestIndex].findIndex((value) => { 
                 return value.text === this.draggingData;
             })) === 0;
             bias += left ? -1 : 1;
@@ -379,6 +385,7 @@ export class PollPageComponent implements OnInit {
     }
     
     public goToPreviousTest(): void {
+        this.currentTestIndex -= 1;
         /*
         let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
         
