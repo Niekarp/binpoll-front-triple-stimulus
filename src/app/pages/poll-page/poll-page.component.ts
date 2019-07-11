@@ -21,6 +21,7 @@ import * as $ from 'jquery';
 export class PollPageComponent implements OnInit {
     
     @ViewChildren('audioButtons') audioButtons: QueryList<PlayAudioButtonComponent>;
+    @ViewChild('spinnerText') spinnerText: ElementRef;
     
     public audioPool = [];
     public fbDropZone = [];
@@ -40,6 +41,8 @@ export class PollPageComponent implements OnInit {
 
     public testCount: number;
     public currentTestIndex: number = 0;
+
+    private wasAudioPlayed = false;
     
     constructor(public snackbar: MatSnackBar,
                 public dialog: MatDialog,
@@ -59,21 +62,29 @@ export class PollPageComponent implements OnInit {
         style.type = 'text/css';
         document.getElementsByTagName('head')[0].appendChild(style);
 
+        let scenes = this.audio.getScenes();
+
         for(let i = 0; i < this.testCount; ++i) {
-            this.answers[i] = 'none';
+            /* this.answers[i] = 'none';
 
             this.audioPool[i] = [
                 {text:'audio 1', id:1},
                 {text:'audio 2', id:2},
                 {text:'audio 3', id:3}
             ]
+            */
+            this.audioPool[i] = [
+                {text:'audio 1', id:1, scene: scenes[i][0]},
+                {text:'audio 2', id:2, scene: scenes[i][1]},
+                {text:'audio 3', id:3, scene: scenes[i][2]}
+            ];
             this.fbDropZone[i] = [];
             this.bfDropZone[i] = [];
             this.ffDropZone[i] = [];
+
         }
         
-        // this.audio.loadAudioPlayers();
-        /* 
+        this.audio.loadAudioPlayers();
         if (this.audio.isAllPollAudioLoaded() === false) {
             setTimeout(() => {
                 this.spinner.show();
@@ -89,7 +100,6 @@ export class PollPageComponent implements OnInit {
                 console.error('loading audio timeout') 
             });
         }
-        */
     }
     
     drop(event: CdkDragDrop<string[]>) {
@@ -308,11 +318,11 @@ export class PollPageComponent implements OnInit {
                 } else {
                     clickedButton.play();
                     if(clickedButton.audioId === 1) {
-                        this.audio.play(0);
+                        this.audio.play(this.currentTestIndex, 0);
                     } else if(clickedButton.audioId === 2) {
-                        this.audio.play(1);
+                        this.audio.play(this.currentTestIndex, 1);
                     } else if(clickedButton.audioId === 3) {
-                        this.audio.play(2);
+                        this.audio.play(this.currentTestIndex, 2);
                     } else {
                         console.error('invalid audio id');
                     }
@@ -324,26 +334,25 @@ export class PollPageComponent implements OnInit {
     }
 
     public goToNextTest() {
-        /*
-        if (this.answers[this.currentTestIndex] === 'none') {
-            this.showMessage('select acoustic scene');
+        if (this.fbDropZone.length === 0 || this.bfDropZone.length === 0 || this.ffDropZone.length === 0) {
+            this.showMessage('match recordings with acoustic scenes');
             return;
         }
         
-        else if (this.wasAudioPlayed === false) {
+        /* else if (this.wasAudioPlayed === false) {
             this.showMessage('audio wasn\'t played');
             return;
-        }
+        } */
         
-        let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
+        let isAudioPlaying = false; // !this.audio.getPollAudio(this.currentTestIndex).paused;
         
-        this.unselectScenes();
-        this.audio.pauseAllPollAudio();
+        // this.unselectScenes();
+        this.audio.pause();
         this.currentTestIndex += 1;
         
         if (this.currentTestIndex === this.testCount) {
             // save results 
-            let answer = {};
+            /* let answer = {};
             this.audio.pollAudioSet.samples.forEach((sampleUrl, index) => { 
                 let sampleFilename = sampleUrl.split('/').reverse()[0];
                 answer[sampleFilename] = this.answers[index];
@@ -360,16 +369,16 @@ export class PollPageComponent implements OnInit {
                     headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
                     listening_test_participated: this.data.questionnaire.listeningTestParticipation
                 }
-            });
+            }); */
             this.router.navigateByUrl('finish', { skipLocationChange: true });
             return;
         } 
         else {
             if(isAudioPlaying) {
-                this.audio.playPollAudio(this.currentTestIndex);
+                // this.audio.playPollAudio(this.currentTestIndex);
             }
         }
-        
+        /* 
         if (this.answers[this.currentTestIndex] !== 'none') {
             this.selectScene(document.getElementById(this.answers[this.currentTestIndex]));
             this.wasAudioPlayed = true;
@@ -379,18 +388,15 @@ export class PollPageComponent implements OnInit {
         }
         else {
             this.wasAudioPlayed = false;
-        }
-        */
-       this.currentTestIndex += 1;
+        } */
     }
     
     public goToPreviousTest(): void {
-        this.currentTestIndex -= 1;
-        /*
-        let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
         
-        this.unselectScenes();
-        this.audio.pauseAllPollAudio();
+        //let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
+        
+        // this.unselectScenes();
+        this.audio.pause();
         this.currentTestIndex -= 1;
         
         if (this.currentTestIndex === -1) {
@@ -398,7 +404,7 @@ export class PollPageComponent implements OnInit {
             this.router.navigateByUrl('headphones-test', { skipLocationChange: true });
             return;
         } 
-        else {
+        /* else {
             if(isAudioPlaying) {
                 this.audio.playPollAudio(this.currentTestIndex);
             }
@@ -407,22 +413,21 @@ export class PollPageComponent implements OnInit {
         if (this.answers[this.currentTestIndex] !== 'none') {
             this.selectScene(document.getElementById(this.answers[this.currentTestIndex]));
             this.wasAudioPlayed = true;
-        }
-         */
+        } */
     }
     
     public onFurtherHelpClick() {
-        /*
+        
         this.turnOffTheAudio();
-        this.enableKeyboard = false;
+        // this.enableKeyboard = false;
         const dialogRef = this.dialog.open(FurtherHelpDialogComponent, {
             height: '600px',
             width: '400px',
         });
         dialogRef.afterClosed().subscribe(() => {
-            this.enableKeyboard = true;
+            // this.enableKeyboard = true;
         });
-         */
+        
     }
     
     private turnOffTheAudio() {

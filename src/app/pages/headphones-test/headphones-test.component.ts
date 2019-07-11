@@ -32,7 +32,7 @@ export class HeadphonesTestComponent implements OnInit {
 
     this.audio.loadAudioPlayers();
 
-    /*if (this.audio.isAllTestAudioLoaded() === false) {
+    if (this.audio.isAllTestAudioLoaded() === false) {
       setTimeout(() => {
         this.spinner.show();
       }, 100);
@@ -54,7 +54,7 @@ export class HeadphonesTestComponent implements OnInit {
     }
     this.audio.headphonesTestRightChannelAudio.onended = () => {
       this.rightAudioButton.toggle();
-    }*/
+    }
     this.audio.headphonesTestLeftChannelAudio.onended = () => {
       console.log('left audio stopped');
       this.leftAudioButton.toggle();
@@ -85,7 +85,7 @@ export class HeadphonesTestComponent implements OnInit {
   }
 
   public onFurtherHelpClick() {
-    /*this.audio.pauseHeadphonesTestAudio();
+    this.audio.pauseHeadphonesTestAudio();
     this.leftAudioButton.pause();
     this.rightAudioButton.pause();
     this.keyboardNav.active = false;
@@ -96,7 +96,7 @@ export class HeadphonesTestComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(() => {
       this.keyboardNav.active = true;
-    });*/
+    });
   }
 
   onNavigationButtonSuccess() {

@@ -24,6 +24,15 @@ export class AudioService {
   private raisedCosineEnvelopeFadeInOut: Float32Array;
   private currentlyPlayingAudioId: number = null;
 
+  // OLD
+  private audioPlayers: AudioPlayerSet;
+  private audioSet: Array<string>; // { id: -1, samples: Array<Object[]>(), samplesNames: Array<string>() };
+  private pollLoadedCount = 0;
+  private testLoadedCount = 0;
+
+  private audioRequests = new Array<Subscription>();
+  // OLD END  
+
   constructor(private http: HttpClient, private api: ApiClientService) {
     // OLD
     this.audioPlayers = new AudioPlayerSet(30);
@@ -41,6 +50,8 @@ export class AudioService {
       return;
     }
     this.loaded = true;
+    this.testLoadedCount = 0;
+    this.pollLoadedCount = 0;
 
     let baseUrl = '/assets/headphones test sounds/';
 
@@ -59,21 +70,50 @@ export class AudioService {
     // download blobs
     this.api.getSampleSet().subscribe(audioSet => {
       console.log(audioSet);
-      //let samples: string[] = audioSet['samples'];
+      /*
       let samples = [
         'http://antoniuk.pl:8000/static/poll_sounds/BackFromTheStart_brir1_scene1_FB.wav',
         'http://antoniuk.pl:8000/static/poll_sounds/BackFromTheStart_brir1_scene2_BF.wav',
         'http://antoniuk.pl:8000/static/poll_sounds/BackFromTheStart_brir1_scene3_FF.wav'
-      ];
-      for(let i = 0; i < samples.length; ++i) {
-        this.loadAudioBlob(samples[i]).subscribe(arrayBuffer => {
+      ]; 
+      */
+     this.audioSet = audioSet;
+
+     let samples: Array<{url: string, scene: string}[]> = audioSet['samples'];
+
+     samples.forEach((sampleVariants, outerIndex) => {
+      sampleVariants.forEach((sampleVariantObject) => {
+        this.loadAudioBlob(sampleVariantObject.url).subscribe(arrayBuffer => {
           this.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
-            this.audioBuffers.push(audioBuffer);
+            // this.audioBuffers.push(audioBuffer);
+            console.log('downloaded: ', sampleVariantObject.url);
+            console.log('buffers size: ', this.audioBuffers.length);
+            this.audioPlayers.pollBuffers[outerIndex].push(audioBuffer);
+            this.pollLoadedCount += 1; 
           }, (err) => {
             console.error("error");
           });
         });
-      }
+      });
+     });
+
+      /* for(let sampleName in samples) {
+        if (samples.hasOwnProperty(sampleName)) {
+          for(let i = 0; i < samples[sampleName].length; ++i) {
+            let sampleUrl = samples[sampleName][i].url;
+            this.loadAudioBlob(sampleUrl).subscribe(arrayBuffer => {
+              this.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
+                this.audioBuffers.push(audioBuffer);
+                // console.log('downloaded: ', sampleUrl);
+                // console.log('buffers size: ', this.audioBuffers.length);
+                
+              }, (err) => {
+                console.error("error");
+              });
+            });
+          }
+        }
+      } */
     });
   }
 
@@ -99,8 +139,6 @@ export class AudioService {
   }
 
   private playAudioBuffer(audioBuffer: AudioBuffer) {
-
-
     // fade out -> fade in
     //this.gainNode.gain.cancelScheduledValues(startTime);
     this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, this.audioContext.currentTime);
@@ -132,10 +170,12 @@ export class AudioService {
 
   }
 
-  public play(index: number) {
+  public play(audioIndex: number, variantIndex: number) {
     this.audioContext.resume().then(() => {
-      this.playAudioBuffer(this.audioBuffers[index]);
-      this.currentlyPlayingAudioId = index + 1;
+      // this.playAudioBuffer(this.audioBuffers[index]);
+      // this.currentlyPlayingAudioId = index + 1;
+      this.playAudioBuffer(this.audioPlayers.pollBuffers[audioIndex][variantIndex]);
+      this.currentlyPlayingAudioId = variantIndex + 1;
     });
   }
 
@@ -147,18 +187,22 @@ export class AudioService {
     this.currentlyPlayingAudioId = null;
   }
 
-  public isPlaying(index: number) {
-    if (this.currentlyPlayingAudioId === index) return true;
+  public isPlaying(variantIndex: number) {
+    if (this.currentlyPlayingAudioId === variantIndex) return true;
     return false;
   }
 
-  // OLD
-  private audioPlayers: AudioPlayerSet;
-  private audioSet = { id: -1, samples: Array<string>() };
-  private pollLoadedCount = 0;
-  private testLoadedCount = 0;
+  public getScenes(): Array<string[]> {
+    let scenes = new Array<string[]>(10);
 
-  private audioRequests = new Array<Subscription>();
+    scenes.forEach((scene, index) => {
+      scene = (this.audioSet['samples'][index] as Array<{ url: string, scene: string }>).map(variantObject => variantObject.scene);
+    });
+
+    return scenes;
+  }
+
+  // OLD
 
   // load audio methods
   public loadAudioPlayersOld() {
@@ -180,6 +224,7 @@ export class AudioService {
     this.loadTestAudioPlayer(rightTestUrl, rightTestPlayer);
 
     // get samples
+    /* 
     this.api.getSampleSet().subscribe(audioSet => {
       this.audioSet.id = audioSet['id'];
       this.audioSet.samples = audioSet['samples'];
@@ -190,6 +235,7 @@ export class AudioService {
         this.audioPlayers.pollPlayers[i].loop = true;
       }
     });
+    */
   }
 
   public stopAudioLoading() {
@@ -280,15 +326,16 @@ export class AudioService {
 
   // poll audio methods
   public togglePollAudio(audioIndex: number): boolean {
-    if (this.audioPlayers.pollPlayers[audioIndex].paused) {
+    return false;
+    /* if (this.audioPlayers.pollPlayers[audioIndex].paused) {
       this.playPollAudio(audioIndex);
       return true;
     } else {
       this.audioPlayers.pollPlayers[audioIndex].pause();
       return false;
-    }
+    } */
   }
-
+/* 
   public playPollAudio(audioIndex: number) {
     this.pauseAllPollAudio();
     this.audioPlayers.pollPlayers[audioIndex].play();
@@ -308,7 +355,7 @@ export class AudioService {
   public testAudio() { 
     console.log(this.audioPlayers.pollPlayers);
     this.audioPlayers.pollPlayers[29].play();
-  }
+  } */
 
   private toggleAudio(audio: HTMLAudioElement): boolean {
     if (audio.paused) audio.play();

@@ -1,18 +1,18 @@
 export class AudioPlayerSet {
 
 	public headphonesTestPlayers: Map<String, HTMLAudioElement>;
-	public pollPlayers: HTMLAudioElement[];
+	public pollBuffers: Array<AudioBuffer[]>;
   
-	constructor(pollPlayersCount: number){
+	constructor(pollTasksCount: number){
 	  this.headphonesTestPlayers = new Map<String, HTMLAudioElement>();
-	  this.pollPlayers = new Array<HTMLAudioElement>(pollPlayersCount);
+	  this.pollBuffers = new Array<AudioBuffer[]>(pollTasksCount);
   
 	  this.headphonesTestPlayers = new Map<String, HTMLAudioElement>();
 	  this.headphonesTestPlayers.set('left', new Audio());
 	  this.headphonesTestPlayers.set('right', new Audio());
   
-	  for (let i = 0; i < pollPlayersCount; ++i) {
-		this.pollPlayers[i] = new Audio();
+	  for (let i = 0; i < pollTasksCount; ++i) {
+		this.pollBuffers[i] = new Array<AudioBuffer>(3);
 	  }
 	}
   }

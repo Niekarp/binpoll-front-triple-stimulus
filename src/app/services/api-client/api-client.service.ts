@@ -79,7 +79,29 @@ export class ApiClientService {
       } else {
         return this.http.get<string[]>(apiUrl + 'generate_set').pipe(
           switchMap(audioSet => {
-            audioSet['samples'] = audioSet['samples'].map(url => pollSoundsUrl + url)
+            // audioSet['samples'] = audioSet['samples'].map(url => pollSoundsUrl + url)
+            let samples = audioSet['samples'] as Array<string[]>;
+            samples.forEach(function forEachSample(sampleVariants) {
+              (sampleVariants as Array<Object>) = sampleVariants.map(function toUrlAndSceneObject(sampleVariantName) {
+                return {
+                  url: pollSoundsUrl + sampleVariantName,
+                  scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
+                }
+              });
+            });
+
+            /* 
+            for (let key in audioSet['samples']) {
+                if (audioSet['samples'].hasOwnProperty(key)) {
+                  audioSet['samples'][key] = audioSet['samples'][key].map(function sampleNameMapper(sampleName) {
+                    return { 
+                      url: pollSoundsUrl + sampleName,
+                      scene: sampleName.substring(sampleName.length - 6, sampleName.length - 4)
+                    }
+                  });
+                }
+              }
+            */
             return of(audioSet);
           }));
       }
