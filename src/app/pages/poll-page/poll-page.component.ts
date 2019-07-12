@@ -99,6 +99,25 @@ export class PollPageComponent implements OnInit {
                 console.error('loading audio timeout') 
             });
         }
+        else {
+            let scenes = this.audio.getScenes();
+            console.log(scenes);
+
+            for(let i = 0; i < this.testCount; ++i) {
+                // this.answers[i] = 'none';
+
+                this.audioPool[i] = [
+                    {text:'audio 1', id:1, scene: scenes[i][0]},
+                    {text:'audio 2', id:2, scene: scenes[i][1]},
+                    {text:'audio 3', id:3, scene: scenes[i][2]}
+                ];
+                this.fbDropZone[i] = [];
+                this.bfDropZone[i] = [];
+                this.ffDropZone[i] = [];
+
+                this.wasAudioPlayed[i] = [false, false, false];
+            }
+        }
     }
     
     drop(event: CdkDragDrop<string[]>) {
