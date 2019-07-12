@@ -4,6 +4,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { ApiClientService } from '../api-client/api-client.service';
 import { Subscription, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { CompilerConfig } from '@angular/compiler';
+import { ConfigService } from 'src/app/config/config.service';
 
 
 const audioSampleRate = 44100;
@@ -26,14 +28,14 @@ export class AudioService {
 
   // OLD
   private audioPlayers: AudioPlayerSet;
-  private audioSet: Array<string>; // { id: -1, samples: Array<Object[]>(), samplesNames: Array<string>() };
+  private audioSet: {[id: string]: any}; // { id: -1, samples: Array<Object[]>(), samplesNames: Array<string>() };
   private pollLoadedCount = 0;
   private testLoadedCount = 0;
 
   private audioRequests = new Array<Subscription>();
   // OLD END  
 
-  constructor(private http: HttpClient, private api: ApiClientService) {
+  constructor(private http: HttpClient, private api: ApiClientService, private config: ConfigService) {
     // OLD
     this.audioPlayers = new AudioPlayerSet(30);
     // NEW
@@ -70,51 +72,35 @@ export class AudioService {
     // download blobs
     this.api.getSampleSet().subscribe(audioSet => {
       console.log(audioSet);
-      /*
-      let samples = [
-        'http://antoniuk.pl:8000/static/poll_sounds/BackFromTheStart_brir1_scene1_FB.wav',
-        'http://antoniuk.pl:8000/static/poll_sounds/BackFromTheStart_brir1_scene2_BF.wav',
-        'http://antoniuk.pl:8000/static/poll_sounds/BackFromTheStart_brir1_scene3_FF.wav'
-      ]; 
-      */
-     this.audioSet = audioSet;
+      this.audioSet = audioSet;
 
-     let samples: Array<{url: string, scene: string}[]> = audioSet['samples'];
+      this.config.getConfig().subscribe(config => {
+        this.downloadAudioSet(audioSet, config['pollSoundsUrl']);
+      });
+    });
+  }
 
-     samples.forEach((sampleVariants, outerIndex) => {
-      sampleVariants.forEach((sampleVariantObject) => {
-        this.loadAudioBlob(sampleVariantObject.url).subscribe(arrayBuffer => {
-          this.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
-            // this.audioBuffers.push(audioBuffer);
-            console.log('downloaded: ', sampleVariantObject.url);
-            console.log('buffers size: ', this.audioBuffers.length);
-            this.audioPlayers.pollBuffers[outerIndex].push(audioBuffer);
+  private downloadAudioSet(audioSet: {[id: string]: any}, baseUrl: string) {
+    let samples: Array<string[]> = audioSet['samples'];
+    let sampleNames: Array<string> = audioSet['sampleNames'];
+
+    console.log(samples);
+    console.log(sampleNames);
+
+    for(let sample_i = 0; sample_i < samples.length; ++sample_i) {
+      for(let sampleScene_i = 0; sampleScene_i < 3; ++sampleScene_i) {
+        this.loadAudioBlob(baseUrl + samples[sample_i][sampleScene_i]).subscribe(arrayBufer => {
+          this.audioContext.decodeAudioData(arrayBufer, (audioBuffer => {
+            console.log('downloaded: ', samples[sample_i][sampleScene_i]);
+            this.audioPlayers.pollBuffers[sample_i][sampleScene_i] = audioBuffer;
             this.pollLoadedCount += 1; 
-          }, (err) => {
-            console.error("error");
+          }), err => {
+            console.error('audio download error');
+            console.error(err);
           });
         });
-      });
-     });
-
-      /* for(let sampleName in samples) {
-        if (samples.hasOwnProperty(sampleName)) {
-          for(let i = 0; i < samples[sampleName].length; ++i) {
-            let sampleUrl = samples[sampleName][i].url;
-            this.loadAudioBlob(sampleUrl).subscribe(arrayBuffer => {
-              this.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
-                this.audioBuffers.push(audioBuffer);
-                // console.log('downloaded: ', sampleUrl);
-                // console.log('buffers size: ', this.audioBuffers.length);
-                
-              }, (err) => {
-                console.error("error");
-              });
-            });
-          }
-        }
-      } */
-    });
+      }
+    }
   }
 
   private generateRaisedCosineEnvelope(lengthSeconds:number, sampleRate:number) {
@@ -193,13 +179,7 @@ export class AudioService {
   }
 
   public getScenes(): Array<string[]> {
-    let scenes = new Array<string[]>(10);
-
-    scenes.forEach((scene, index) => {
-      scene = (this.audioSet['samples'][index] as Array<{ url: string, scene: string }>).map(variantObject => variantObject.scene);
-    });
-
-    return scenes;
+    return this.audioSet['samples'];
   }
 
   // OLD

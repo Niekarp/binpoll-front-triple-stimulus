@@ -63,6 +63,7 @@ export class PollPageComponent implements OnInit {
         document.getElementsByTagName('head')[0].appendChild(style);
 
         let scenes = this.audio.getScenes();
+        console.log(scenes);
 
         for(let i = 0; i < this.testCount; ++i) {
             /* this.answers[i] = 'none';
@@ -309,7 +310,7 @@ export class PollPageComponent implements OnInit {
     }
 
     public onAudioButtonClick(clickedButton: PlayAudioButtonComponent) {
-
+        console.log(this.currentTestIndex);
         this.audioButtons.toArray().forEach((audioButton) => {           
             if(audioButton === clickedButton) {
                 if(clickedButton.isPlaying() == true) {
