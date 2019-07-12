@@ -81,7 +81,7 @@ export class AudioService {
   }
 
   private downloadAudioSet(audioSet: {[id: string]: any}, baseUrl: string) {
-    let samples: Array<string[]> = audioSet['samples'];
+    let samples: Array<object[]> = audioSet['samples'];
     let sampleNames: Array<string> = audioSet['sampleNames'];
 
     console.log(samples);
@@ -89,11 +89,12 @@ export class AudioService {
 
     for(let sample_i = 0; sample_i < samples.length; ++sample_i) {
       for(let sampleScene_i = 0; sampleScene_i < 3; ++sampleScene_i) {
-        this.loadAudioBlob(baseUrl + samples[sample_i][sampleScene_i]).subscribe(arrayBufer => {
+        this.loadAudioBlob(samples[sample_i][sampleScene_i]['url']).subscribe(arrayBufer => {
           this.audioContext.decodeAudioData(arrayBufer, (audioBuffer => {
             console.log('downloaded: ', samples[sample_i][sampleScene_i]);
             this.audioPlayers.pollBuffers[sample_i][sampleScene_i] = audioBuffer;
             this.pollLoadedCount += 1; 
+            console.log('poll loaded audio count: ' + this.pollLoadedCount); 
           }), err => {
             console.error('audio download error');
             console.error(err);
@@ -179,7 +180,17 @@ export class AudioService {
   }
 
   public getScenes(): Array<string[]> {
-    return this.audioSet['samples'];
+    let scenes = new Array<string[]>(10);
+	
+    for (let index = 0; index < scenes.length; ++index) {
+      scenes[index] = (this.audioSet['samples'][index] as Array<{ url: string, scene: string }>).map(variantObject => variantObject.scene);
+    };
+	
+	  return scenes;
+  }
+
+  public getSamplesName () {
+    return this.audioSet['sampleNames'];
   }
 
   // OLD

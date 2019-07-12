@@ -77,7 +77,19 @@ export class ApiClientService {
         console.error('apiUrl property not found');
         return of({});
       } else {
-        return this.http.get<{[id: string]: any}>(apiUrl + 'generate_set')
+        return this.http.get<{[id: string]: any}>(apiUrl + 'generate_set').pipe(
+          switchMap(audioSet => {
+            let samples = audioSet['samples'] as Array<string[]>;
+            samples.forEach(function forEachSample(sampleVariants, sampleIndex) {
+              (samples[sampleIndex] as Array<Object>) = sampleVariants.map(function toUrlAndSceneObject(sampleVariantName) {
+                return {
+                  url: pollSoundsUrl + sampleVariantName,
+                  scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
+                }
+              });
+            });
+            return of(audioSet);
+        }));
       }
     })).pipe(catchError(error => {
       console.error(error);

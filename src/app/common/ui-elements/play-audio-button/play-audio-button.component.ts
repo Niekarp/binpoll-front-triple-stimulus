@@ -56,6 +56,10 @@ export class PlayAudioButtonComponent implements OnInit {
     return this.playState;
   }
 
+  public focus() {
+    document.getElementById('audio-button').focus();
+  }
+
   public blur() {
     document.getElementById('audio-button').blur();
   }

@@ -42,7 +42,9 @@ export class PollPageComponent implements OnInit {
     public testCount: number;
     public currentTestIndex: number = 0;
 
-    private wasAudioPlayed = false;
+    private wasAudioPlayed = Array<boolean[]>(10);
+
+    private startDate: Date;
     
     constructor(public snackbar: MatSnackBar,
                 public dialog: MatDialog,
@@ -54,6 +56,7 @@ export class PollPageComponent implements OnInit {
                 private audio: AudioService,
                 private sharedConfig: SharedConfig) {
         this.testCount = sharedConfig.testCount;
+        this.startDate = new Date();
      }
     
     ngOnInit() {
@@ -62,30 +65,8 @@ export class PollPageComponent implements OnInit {
         style.type = 'text/css';
         document.getElementsByTagName('head')[0].appendChild(style);
 
-        let scenes = this.audio.getScenes();
-        console.log(scenes);
-
-        for(let i = 0; i < this.testCount; ++i) {
-            /* this.answers[i] = 'none';
-
-            this.audioPool[i] = [
-                {text:'audio 1', id:1},
-                {text:'audio 2', id:2},
-                {text:'audio 3', id:3}
-            ]
-            */
-            this.audioPool[i] = [
-                {text:'audio 1', id:1, scene: scenes[i][0]},
-                {text:'audio 2', id:2, scene: scenes[i][1]},
-                {text:'audio 3', id:3, scene: scenes[i][2]}
-            ];
-            this.fbDropZone[i] = [];
-            this.bfDropZone[i] = [];
-            this.ffDropZone[i] = [];
-
-        }
-        
         this.audio.loadAudioPlayers();
+
         if (this.audio.isAllPollAudioLoaded() === false) {
             setTimeout(() => {
                 this.spinner.show();
@@ -93,6 +74,23 @@ export class PollPageComponent implements OnInit {
             
             this.audio.notifyOnAllPollAudioLoaded(() => { 
                 console.log('audio loaded'); 
+                let scenes = this.audio.getScenes();
+                console.log(scenes);
+
+                for(let i = 0; i < this.testCount; ++i) {
+                    // this.answers[i] = 'none';
+
+                    this.audioPool[i] = [
+                        {text:'audio 1', id:1, scene: scenes[i][0]},
+                        {text:'audio 2', id:2, scene: scenes[i][1]},
+                        {text:'audio 3', id:3, scene: scenes[i][2]}
+                    ];
+                    this.fbDropZone[i] = [];
+                    this.bfDropZone[i] = [];
+                    this.ffDropZone[i] = [];
+
+                    this.wasAudioPlayed[i] = [false, false, false];
+                }
                 this.spinner.hide();
             }, () => { 
                 this.spinnerText.nativeElement.innerText = 'loading audio' 
@@ -104,7 +102,7 @@ export class PollPageComponent implements OnInit {
     }
     
     drop(event: CdkDragDrop<string[]>) {
-        debugger
+        
         (event.container.element.nativeElement as HTMLElement).parentElement.style.boxShadow = null
 
         let audios = document.getElementsByClassName('audio-dropped');
@@ -230,13 +228,14 @@ export class PollPageComponent implements OnInit {
         this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
         if (this.draggingConteinerChanged) this.isOverNewContainer = true;
         
-        if (this[dropZoneId].length === 0) return;
+        if (this[dropZoneId][this.currentTestIndex].length === 0) return;
         if (this.draggingConteinerChanged === false) return;
         if (dropZoneId === 'audioPool') {
             return;
         };
 
         let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
+        // error, sth with audio element being null
         if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
         
         const audioRect = (audioElement as Element).getBoundingClientRect();
@@ -294,7 +293,7 @@ export class PollPageComponent implements OnInit {
             // });
         };
 
-        if (this[dropZoneId].length === 0) return;
+        if (this[dropZoneId][this.currentTestIndex].length === 0) return;
         if (this.draggingContainer.id === dropZoneId) return;
         if (dropZoneId === 'audioPool') return;
         
@@ -311,6 +310,8 @@ export class PollPageComponent implements OnInit {
 
     public onAudioButtonClick(clickedButton: PlayAudioButtonComponent) {
         console.log(this.currentTestIndex);
+        this.wasAudioPlayed[this.currentTestIndex][clickedButton.audioId - 1] = true;
+
         this.audioButtons.toArray().forEach((audioButton) => {           
             if(audioButton === clickedButton) {
                 if(clickedButton.isPlaying() == true) {
@@ -335,15 +336,17 @@ export class PollPageComponent implements OnInit {
     }
 
     public goToNextTest() {
-        if (this.fbDropZone.length === 0 || this.bfDropZone.length === 0 || this.ffDropZone.length === 0) {
+        if (this.fbDropZone[this.currentTestIndex].length === 0 || 
+            this.bfDropZone[this.currentTestIndex].length === 0 || 
+            this.ffDropZone[this.currentTestIndex].length === 0)
+        {
             this.showMessage('match recordings with acoustic scenes');
             return;
         }
-        
-        /* else if (this.wasAudioPlayed === false) {
+        else if (this.wasAudioPlayed[this.currentTestIndex].includes(false)) {
             this.showMessage('audio wasn\'t played');
             return;
-        } */
+        }
         
         let isAudioPlaying = false; // !this.audio.getPollAudio(this.currentTestIndex).paused;
         
@@ -357,7 +360,21 @@ export class PollPageComponent implements OnInit {
             this.audio.pollAudioSet.samples.forEach((sampleUrl, index) => { 
                 let sampleFilename = sampleUrl.split('/').reverse()[0];
                 answer[sampleFilename] = this.answers[index];
-            });
+            }); */
+
+            debugger
+            let sampleNames = this.audio.getSamplesName();
+            let answer = {};
+            for (let i = 0; i < 10; ++i) {
+                answer[sampleNames[i]] = {
+                    'answer_FB': this.fbDropZone[i][0].scene,
+                    'answer_BF': this.bfDropZone[i][0].scene,
+                    'answer_FF': this.ffDropZone[i][0].scene
+                };
+                /* answer[i]['answer_FB'] = this.fbDropZone[i][0].scene;
+                answer[i]['answer_BF'] = this.bfDropZone[i][0].scene;
+                answer[i]['answer_FF'] = this.ffDropZone[i][0].scene; */
+            }
             
             this.apiClient.sendPollData({
                 startDate: this.startDate,
@@ -370,7 +387,7 @@ export class PollPageComponent implements OnInit {
                     headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
                     listening_test_participated: this.data.questionnaire.listeningTestParticipation
                 }
-            }); */
+            });
             this.router.navigateByUrl('finish', { skipLocationChange: true });
             return;
         } 
@@ -444,6 +461,37 @@ export class PollPageComponent implements OnInit {
             verticalPosition: "top",
             panelClass: ['my-snackbar-problem'],
         });
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent) {
+        return;
+        // console.log('poll key');
+        // if (this.enableKeyboard === false) return;
+        if (this.audio.isAllPollAudioLoaded() === false) return;
+        // console.log('poll key active');
+        
+        if (event.key === 'ArrowLeft') {
+            // this.goToPreviousTest();
+        }
+        else if (event.key === 'ArrowRight') {
+            // this.goToNextTest();
+        }
+        else if (event.key === ' ') {
+            /* if (this.audio.isPlaying(1) || this.audio.isPlaying(2) || this.audio.isPlaying(3)) return;
+            this.audio.play(this.currentTestIndex, 1);
+            let audioButton1 = this.audioButtons.find((audioButton) => { return audioButton.audioId === 1 });
+            audioButton1.play();
+            audioButton1.focus();
+            event.stopPropagation(); */
+            // this.audioButton.blur();
+            
+            // for (let i = 0; i < document.getElementsByClassName('scene-select-button').length; ++i) {
+               //  (document.getElementsByClassName('scene-select-button').item(i) as HTMLElement).blur();
+            // }
+            
+            // this.onAudioButtonClick();
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 <mat-progress-bar id="progress-bar" [value]="(currentTestIndex + 1) * (100 / testCount)"></mat-progress-bar>
-<div id="test-counter">Test {{ currentTestIndex + 1 }} out of {{ testCount }}</div>
+<div id="test-counter">Task {{ currentTestIndex + 1 }} out of {{ testCount }}</div>
 
 <header class="page-header">
   <span *ngIf="currentTestIndex === -1; else regularHeader">
@@ -7,8 +7,7 @@
     what you hear and press the Next button.
   </span>
   <ng-template #regularHeader>
-    Match audio buttons with acoustic scenes by dragging them from the grey container to the sections directly above
-    acoustic scenes.
+    Match audio buttons with acoustic scenes by dragging them from the grey container and dropping on the acoustic scenes images.
   </ng-template>
 </header>
 <section class="page-content" cdkDropListGroup>
@@ -63,7 +62,7 @@
   <a mat-raised-button class="navigation-button" (click)="goToNextTest()">Next</a>
   <a mat-raised-button class="navigation-button" (click)="goToPreviousTest()">Previous</a>
   <div id="help-note">
-    If you encounter problems with the audio playback, check your audio setting on your device, and refresh this page.
+    If you encounter problems with the audio playback, check audio setting on your device.
     <span class="link-like" (click)="onFurtherHelpClick()">Further help</span>
   </div>
 </nav>
