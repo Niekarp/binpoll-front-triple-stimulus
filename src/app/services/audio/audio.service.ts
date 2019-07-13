@@ -40,7 +40,12 @@ export class AudioService {
     this.audioPlayers = new AudioPlayerSet(30);
     // NEW
     // console.log('audio service created');
-    this.audioContext = new AudioContext();
+    if('webkitAudioContext' in window) {
+      this.audioContext = new (<any>window).webkitAudioContext();
+    }
+    else {
+      this.audioContext = new AudioContext();
+    }
     //this.sourceNodes = [];
     this.gainNode = this.audioContext.createGain();
     this.loadAudioPlayers();
