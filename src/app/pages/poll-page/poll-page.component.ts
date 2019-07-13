@@ -73,9 +73,9 @@ export class PollPageComponent implements OnInit {
             }, 100);
             
             this.audio.notifyOnAllPollAudioLoaded(() => { 
-                console.log('audio loaded'); 
+                // console.log('audio loaded'); 
                 let scenes = this.audio.getScenes();
-                console.log(scenes);
+                // console.log(scenes);
 
                 for(let i = 0; i < this.testCount; ++i) {
                     // this.answers[i] = 'none';
@@ -101,7 +101,7 @@ export class PollPageComponent implements OnInit {
         }
         else {
             let scenes = this.audio.getScenes();
-            console.log(scenes);
+            // console.log(scenes);
 
             for(let i = 0; i < this.testCount; ++i) {
                 // this.answers[i] = 'none';
@@ -165,7 +165,7 @@ export class PollPageComponent implements OnInit {
     }
             
     onDragStart(event: CdkDragStart) {
-        console.log('drag started');
+        // console.log('drag started');
         
         this.dragging = true;
         this.draggingContainer = event.source.dropContainer;
@@ -179,7 +179,7 @@ export class PollPageComponent implements OnInit {
         
         if (this.draggingConteinerChanged && this.isOverNewContainer === false) {
             
-            console.log('need my own animation');
+            // console.log('need my own animation');
             
             let dragPreview = document.getElementsByClassName('cdk-drag-preview').item(0) as HTMLElement;
             const audioRect = (dragPreview as Element).getBoundingClientRect();
@@ -188,7 +188,7 @@ export class PollPageComponent implements OnInit {
             let style = document.getElementById('move');
             style.innerHTML = '.move { transform: translate3d(' + this.dragInitialPositionRect.left + 'px ,' + this.dragInitialPositionRect.top + 'px, 0px) !important; }';
             
-            console.log('move applied');
+            // console.log('move applied');
             dragPreview.classList.add('no-mouse-transition');
             dragPreview.classList.add('move');
             
@@ -212,13 +212,13 @@ export class PollPageComponent implements OnInit {
     }
     
     onMouseEnter(event: MouseEvent) {
-        console.log('mouse enter event');
+        // console.log('mouse enter event');
         
         const dropZoneId = (event.target as HTMLElement).id;
         this.currentDropZoneId = dropZoneId;
         
         if (this.dragging === false)       return;
-        console.log('mouse enter: ', dropZoneId);
+        // console.log('mouse enter: ', dropZoneId);
 
         if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '5px 10px 18px #888888';
 
@@ -273,13 +273,13 @@ export class PollPageComponent implements OnInit {
 
         style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
         
-        console.log('move applied');
+        // console.log('move applied');
         audioElement.classList.add('no-mouse-transition');
         audioElement.classList.add('move');
     }
     
     onMouseLeave(event: MouseEvent) {
-        console.log('mouse leave event');
+        // console.log('mouse leave event');
         
         const dropZoneId = (event.target as HTMLElement).id;
         this.currentDropZoneId = null;
@@ -328,7 +328,6 @@ export class PollPageComponent implements OnInit {
     }
 
     public onAudioButtonClick(clickedButton: PlayAudioButtonComponent) {
-        console.log(this.currentTestIndex);
         this.wasAudioPlayed[this.currentTestIndex][clickedButton.audioId - 1] = true;
 
         this.audioButtons.toArray().forEach((audioButton) => {           
@@ -363,7 +362,16 @@ export class PollPageComponent implements OnInit {
             return;
         }
         else if (this.wasAudioPlayed[this.currentTestIndex].includes(false)) {
-            this.showMessage('audio wasn\'t played');
+            let notPlayedAudiosIndices = this.getAllIndexes(this.wasAudioPlayed[this.currentTestIndex], false);
+            if (notPlayedAudiosIndices.length === 1) {
+                this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
+            }
+            else if (notPlayedAudiosIndices.length === 2) {
+                this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' and audio ' + (notPlayedAudiosIndices[1] + 1) + ' weren\'t played');
+            }
+            else {
+                this.showMessage('audio 1, 2 and 3 weren\'t played');
+            }
             return;
         }
         
@@ -426,6 +434,14 @@ export class PollPageComponent implements OnInit {
         else {
             this.wasAudioPlayed = false;
         } */
+    }
+
+    private getAllIndexes(arr, val) {
+        var indexes = [], i;
+        for(i = 0; i < arr.length; i++)
+            if (arr[i] === val)
+                indexes.push(i);
+        return indexes;
     }
     
     public goToPreviousTest(): void {

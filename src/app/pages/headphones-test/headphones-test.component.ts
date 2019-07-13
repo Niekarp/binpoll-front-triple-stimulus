@@ -38,7 +38,7 @@ export class HeadphonesTestComponent implements OnInit {
       }, 100);
 
       this.audio.notifyOnAllTestAudioLoaded(() => { 
-        console.log('audio loaded'); 
+        // console.log('audio loaded'); 
         this.spinner.hide();
       }, () => { 
         this.spinnerText.nativeElement.innerText = 'loading audio' 
@@ -49,14 +49,14 @@ export class HeadphonesTestComponent implements OnInit {
     }
 
     this.audio.headphonesTestLeftChannelAudio.onended = () => {
-      console.log('left audio stopped');
+      // console.log('left audio stopped');
       this.leftAudioButton.toggle();
     }
     this.audio.headphonesTestRightChannelAudio.onended = () => {
       this.rightAudioButton.toggle();
     }
     this.audio.headphonesTestLeftChannelAudio.onended = () => {
-      console.log('left audio stopped');
+      // console.log('left audio stopped');
       this.leftAudioButton.toggle();
     }
     this.audio.headphonesTestRightChannelAudio.onended = () => {

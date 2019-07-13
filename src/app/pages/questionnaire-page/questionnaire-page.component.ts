@@ -60,7 +60,7 @@ export class QuestionnairePageComponent implements OnInit {
   }
 
   public blur() {
-    console.log(event);
+    // console.log(event);
     event.stopPropagation();
   }
 }

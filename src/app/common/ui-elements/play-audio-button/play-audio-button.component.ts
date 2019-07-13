@@ -24,7 +24,9 @@ export class PlayAudioButtonComponent implements OnInit {
 
   private playState: boolean = false;
 
-  constructor() { console.log('audio button created'); }
+  constructor() { 
+    // console.log('audio button created'); 
+  }
 
   ngOnInit() {
     this.onInit.emit(this);

@@ -43,6 +43,7 @@ export class ApiClientService {
           })).subscribe(response => {
             console.log('poll data sent: ', url);
             console.log(pollData);
+            debugger
             
             this.data.dataResponseId = response['id'];
           });
@@ -58,8 +59,8 @@ export class ApiClientService {
       } else {
         url += 'problem/';
         return this.http.post(url, report).pipe(switchMap(() => {
-          console.log('problem reported: ', url);
-          console.log(report);
+          // console.log('problem reported: ', url);
+          // console.log(report);
           return of({})
         }));
       }
@@ -79,6 +80,11 @@ export class ApiClientService {
       } else {
         return this.http.get<{[id: string]: any}>(apiUrl + 'generate_set').pipe(
           switchMap(audioSet => {
+            
+            console.log('getSampleSet -> audioSet: ');
+            console.log(audioSet);
+            debugger
+
             let samples = audioSet['samples'] as Array<string[]>;
             samples.forEach(function forEachSample(sampleVariants, sampleIndex) {
               (samples[sampleIndex] as Array<Object>) = sampleVariants.map(function toUrlAndSceneObject(sampleVariantName) {
@@ -112,7 +118,7 @@ export class ApiClientService {
             console.error(err);
             return of({})
           })).subscribe(response => {
-            console.log('comment sent: ', url);
+            // console.log('comment sent: ', url);
             onSend();
           });
       }

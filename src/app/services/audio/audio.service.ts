@@ -39,7 +39,7 @@ export class AudioService {
     // OLD
     this.audioPlayers = new AudioPlayerSet(30);
     // NEW
-    console.log('audio service created');
+    // console.log('audio service created');
     this.audioContext = new AudioContext();
     //this.sourceNodes = [];
     this.gainNode = this.audioContext.createGain();
@@ -66,12 +66,12 @@ export class AudioService {
     this.loadTestAudioPlayer(rightTestUrl, rightTestPlayer);
 
     this.generateRaisedCosineEnvelope(2 * fadeTimeSeconds, audioSampleRate);
-    console.log('raisedCosineEnvelopeFadeInOut');
-    console.log(this.raisedCosineEnvelopeFadeInOut);
+    // console.log('raisedCosineEnvelopeFadeInOut');
+    // console.log(this.raisedCosineEnvelopeFadeInOut);
 
     // download blobs
     this.api.getSampleSet().subscribe(audioSet => {
-      console.log(audioSet);
+      // console.log(audioSet);
       this.audioSet = audioSet;
 
       this.config.getConfig().subscribe(config => {
@@ -84,17 +84,17 @@ export class AudioService {
     let samples: Array<object[]> = audioSet['samples'];
     let sampleNames: Array<string> = audioSet['sampleNames'];
 
-    console.log(samples);
-    console.log(sampleNames);
+    // console.log(samples);
+    // console.log(sampleNames);
 
     for(let sample_i = 0; sample_i < samples.length; ++sample_i) {
       for(let sampleScene_i = 0; sampleScene_i < 3; ++sampleScene_i) {
         this.loadAudioBlob(samples[sample_i][sampleScene_i]['url']).subscribe(arrayBufer => {
           this.audioContext.decodeAudioData(arrayBufer, (audioBuffer => {
-            console.log('downloaded: ', samples[sample_i][sampleScene_i]);
+            // console.log('downloaded: ', samples[sample_i][sampleScene_i]);
             this.audioPlayers.pollBuffers[sample_i][sampleScene_i] = audioBuffer;
             this.pollLoadedCount += 1; 
-            console.log('poll loaded audio count: ' + this.pollLoadedCount); 
+            // console.log('poll loaded audio count: ' + this.pollLoadedCount); 
           }), err => {
             console.error('audio download error');
             console.error(err);
@@ -358,7 +358,7 @@ export class AudioService {
     const request = this.http.get(url, {responseType: 'blob'}).subscribe(response => {
       let audioBlob = response;
       let audioUrl = URL.createObjectURL(audioBlob);
-      console.log('audio loaded: ' + audioUrl);
+      // console.log('audio loaded: ' + audioUrl);
       audio.src = audioUrl;
       audio.load();
       
@@ -371,14 +371,14 @@ export class AudioService {
   private loadTestAudioPlayer(url: string, audio: HTMLAudioElement) {
     this.loadAudioPlayer(url, audio, () => { 
       this.testLoadedCount += 1;
-      console.log('headset-test loaded audio count: ' + this.testLoadedCount); 
+      // console.log('headset-test loaded audio count: ' + this.testLoadedCount); 
     });
   }
 
   private loadPollAudioPlayer(url: string, audio: HTMLAudioElement) {
     this.loadAudioPlayer(url, audio, () => { 
       this.pollLoadedCount += 1; 
-      console.log('poll loaded audio count: ' + this.pollLoadedCount); 
+      // console.log('poll loaded audio count: ' + this.pollLoadedCount); 
     });
   }
 }
