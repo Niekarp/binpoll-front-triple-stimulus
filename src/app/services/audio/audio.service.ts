@@ -139,10 +139,12 @@ export class AudioService {
     let stopTime = startTime;
 
     if(this.currentlyPlayingSources.length > 0) {
-      for(let audioSource of this.currentlyPlayingSources) {
-        audioSource.stop(startTime + fadeTimeSeconds);
-        stopTime = this.audioContext.currentTime;
+      for(let i = 0; i < this.currentlyPlayingSources.length; ++i) {
+        if(this.currentlyPlayingSources[i]) { 
+          this.currentlyPlayingSources[i].stop(startTime + fadeTimeSeconds);
+        }
       }
+      stopTime = this.audioContext.currentTime;
       this.currentlyPlayingSources.length = 0;
     } else {
       this.audioLastStartTime = startTime;
@@ -173,8 +175,11 @@ export class AudioService {
 
   public pause() {
     let startTime = this.audioContext.currentTime;
-    for(let audioSource of this.currentlyPlayingSources) {
-      audioSource.stop(startTime + fadeTimeSeconds);
+    for(let i = 0; i < this.currentlyPlayingSources.length; ++i) {
+      if(this.currentlyPlayingSources[i]) { 
+        this.currentlyPlayingSources[i].stop(startTime + fadeTimeSeconds);
+      }
+      delete this.currentlyPlayingSources[i];
     }
     this.currentlyPlayingAudioId = null;
   }
