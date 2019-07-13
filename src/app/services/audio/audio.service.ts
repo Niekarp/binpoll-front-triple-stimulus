@@ -143,6 +143,7 @@ export class AudioService {
         audioSource.stop(startTime + fadeTimeSeconds);
         stopTime = this.audioContext.currentTime;
       }
+      debugger
       this.currentlyPlayingSources.length = 0;
     } else {
       this.audioLastStartTime = startTime;
