@@ -14,14 +14,15 @@ import { ProblemReport } from "../../models/ProblemReport"
 export class ApiClientService {
 
   private configObservable: Observable<any>;
+  private sampleSetObservable: Observable<{[id: string]: any}>;
 
   constructor(
     public data: DataService,
     private http: HttpClient,
     private configService: ConfigService) { 
       this.configObservable = configService.getConfig();
+      this.sampleSetObservable = this.prepareSampleSet();
     }
-
   
   public sendPollData(pollData: PollData): void {
     this.configObservable.subscribe(config => {
@@ -29,24 +30,26 @@ export class ApiClientService {
       if(url == null) {
         console.error('apiUrl property not found');
       } else {
-        url += 'poll_data/';
-        this.http.post(url, {
-          'start_date': pollData.startDate.toISOString(),
-          'end_date': pollData.endDate.toISOString(),
-          'assigned_set_id': pollData.assignedSetId,
-          'answers': pollData.answer,
-          'user_info': pollData.userInfo
-        }).pipe(
-          catchError((err) => {
-            console.error(err);
-            return of({})
-          })).subscribe(response => {
-            console.log('poll data sent: ', url);
-            console.log(pollData);
-            debugger
-            
-            this.data.dataResponseId = response['id'];
-          });
+        this.sampleSetObservable.subscribe(sampleSet => {
+          url += 'poll_data/';
+          this.http.post(url, {
+            'start_date': pollData.startDate.toISOString(),
+            'end_date': pollData.endDate.toISOString(),
+            'assigned_set_id': pollData.assignedSetId,
+            'answers': pollData.answer,
+            'user_info': pollData.userInfo,
+            'seed': sampleSet['seed']
+          }).pipe(
+            catchError((err) => {
+              console.error(err);
+              return of({})
+            })).subscribe(response => {
+              console.log('poll data sent: ', url);
+              console.log(pollData);
+
+              this.data.dataResponseId = response['id'];
+            });
+        });
       }
     });
   }
@@ -71,36 +74,7 @@ export class ApiClientService {
   }
 
   public getSampleSet(): Observable<{[id: string]: any}> {
-    return this.configObservable.pipe(switchMap(config => {
-      let apiUrl = config['apiUrl'];
-      let pollSoundsUrl = config['pollSoundsUrl'];
-      if(apiUrl == null || pollSoundsUrl == null) {
-        console.error('apiUrl property not found');
-        return of({});
-      } else {
-        return this.http.get<{[id: string]: any}>(apiUrl + 'generate_set').pipe(
-          switchMap(audioSet => {
-            
-            console.log('getSampleSet -> audioSet: ');
-            console.log(audioSet);
-            debugger
-
-            let samples = audioSet['samples'] as Array<string[]>;
-            samples.forEach(function forEachSample(sampleVariants, sampleIndex) {
-              (samples[sampleIndex] as Array<Object>) = sampleVariants.map(function toUrlAndSceneObject(sampleVariantName) {
-                return {
-                  url: pollSoundsUrl + sampleVariantName,
-                  scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
-                }
-              });
-            });
-            return of(audioSet);
-        }));
-      }
-    })).pipe(catchError(error => {
-      console.error(error);
-      return of({});
-    }));
+    return this.sampleSetObservable;
   }
 
   public sendComment(comment: string, onSend: () => void): void {
@@ -123,5 +97,37 @@ export class ApiClientService {
           });
       }
     });
+  }
+
+  private prepareSampleSet(): Observable<{[id: string]: any}> {
+    return this.sampleSetObservable = this.configObservable.pipe(switchMap(config => {
+      let apiUrl = config['apiUrl'];
+      let pollSoundsUrl = config['pollSoundsUrl'];
+      if(apiUrl == null || pollSoundsUrl == null) {
+        console.error('apiUrl property not found');
+        return of({});
+      } else {
+        return this.http.get<{[id: string]: any}>(apiUrl + 'generate_set').pipe(
+          switchMap(audioSet => {
+            
+            console.log('getSampleSet -> audioSet: ');
+            console.log(audioSet);
+
+            let samples = audioSet['samples'] as Array<string[]>;
+            samples.forEach(function forEachSample(sampleVariants, sampleIndex) {
+              (samples[sampleIndex] as Array<Object>) = sampleVariants.map(function toUrlAndSceneObject(sampleVariantName) {
+                return {
+                  url: pollSoundsUrl + sampleVariantName,
+                  scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
+                }
+              });
+            });
+            return of(audioSet);
+        }));
+      }
+    })).pipe(catchError(error => {
+      console.error(error);
+      return of({});
+    }));
   }
 }
