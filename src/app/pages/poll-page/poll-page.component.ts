@@ -27,8 +27,6 @@ export class PollPageComponent implements OnInit {
     public fbDropZone = [];
     public bfDropZone = [];
     public ffDropZone = [];
-
-    private answers = Array(10);
     
     private currentDropZoneId: string;
     private dragInitialPositionRect: ClientRect;
@@ -73,13 +71,8 @@ export class PollPageComponent implements OnInit {
             }, 100);
             
             this.audio.notifyOnAllPollAudioLoaded(() => { 
-                // console.log('audio loaded'); 
                 let scenes = this.audio.getScenes();
-                // console.log(scenes);
-
                 for(let i = 0; i < this.testCount; ++i) {
-                    // this.answers[i] = 'none';
-
                     this.audioPool[i] = [
                         {text:'audio 1', id:1, scene: scenes[i][0]},
                         {text:'audio 2', id:2, scene: scenes[i][1]},
@@ -88,24 +81,19 @@ export class PollPageComponent implements OnInit {
                     this.fbDropZone[i] = [];
                     this.bfDropZone[i] = [];
                     this.ffDropZone[i] = [];
-
                     this.wasAudioPlayed[i] = [false, false, false];
                 }
+
                 this.spinner.hide();
             }, () => { 
-                this.spinnerText.nativeElement.innerText = 'loading audio' 
-                + ' (' + this.audio.getPollLoadingProgressPercentage() + '%)';
+                this.spinnerText.nativeElement.innerText = 'loading audio' + ' (' + this.audio.getPollLoadingProgressPercentage() + '%)';
             }, () => {
                 console.error('loading audio timeout') 
             });
         }
         else {
             let scenes = this.audio.getScenes();
-            // console.log(scenes);
-
             for(let i = 0; i < this.testCount; ++i) {
-                // this.answers[i] = 'none';
-
                 this.audioPool[i] = [
                     {text:'audio 1', id:1, scene: scenes[i][0]},
                     {text:'audio 2', id:2, scene: scenes[i][1]},
@@ -114,7 +102,6 @@ export class PollPageComponent implements OnInit {
                 this.fbDropZone[i] = [];
                 this.bfDropZone[i] = [];
                 this.ffDropZone[i] = [];
-
                 this.wasAudioPlayed[i] = [false, false, false];
             }
         }
@@ -165,38 +152,28 @@ export class PollPageComponent implements OnInit {
     }
             
     onDragStart(event: CdkDragStart) {
-        // console.log('drag started');
-        
         this.dragging = true;
         this.draggingContainer = event.source.dropContainer;
         this.draggingData = event.source.data.text;
-        
         this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
+
         document.getElementById('audioPool').style.animationName = '';
     }
     
     onDragReleased(event: CdkDragRelease) {
-        
         if (this.draggingConteinerChanged && this.isOverNewContainer === false) {
-            
-            // console.log('need my own animation');
-            
+            // need custom animation
             let dragPreview = document.getElementsByClassName('cdk-drag-preview').item(0) as HTMLElement;
-            const audioRect = (dragPreview as Element).getBoundingClientRect();
-            const containerRect = document.getElementById(this.draggingContainer.id).getBoundingClientRect();
             
             let style = document.getElementById('move');
             style.innerHTML = '.move { transform: translate3d(' + this.dragInitialPositionRect.left + 'px ,' + this.dragInitialPositionRect.top + 'px, 0px) !important; }';
             
-            // console.log('move applied');
             dragPreview.classList.add('no-mouse-transition');
             dragPreview.classList.add('move');
             
             this.stopTheDrop = true;
         }
-
         if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
-
             let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
             let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
             
@@ -206,59 +183,28 @@ export class PollPageComponent implements OnInit {
                 placeholder.style.top = '-50px';
             }
         }
-
         this.dragging = false;
         this.draggingData = null;
     }
     
     onMouseEnter(event: MouseEvent) {
-        // console.log('mouse enter event');
-        
         const dropZoneId = (event.target as HTMLElement).id;
         this.currentDropZoneId = dropZoneId;
         
-        if (this.dragging === false)       return;
-        // console.log('mouse enter: ', dropZoneId);
-
+        if (this.dragging === false) return;
         if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '5px 10px 18px #888888';
-
-        if (dropZoneId === 'audioPool' && false) {
-            
-            let $placeholder = $('.cdk-drag-placeholder');
-            $placeholder.detach().css('transform', 'none');
-
-            let $poolItems = $('.audio-poll-item').not('.cdk-drag-preview').not('.cdk-drag-dragging');
-            $poolItems.css('transform', 'none');
-
-            if (event.x < 650) {
-                $('#' + dropZoneId).prepend($placeholder);
-            }
-            else if (event.x > 1050) {
-                $('#' + dropZoneId).append($placeholder);
-            }
-            else {
-                let $test = $('#' + dropZoneId).children().first().after($placeholder);
-                // $('#' + dropZoneId).children().after($placeholder);
-            }
-            console.log('show it');
-            $placeholder.show('slow', () => {  console.log('showed');});
-        };
         
         this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
         if (this.draggingConteinerChanged) this.isOverNewContainer = true;
         
         if (this[dropZoneId][this.currentTestIndex].length === 0) return;
         if (this.draggingConteinerChanged === false) return;
-        if (dropZoneId === 'audioPool') {
-            return;
-        };
+        if (dropZoneId === 'audioPool') return;
 
         let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
-        // error, sth with audio element being null
         if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
         
         const audioRect = (audioElement as Element).getBoundingClientRect();
-        const containerRect = document.getElementById(this.draggingContainer.id).getBoundingClientRect();
         
         let style = document.getElementById('move');
 
@@ -272,15 +218,11 @@ export class PollPageComponent implements OnInit {
         }
 
         style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
-        
-        // console.log('move applied');
         audioElement.classList.add('no-mouse-transition');
         audioElement.classList.add('move');
     }
     
-    onMouseLeave(event: MouseEvent) {
-        // console.log('mouse leave event');
-        
+    onMouseLeave(event: MouseEvent) {        
         const dropZoneId = (event.target as HTMLElement).id;
         this.currentDropZoneId = null;
 
@@ -288,42 +230,17 @@ export class PollPageComponent implements OnInit {
         
         if (this.isOverNewContainer) this.isOverNewContainer = false;
         
-        if (this.dragging === false)       return;;
-
-        if (dropZoneId === 'audioPool' && false) {
-            console.log('hide it');
-            let $placeholder = $('.cdk-drag-placeholder');
-            // let $clonePlaceholder = $($placeholder).clone();
-
-            // let poolItems = $('.audio-poll-item');
-            let $poolItems = $('.audio-poll-item').not('.cdk-drag-preview').not('.cdk-drag-dragging');
-            $placeholder.hide('slow', () => {
-                // $placeholder.remove();
-                $placeholder.css('transform', 'none');
-                $poolItems.css('transform', 'none');
-            });
-
-            // $placeholder.replaceWith($clonePlaceholder).remove();
-            // $placeholder.after($clonePlaceholder);
-            // $placeholder.remove();
-
-            // $clonePlaceholder.hide('slow', () => {
-                // $clonePlaceholder.remove();
-            // });
-        };
-
+        if (this.dragging === false) return;
         if (this[dropZoneId][this.currentTestIndex].length === 0) return;
         if (this.draggingContainer.id === dropZoneId) return;
         if (dropZoneId === 'audioPool') return;
         
         let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
         if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
-        
         audioElement.classList.remove('move');
     }
 
     public onAudioButtonInit(initedAudio: PlayAudioButtonComponent) {
-        // console.log('audio button inited: ', audioId);
         if (this.audio.isPlaying(initedAudio.audioId)) initedAudio.play(); 
     }
 
@@ -375,21 +292,10 @@ export class PollPageComponent implements OnInit {
             return;
         }
         
-        let isAudioPlaying = false; // !this.audio.getPollAudio(this.currentTestIndex).paused;
-        
-        // this.unselectScenes();
         this.audio.pause();
         this.currentTestIndex += 1;
         
         if (this.currentTestIndex === this.testCount) {
-            // save results 
-            /* let answer = {};
-            this.audio.pollAudioSet.samples.forEach((sampleUrl, index) => { 
-                let sampleFilename = sampleUrl.split('/').reverse()[0];
-                answer[sampleFilename] = this.answers[index];
-            }); */
-
-            debugger
             let sampleNames = this.audio.getSamplesName();
             let answer = {};
             for (let i = 0; i < 10; ++i) {
@@ -398,9 +304,6 @@ export class PollPageComponent implements OnInit {
                     'answer_BF': this.bfDropZone[i][0].scene,
                     'answer_FF': this.ffDropZone[i][0].scene
                 };
-                /* answer[i]['answer_FB'] = this.fbDropZone[i][0].scene;
-                answer[i]['answer_BF'] = this.bfDropZone[i][0].scene;
-                answer[i]['answer_FF'] = this.ffDropZone[i][0].scene; */
             }
             
             this.apiClient.sendPollData({
@@ -416,78 +319,34 @@ export class PollPageComponent implements OnInit {
                 }
             });
             this.router.navigateByUrl('finish', { skipLocationChange: true });
-            return;
         } 
-        else {
-            if(isAudioPlaying) {
-                // this.audio.playPollAudio(this.currentTestIndex);
-            }
-        }
-        /* 
-        if (this.answers[this.currentTestIndex] !== 'none') {
-            this.selectScene(document.getElementById(this.answers[this.currentTestIndex]));
-            this.wasAudioPlayed = true;
-        }
-        else if (this.audio.getPollAudio(this.currentTestIndex).paused === false) {
-            this.wasAudioPlayed = true;
-        }
-        else {
-            this.wasAudioPlayed = false;
-        } */
-    }
-
-    private getAllIndexes(arr, val) {
-        var indexes = [], i;
-        for(i = 0; i < arr.length; i++)
-            if (arr[i] === val)
-                indexes.push(i);
-        return indexes;
     }
     
     public goToPreviousTest(): void {
-        
-        //let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
-        
-        // this.unselectScenes();
         this.audio.pause();
         this.currentTestIndex -= 1;
         
         if (this.currentTestIndex === -1) {
             this.keyboardNav.active = true;
             this.router.navigateByUrl('headphones-test', { skipLocationChange: true });
-            return;
         } 
-        /* else {
-            if(isAudioPlaying) {
-                this.audio.playPollAudio(this.currentTestIndex);
-            }
-        }
-        
-        if (this.answers[this.currentTestIndex] !== 'none') {
-            this.selectScene(document.getElementById(this.answers[this.currentTestIndex]));
-            this.wasAudioPlayed = true;
-        } */
     }
     
     public onFurtherHelpClick() {
-        
-        this.turnOffTheAudio();
-        // this.enableKeyboard = false;
         const dialogRef = this.dialog.open(FurtherHelpDialogComponent, {
             height: '600px',
             width: '400px',
         });
         dialogRef.afterClosed().subscribe(() => {
-            // this.enableKeyboard = true;
         });
-        
     }
     
-    private turnOffTheAudio() {
-        /* 
-            this.audioButton.pause();
-            this.audio.pauseAllPollAudio();
-        */
+    private getAllIndexes(arr, val) {
+        var indexes = [], i;
+        for(i = 0; i < arr.length; i++)
+            if (arr[i] === val)
+                indexes.push(i);
+        return indexes;
     }
     
     private showMessage(msg: string) {
@@ -497,275 +356,4 @@ export class PollPageComponent implements OnInit {
             panelClass: ['my-snackbar-problem'],
         });
     }
-
-    @HostListener('window:keydown', ['$event'])
-    onKeyDown(event: KeyboardEvent) {
-        return;
-        // console.log('poll key');
-        // if (this.enableKeyboard === false) return;
-        if (this.audio.isAllPollAudioLoaded() === false) return;
-        // console.log('poll key active');
-        
-        if (event.key === 'ArrowLeft') {
-            // this.goToPreviousTest();
-        }
-        else if (event.key === 'ArrowRight') {
-            // this.goToNextTest();
-        }
-        else if (event.key === ' ') {
-            /* if (this.audio.isPlaying(1) || this.audio.isPlaying(2) || this.audio.isPlaying(3)) return;
-            this.audio.play(this.currentTestIndex, 1);
-            let audioButton1 = this.audioButtons.find((audioButton) => { return audioButton.audioId === 1 });
-            audioButton1.play();
-            audioButton1.focus();
-            event.stopPropagation(); */
-            // this.audioButton.blur();
-            
-            // for (let i = 0; i < document.getElementsByClassName('scene-select-button').length; ++i) {
-               //  (document.getElementsByClassName('scene-select-button').item(i) as HTMLElement).blur();
-            // }
-            
-            // this.onAudioButtonClick();
-        }
-    }
 }
-
-// GARBAGE
-
-// dragPreview.classList.add('no-mouse-transition');
-            // dragPreview.classList.add('move');
-            
-            // document.getElementById('someElementId').className = 'cssClass';
-            // let stylesheets = document.styleSheets as any;
-            // let s = stylesheets[4] as CSSStyleSheet;
-            // s.addRule(".test", 'transform: translate3d(' + containerRect.left + 'px ,' + containerRect.top + 'px, 0px) !important', 1);
-            // let css = s.cssRules[24]
-            // css.style.width = '500px';
-            // const translation = dragPreview.style.transform;
-            // dragPreview.style.transform = 'translateZ(0)';
-            // dragPreview.style.left = '0px'; 
-            // dragPreview.style.top = '0px';
-            // dragPreview.style.setProperty("transform", "translate3d(200px, 200px, 0px)", "important");
-            
-            // this.setStyleRule('.no-transform', 'transform: translate3d(200px, 200px, 0px) important;', 'poll-page.component');
-            // this.addRule('poll-page.component', 'no-transform', 'transform: translate3d(200px, 200px, 0px) important;');
-            // dragPreview.style.transform = 'translate3d(200px, 200px, 0px)';
-            
-            // dragPreview.style.left = containerRect.left + 'px';
-            // dragPreview.style.top = containerRect.top + 'px';
-            
-            // $(dragPreview).off();
-            
-            /* dragPreview.style.left = '0px';
-            dragPreview.style.top = '0px'; */
-            // dragPreview.style.transition = 'transform3d(400px, 400px, 0px)';
-
-        /* 
-        export class PollPageComponent implements OnInit {
-            
-            @ViewChild('audioButton') audioButton: PlayAudioButtonComponent;
-            @ViewChild('spinnerText') spinnerText: ElementRef;
-            
-            public testCount: number;
-            public currentTestIndex: number = 0;
-            private selectedScene: string = null;
-            private answers: string[] = new Array(this.testCount);
-            private selectedAudio: string[] = new Array(this.testCount);
-            private wasAudioPlayed = false;
-            private startDate: Date;
-            private enableKeyboard = true;
-            
-            constructor(public sharedConfig: SharedConfig, 
-                public snackbar: MatSnackBar,
-                public dialog: MatDialog,
-                public apiClient: ApiClientService,
-                public audio: AudioService,
-                public data: DataService,
-                public keyboardNav: KeyboardNavigationService,
-                private router: Router,
-                private spinner: NgxSpinnerService) {
-                    this.testCount = sharedConfig.testCount;
-                    
-                    console.log('start poll');
-                    this.startDate = new Date();
-                }
-                
-                ngOnInit() {
-                    for(let i = 0; i < this.testCount; ++i) {
-                        this.answers[i] = 'none';
-                    }
-                    this.audio.loadAudioPlayers();
-                    
-                    if (this.audio.isAllPollAudioLoaded() === false) {
-                        setTimeout(() => {
-                            this.spinner.show();
-                        }, 100);
-                        
-                        this.audio.notifyOnAllPollAudioLoaded(() => { 
-                            console.log('audio loaded'); 
-                            this.spinner.hide();
-                        }, () => { 
-                            this.spinnerText.nativeElement.innerText = 'loading audio' 
-                            + ' (' + this.audio.getPollLoadingProgressPercentage() + '%)';
-                        }, () => {
-                            console.error('loading audio timeout') 
-                        });
-                    }
-                }
-                
-                public onAudioButtonClick() {
-                    this.audioButton.toggle();
-                    this.audio.togglePollAudio(this.currentTestIndex);
-                    this.wasAudioPlayed = true;
-                }
-                
-                public selectScene(selectedSceneButton: HTMLElement): void {
-                    this.unselectScenes();
-                    
-                    selectedSceneButton.getElementsByTagName('img').item(0).classList.remove('grayscale');
-                    selectedSceneButton.getElementsByTagName('img').item(0).classList.add('selected-border');
-                    
-                    this.selectedScene = selectedSceneButton.id;
-                    this.answers[this.currentTestIndex] = this.selectedScene;
-                }
-                
-                public unselectScenes() {
-                    let selectSceneButtons = document.getElementsByClassName('scene-select-button');
-                    for (let i = 0; i < selectSceneButtons.length; ++i) {
-                        selectSceneButtons.item(i).getElementsByTagName('img').item(0).classList.add('grayscale');
-                        selectSceneButtons.item(i).getElementsByTagName('img').item(0).classList.remove('selected-border');
-                    }
-                }
-                
-                public goToNextTest() {
-                    if (this.answers[this.currentTestIndex] === 'none') {
-                        this.showMessage('select acoustic scene');
-                        return;
-                    }
-                    else if (this.wasAudioPlayed === false) {
-                        this.showMessage('audio wasn\'t played');
-                        return;
-                    }
-                    
-                    let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
-                    
-                    this.unselectScenes();
-                    this.audio.pauseAllPollAudio();
-                    this.currentTestIndex += 1;
-                    
-                    if (this.currentTestIndex === this.testCount) {
-                        // save results 
-                        let answer = {};
-                        this.audio.pollAudioSet.samples.forEach((sampleUrl, index) => { 
-                            let sampleFilename = sampleUrl.split('/').reverse()[0];
-                            answer[sampleFilename] = this.answers[index];
-                        });
-                        
-                        this.apiClient.sendPollData({
-                            startDate: this.startDate,
-                            endDate: new Date(),
-                            answer: answer,
-                            assignedSetId: this.audio.pollAudioSet.id,
-                            userInfo: {
-                                age: this.data.questionnaire.age,
-                                hearing_difficulties: this.data.questionnaire.hearingDifficulties,
-                                headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
-                                listening_test_participated: this.data.questionnaire.listeningTestParticipation
-                            }
-                        });
-                        this.router.navigateByUrl('finish', { skipLocationChange: true });
-                        return;
-                    } 
-                    else {
-                        if(isAudioPlaying) {
-                            this.audio.playPollAudio(this.currentTestIndex);
-                        }
-                    }
-                    
-                    if (this.answers[this.currentTestIndex] !== 'none') {
-                        this.selectScene(document.getElementById(this.answers[this.currentTestIndex]));
-                        this.wasAudioPlayed = true;
-                    }
-                    else if (this.audio.getPollAudio(this.currentTestIndex).paused === false) {
-                        this.wasAudioPlayed = true;
-                    }
-                    else {
-                        this.wasAudioPlayed = false;
-                    }
-                }
-                
-                public goToPreviousTest(): void {
-                    let isAudioPlaying = !this.audio.getPollAudio(this.currentTestIndex).paused;
-                    
-                    this.unselectScenes();
-                    this.audio.pauseAllPollAudio();
-                    this.currentTestIndex -= 1;
-                    
-                    if (this.currentTestIndex === -1) {
-                        this.keyboardNav.active = true;
-                        this.router.navigateByUrl('headphones-test', { skipLocationChange: true });
-                        return;
-                    } 
-                    else {
-                        if(isAudioPlaying) {
-                            this.audio.playPollAudio(this.currentTestIndex);
-                        }
-                    }
-                    
-                    if (this.answers[this.currentTestIndex] !== 'none') {
-                        this.selectScene(document.getElementById(this.answers[this.currentTestIndex]));
-                        this.wasAudioPlayed = true;
-                    }
-                }
-                
-                public onFurtherHelpClick() {
-                    this.turnOffTheAudio();
-                    this.enableKeyboard = false;
-                    const dialogRef = this.dialog.open(FurtherHelpDialogComponent, {
-                        height: '600px',
-                        width: '400px',
-                    });
-                    dialogRef.afterClosed().subscribe(() => {
-                        this.enableKeyboard = true;
-                    });
-                }
-                
-                private turnOffTheAudio() {
-                    this.audioButton.pause();
-                    this.audio.pauseAllPollAudio();
-                }
-                
-                private showMessage(msg: string) {
-                    this.snackbar.open(msg, null, {
-                        duration: 2000,
-                        verticalPosition: "top",
-                        panelClass: ['my-snackbar-problem'],
-                    });
-                }
-                
-                @HostListener('window:keydown', ['$event'])
-                onKeyDown(event: KeyboardEvent) {
-                    // console.log('poll key');
-                    if (this.enableKeyboard === false) return;
-                    if (this.audio.isAllPollAudioLoaded() === false) return;
-                    // console.log('poll key active');
-                    
-                    if (event.key === 'ArrowLeft') {
-                        this.goToPreviousTest();
-                    }
-                    else if (event.key === 'ArrowRight') {
-                        this.goToNextTest();
-                    }
-                    else if (event.key === ' ') {
-                        this.audioButton.blur();
-                        
-                        for (let i = 0; i < document.getElementsByClassName('scene-select-button').length; ++i) {
-                            (document.getElementsByClassName('scene-select-button').item(i) as HTMLElement).blur();
-                        }
-                        
-                        this.onAudioButtonClick();
-                    }
-                }
-            }
-            */
-            
