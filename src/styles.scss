@@ -68,7 +68,7 @@ app-navigation-button ~ app-navigation-button {
 	}
 }
 
-// -----------OTHERS-----------
+// -----------CREDITS-----------
 
 .credits-list {
 	ul {
@@ -85,6 +85,8 @@ app-navigation-button ~ app-navigation-button {
 	margin-top: 15px;
 }
 
+// -----------OTHERS-----------
+
 .terms-image {
 	width: 300px;
 	height: 300px;
@@ -95,6 +97,8 @@ app-navigation-button ~ app-navigation-button {
 .disabled {
 	background-color: gray;
 }
+
+// -----------LOADING SPINNER-----------
 
 .loading-text {
 	position: absolute;
@@ -139,4 +143,8 @@ app-navigation-button ~ app-navigation-button {
 
 .mat-progress-bar-fill::after {
 	background-color: #c8e9c8 !important;
+}
+
+.cdk-overlay-pane {
+	pointer-events: none !important;
 }
