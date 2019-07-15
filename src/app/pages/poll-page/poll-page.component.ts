@@ -12,6 +12,7 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
 import { moveItemInArray, CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, CdkDragStart, CdkDragRelease } from '@angular/cdk/drag-drop';
 
 import * as $ from 'jquery';
+import { OverlayRef } from '@angular/cdk/overlay';
 
 @Component({
     selector: 'app-poll-page',
@@ -350,10 +351,13 @@ export class PollPageComponent implements OnInit {
     }
     
     private showMessage(msg: string) {
-        this.snackbar.open(msg, null, {
+        let $snackbar = this.snackbar.open(msg, null, {
             duration: 2000,
             verticalPosition: "top",
             panelClass: ['my-snackbar-problem'],
+        });
+        $snackbar.afterOpened().subscribe(() => {
+            ($snackbar as any).containerInstance._elementRef.nativeElement.parentElement.style.pointerEvents = 'none';
         });
     }
 }
