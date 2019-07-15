@@ -177,12 +177,12 @@ export class PollPageComponent implements OnInit {
             let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
             let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
             
-            if (audioAndPlaceholder.length < 2) return;
-            if (placeholder.classList.contains('cdk-drag-placeholder')) {
+            if (audioAndPlaceholder.length === 2 && placeholder.classList.contains('cdk-drag-placeholder')) {
                 // it really is a placeholder
                 placeholder.style.top = '-50px';
             }
         }
+
         this.dragging = false;
         this.draggingData = null;
     }
