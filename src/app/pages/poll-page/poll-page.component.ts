@@ -44,6 +44,9 @@ export class PollPageComponent implements OnInit {
     private wasAudioPlayed = Array<boolean[]>(10);
 
     private startDate: Date;
+
+    // specify if activity logs should be displayed
+    private verboseLog: boolean;
     
     constructor(public snackbar: MatSnackBar,
                 public dialog: MatDialog,
@@ -54,6 +57,7 @@ export class PollPageComponent implements OnInit {
                 private spinner: NgxSpinnerService,
                 private audio: AudioService,
                 private sharedConfig: SharedConfig) {
+        this.verboseLog = false;
         this.testCount = sharedConfig.testCount;
         this.startDate = new Date();
      }
@@ -246,6 +250,22 @@ export class PollPageComponent implements OnInit {
     }
 
     public onAudioButtonClick(clickedButton: PlayAudioButtonComponent) {
+        if (this.verboseLog) {
+            let allAudioData = this.audioPool[this.currentTestIndex]
+                .concat(this.fbDropZone[this.currentTestIndex])
+                .concat(this.bfDropZone[this.currentTestIndex])
+                .concat(this.ffDropZone[this.currentTestIndex]);
+            
+            let clickedAudioData = allAudioData.find((audioData) => { return audioData.id === clickedButton.audioId });
+            
+            if (clickedAudioData === undefined) {
+                console.error('cannot find clicked button\'s audio data');
+            }
+            else {
+                console.log('clicked button\'s audio: ', this.audio.getSamplesName()[this.currentTestIndex], clickedAudioData.scene);
+            }
+        }
+        
         this.wasAudioPlayed[this.currentTestIndex][clickedButton.audioId - 1] = true;
 
         this.audioButtons.toArray().forEach((audioButton) => {           
