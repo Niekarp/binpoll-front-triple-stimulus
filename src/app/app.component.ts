@@ -2,6 +2,8 @@ import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { KeyboardNavigationService } from './services/keyboard-navigation/keyboard-navigation.service';
 import { DataService } from './services/data/data.service';
+import { ApiClientService } from './services/api-client/api-client.service';
+import { LogService } from './services/log/log.service';
 
 @Component({
   selector: 'app-root',
@@ -11,12 +13,19 @@ import { DataService } from './services/data/data.service';
 export class AppComponent {
   title = 'binpoll-front';
   
-  constructor(public router: Router, public keyboardNav: KeyboardNavigationService, public data: DataService) {
+  constructor(public router: Router, public keyboardNav: KeyboardNavigationService, public data: DataService, public api: ApiClientService, public logService: LogService) {
     if (window.location.pathname === '/credits') return;
 
     this.router.navigate(['/'], { replaceUrl: true });
     this.keyboardNav.router = this.router;
     this.keyboardNav.active = true;
+
+    logService.setLoggingToServer();
+    
+    console.log('console.log', { pies: 'name' }, 'napis',  { ala: 'kot'});
+    console.info('console info');
+    console.warn('console warn');
+    console.error('console error');
   }
 
   ngOnInit() { }

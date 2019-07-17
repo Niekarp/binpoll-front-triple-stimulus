@@ -99,6 +99,28 @@ export class ApiClientService {
     });
   }
 
+  // mew
+  public sendConsoleMessage(messageObj: { message: string, message_type: string }): void {
+    this.configObservable.subscribe(config => {
+      let url: string = config['apiUrl'];
+      if(url == null) {
+        console.error('apiUrl property not found');
+      } else {
+        url += 'log/';
+        this.http.post(url, {
+          'message': messageObj.message,
+          'message_type': messageObj.message_type
+        }).pipe(
+          catchError((err) => {
+            console.error(err);
+            return of({})
+          })).subscribe(response => {
+            // console.log('comment sent: ', url);
+          });
+      }
+    });
+  }
+
   private prepareSampleSet(): Observable<{[id: string]: any}> {
     return this.sampleSetObservable = this.configObservable.pipe(switchMap(config => {
       let apiUrl = config['apiUrl'];
