@@ -115,6 +115,7 @@ export class PollPageComponent implements OnInit {
     drop(event: CdkDragDrop<string[]>) {
         
         (event.container.element.nativeElement as HTMLElement).parentElement.style.boxShadow = null
+        $('.mat-ripple-element').removeAttr('style');
 
         let audios = document.getElementsByClassName('audio-dropped');
         for (let i = 0; i < audios.length; ++i) {
