@@ -17,4 +17,6 @@ export class TermsSoundsPageComponent implements OnInit {
     this.keyboardNav.goBackCondition = () => { return true; }
     this.keyboardNav.goNextCondition = () => { return true };
   }
+
+  onMouseEnterImage() { throw 'moj throw'; }
 }

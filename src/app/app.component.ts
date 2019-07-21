@@ -16,13 +16,13 @@ export class AppComponent {
   constructor(public router: Router, public keyboardNav: KeyboardNavigationService, public data: DataService, public api: ApiClientService, public logService: LogService) {
     if (window.location.pathname === '/credits') return;
 
-    this.router.navigate(['/'], { replaceUrl: true });
+    this.router.navigate(['/terms-acoustic-scenes'], { replaceUrl: true });
     this.keyboardNav.router = this.router;
     this.keyboardNav.active = true;
 
     logService.setLoggingToServer();
-    
-    console.log('console.log', { pies: 'name' }, 'napis',  { ala: 'kot'});
+
+    console.log('console.log', { pies: 'name' }, 'napis',  { ala: { dom: 5 }, foo: 2 });
     console.info('console info');
     console.warn('console warn');
     console.error('console error');

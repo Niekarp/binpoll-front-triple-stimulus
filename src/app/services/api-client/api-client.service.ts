@@ -99,12 +99,11 @@ export class ApiClientService {
     });
   }
 
-  // mew
   public sendConsoleMessage(messageObj: { message: string, message_type: string }): void {
     this.configObservable.subscribe(config => {
       let url: string = config['apiUrl'];
       if(url == null) {
-        console.error('apiUrl property not found');
+        // console.error('apiUrl property not found');
       } else {
         url += 'log/';
         this.http.post(url, {
@@ -112,7 +111,7 @@ export class ApiClientService {
           'message_type': messageObj.message_type
         }).pipe(
           catchError((err) => {
-            console.error(err);
+            // console.error(err);
             return of({})
           })).subscribe(response => {
             // console.log('comment sent: ', url);
