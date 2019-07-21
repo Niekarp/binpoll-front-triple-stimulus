@@ -1,45 +1,47 @@
 import { Injectable } from '@angular/core';
 import { ApiClientService } from '../api-client/api-client.service';
+var prune = require('json-prune');
 
 @Injectable({
   providedIn: 'root'
 })
 export class LogService {
-  private messageObjectDepth = 3;
+  private messageObjectDepth = 5;
   private messageObjectWidth = 50;
+  private consoleMessagePruneOptions = { depthDecr: this.messageObjectDepth, inheritedProperties: false, prunedString: '"-pruned-"' };
+  private errorEventMessagePruneOptions = { depthDecr: this.messageObjectDepth, inheritedProperties: true, prunedString: '"-pruned-"' };
   
   private defaultConsoleLog = console.log;
   private defaultConsoleInfo = console.info;
   private defaultConsoleWarn = console.warn;
   private defaultConsoleError = console.error;
-
   private errorEventListener: (event: any) => void;
 
   constructor(public api: ApiClientService) {
-    this.errorEventListener = (event: any) => { this.prepareAndSendEventErrorLog(event); };
+    this.errorEventListener = (event: any) => { this.prepareAndSendMessage('error event', undefined, [event], this.errorEventMessagePruneOptions); };
   }
 
-  setLoggingToServer() {
+  public setLoggingToServer() {
     console.log = (message?: any, ...optionalParams: any[]) => {
       this.defaultConsoleLog(message, ...optionalParams);
-      this.prepareAndSendMessage('log', message, optionalParams);
+      this.prepareAndSendMessage('log', message, optionalParams, this.consoleMessagePruneOptions);
     }
     console.info = (message?: any, ...optionalParams: any[]) => {
       this.defaultConsoleInfo(message, ...optionalParams);
-      this.prepareAndSendMessage('info', message, optionalParams);
+      this.prepareAndSendMessage('info', message, optionalParams, this.consoleMessagePruneOptions);
     }
     console.warn = (message?: any, ...optionalParams: any[]) => {
       this.defaultConsoleWarn(message, ...optionalParams);
-      this.prepareAndSendMessage('warn', message, optionalParams);
+      this.prepareAndSendMessage('warn', message, optionalParams, this.consoleMessagePruneOptions);
     }
     console.error = (message?: any, ...optionalParams: any[]) => {
       this.defaultConsoleError(message, ...optionalParams);
-      this.prepareAndSendMessage('error', message, optionalParams);
+      this.prepareAndSendMessage('error', message, optionalParams, this.consoleMessagePruneOptions);
     }
     window.addEventListener('error', this.errorEventListener, { capture: true });
   }
 
-  resetLogging() {
+  public resetLogging() {
     console.log = this.defaultConsoleLog;
     console.info = this.defaultConsoleInfo;
     console.warn = this.defaultConsoleWarn;
@@ -47,117 +49,33 @@ export class LogService {
     window.removeEventListener('error', this.errorEventListener)
   }
 
-  private prepareAndSendMessage(messageType: string, message: any, optionalParams: any[]): void {
-    let reducedMessage = message;
-    if(typeof reducedMessage === 'object' && reducedMessage !== null){
-      reducedMessage = this.createDeepCopy(message, this.messageObjectDepth);
-    }
-    let reducedOptionalParams = optionalParams.map((param) => {
-      if(typeof param === 'object' && param !== null){
-        return this.createDeepCopy(param, this.messageObjectDepth);
-      }
-      return param;
-    });
+  private prepareAndSendMessage(messageType: string, message: any, optionalParams: any[], pruneOptions: object): void {
+    if (message === undefined) message = '';
+    pruneOptions['replacer'] = this.pruneReplacer;
+    
+    let prunedMessage;
+    let prunedOptionalParams;
+    do{
+      prunedMessage = prune(message, pruneOptions);
+      prunedOptionalParams = optionalParams.map((param) => prune(param, pruneOptions));
+
+      let messageLength = prunedMessage.length + prunedOptionalParams.toString().length;
+      if(messageLength < 1000000){
+        break;
+      };
+
+      pruneOptions['depthDecr'] -= 1;
+    } while(true)
 
     this.api.sendConsoleMessage({
-      message: JSON.stringify(reducedMessage, this.getCircularReplacer()) + ',' + reducedOptionalParams.map((param) => JSON.stringify(param, this.getCircularReplacer())).toString(),
+      message: prunedMessage + ',' + prunedOptionalParams.toString(),
       message_type: messageType
     });
   }
 
-  private prepareAndSendEventErrorLog(event: any): void {
-    debugger
-    let reducedEvent = event;
-    if(typeof reducedEvent === 'object' && reducedEvent !== null){
-      reducedEvent = this.createEventDeepCopy(event, 4);
-    }
-
-    this.api.sendConsoleMessage({
-      message: JSON.stringify(reducedEvent, this.getCircularReplacer()),
-      message_type: 'error event'
-    });
-  }
-
-  private createDeepCopy(source: object, depth: number): object {
-    let copy = {};
-    let propCounter = 0;
-    if(depth === 0) return copy;
-    
-    try{
-      for(let prop of Object.getOwnPropertyNames(source)) {
-        if(typeof source[prop] === 'object' && source[prop] !== null) {
-          let propObjCopy = this.createDeepCopy(source[prop], depth - 1);
-          copy[prop] = propObjCopy;
-        }
-        else {
-          copy[prop] = source[prop];
-        }
-
-        propCounter += 1;
-        if(propCounter === this.messageObjectWidth) return copy;
-      }
-    }
-    catch(error){
-      debugger
-    }
-    
-    return copy;
-  }
-
-  private createEventDeepCopy(source: object, depth: number): object {
-    let copy = {};
-    let propCounter = 0;
-    if(depth === 0) return copy;
-    
-    try{
-      for(let prop in source) {
-        if(typeof source[prop] === 'object' && source[prop] !== null) {
-          let propObjCopy = this.createEventDeepCopy(source[prop], depth - 1);
-          copy[prop] = propObjCopy;
-        }
-        else {
-          copy[prop] = source[prop];
-        }
-
-        propCounter += 1;
-        if(propCounter === this.messageObjectWidth) return copy;
-      }
-    }
-    catch(error){
-      debugger
-    }
-    
-    return copy;
-  }
-
-  private getCircularReplacer() {
-    const seen = new WeakSet();
-    return (key, value) => {
-      if (typeof value === "object" && value !== null) {
-        if (seen.has(value)) {
-          return;
-        }
-        seen.add(value);
-      }
-      return value;
-    };
+  private pruneReplacer(value, defaultValue, circular) {
+      if (circular) return '"-circular-"';
+      if (Array.isArray(value)) return defaultValue.replace(/]$/, ',"-truncated-"]');
+      return '"-pruned-"';
   }
 }
-
-/* private createReferencesArray(obj: object, depth: number): object[] {
-  let refArr = [];
-  for(let value of Object.values(obj)) {
-    if(typeof value === 'object') refArr.push(value);
-  }
-
-  let nestedRefArr = [];
-  if(depth > 0 && refArr.length !== 0) {
-    refArr.forEach(element => {
-      let nested = this.createReferencesArray(element, depth - 1);
-      if(nested.length !== 0) nestedRefArr.push(...nested);
-    });
-    refArr.push(...nestedRefArr);
-  }
-
-  return refArr;
-} */

@@ -30,7 +30,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js"
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/json-prune/JSON.prune.js"
             ],
             "es5BrowserSupport": true
           },
