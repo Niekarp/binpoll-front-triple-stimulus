@@ -4,6 +4,7 @@ import { KeyboardNavigationService } from './services/keyboard-navigation/keyboa
 import { DataService } from './services/data/data.service';
 import { ApiClientService } from './services/api-client/api-client.service';
 import { LogService } from './services/log/log.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,7 @@ export class AppComponent {
     console.info('console info');
     console.warn('console warn');
     console.error('console error');
+    console.debug('debug message');
   }
 
   ngOnInit() { }

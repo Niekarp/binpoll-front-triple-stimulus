@@ -15,10 +15,11 @@ export class LogService {
   private defaultConsoleInfo = console.info;
   private defaultConsoleWarn = console.warn;
   private defaultConsoleError = console.error;
-  private errorEventListener: (event: any) => void;
+  private defaultConsoleDebug = console.debug;
+  private errorEventListener: (event: any) => boolean;
 
   constructor(public api: ApiClientService) {
-    this.errorEventListener = (event: any) => { this.prepareAndSendMessage('error event', undefined, [event], this.errorEventMessagePruneOptions); };
+    this.errorEventListener = (event: any) => { this.prepareAndSendMessage('error event', undefined, [event], this.errorEventMessagePruneOptions); return false; };
   }
 
   public setLoggingToServer() {
@@ -38,6 +39,10 @@ export class LogService {
       this.defaultConsoleError(message, ...optionalParams);
       this.prepareAndSendMessage('error', message, optionalParams, this.consoleMessagePruneOptions);
     }
+    console.debug = (message?: any, ...optionalParams: any[]) => {
+      this.defaultConsoleDebug(message, ...optionalParams);
+      this.prepareAndSendMessage('debug', message, optionalParams, this.consoleMessagePruneOptions);
+    }
     window.addEventListener('error', this.errorEventListener, { capture: true });
   }
 
@@ -46,6 +51,7 @@ export class LogService {
     console.info = this.defaultConsoleInfo;
     console.warn = this.defaultConsoleWarn;
     console.error = this.defaultConsoleError;
+    console.debug = this.defaultConsoleDebug;
     window.removeEventListener('error', this.errorEventListener)
   }
 
