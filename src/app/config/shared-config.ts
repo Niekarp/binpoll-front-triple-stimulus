@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { version } from '../../../package.json';
 
 @Injectable({ providedIn: 'root' })
 export class SharedConfig {
-
-	public appVersion = "1.0";
+	public appVersion = version;
 	public testCount = 10;
 }
