@@ -22,13 +22,6 @@ export class AppComponent {
     this.keyboardNav.active = true;
 
     logService.setLoggingToServer();
-
-    console.log();
-    console.log('console.log', { pies: 'name' }, 'napis',  { ala: { dom: 5 }, foo: 2 });
-    console.info('console info');
-    console.warn('console warn');
-    console.error('console error');
-    console.debug('debug message');
   }
 
   ngOnInit() { }
