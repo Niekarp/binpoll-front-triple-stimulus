@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.1.2...v1.1.3) (2019-07-25)
+
+
+### Bug Fixes
+
+* **poll-page:** stop music on further help open ([ea29c09](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/ea29c09))
+* **welcome-page:** html elements aligned ([2702053](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/2702053))
+
+
+
 ### [1.1.2](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.1.1...v1.1.2) (2019-07-25)
 
 
