@@ -1,3 +1,21 @@
+p {
+	margin-bottom: 0;
+	margin-top: 1.5em;
+}
+
+.page-header {
+	line-height: 2.5;
+}
+
+.page-content {
+	position: relative;
+}
+
+.page-navigation {
+	align-items: center;
+	justify-content: space-between;
+}
+
 #headset {
 	width: 100px;
 	height: 100px;
@@ -12,8 +30,15 @@
 	margin-top: 45px;
 }
 
+#section-nav-divider {
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	color: gray;
+}
+
 #navigation-info {
-	margin-top: 24px;
+	font-size: 23px;
 }
 
 #version-box {
