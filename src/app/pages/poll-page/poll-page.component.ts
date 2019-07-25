@@ -45,6 +45,9 @@ export class PollPageComponent implements OnInit {
 
     private startDate: Date;
 
+    public spinnerLoadingProgress = 0;
+    public audioLoadingProgress = 0;
+
     // specify if activity logs should be displayed
     private verboseLog: boolean;
     
@@ -74,6 +77,13 @@ export class PollPageComponent implements OnInit {
             setTimeout(() => {
                 this.spinner.show();
             }, 100);
+
+            let spinnerUpdateInterval = setInterval(() => {
+                if (this.spinnerLoadingProgress < this.audioLoadingProgress) {
+                    this.spinnerLoadingProgress += 1;
+                    this.updateSpinnerProgress();
+                }
+            }, 100);
             
             this.audio.notifyOnAllPollAudioLoaded(() => { 
                 let scenes = this.audio.getScenes();
@@ -89,9 +99,10 @@ export class PollPageComponent implements OnInit {
                     this.wasAudioPlayed[i] = [false, false, false];
                 }
 
-                this.spinner.hide();
+                clearInterval(spinnerUpdateInterval);
+                this.completeSpinnerProgress(() => { this.spinner.hide(); });
             }, () => { 
-                this.spinnerText.nativeElement.innerText = 'loading audio' + ' (' + this.audio.getPollLoadingProgressPercentage() + '%)';
+                this.audioLoadingProgress = this.audio.getPollLoadingProgressPercentage();
             }, () => {
                 console.error('loading audio timeout') 
             });
@@ -110,6 +121,28 @@ export class PollPageComponent implements OnInit {
                 this.wasAudioPlayed[i] = [false, false, false];
             }
         }
+    }
+
+    private updateSpinnerProgress() {
+        this.spinnerText.nativeElement.innerText = 'loading audio' + '(' + this.spinnerLoadingProgress + '%)';
+    }
+
+    private completeSpinnerProgress(onComplete: () => void) {
+        if (this.spinnerLoadingProgress < 5) {
+            onComplete();
+            return;
+        }
+
+        let spinnerUpdateInterval = setInterval(() => {
+            if (this.spinnerLoadingProgress < 100) {
+                this.spinnerLoadingProgress += 1;
+                this.updateSpinnerProgress();
+            }
+            else {
+                clearInterval(spinnerUpdateInterval);
+                onComplete();
+            }
+        }, 50);
     }
     
     drop(event: CdkDragDrop<string[]>) {
