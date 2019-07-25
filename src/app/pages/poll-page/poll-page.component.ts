@@ -388,6 +388,10 @@ export class PollPageComponent implements OnInit {
     }
     
     public onFurtherHelpClick() {
+        this.audio.pause();
+        this.audioButtons.toArray().forEach((audioButton) => {
+            audioButton.pause();
+        });
         const dialogRef = this.dialog.open(FurtherHelpDialogComponent, {
             height: '600px',
             width: '400px',
