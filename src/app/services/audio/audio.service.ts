@@ -3,7 +3,7 @@ import { AudioPlayerSet } from './audio-player-set';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { ApiClientService } from '../api-client/api-client.service';
 import { Subscription, of, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, retryWhen, delay, take } from 'rxjs/operators';
 import { CompilerConfig } from '@angular/compiler';
 import { ConfigService } from 'src/app/config/config.service';
 
@@ -124,8 +124,9 @@ export class AudioService {
   }
 
   private loadAudioBlob(url: string): Observable<ArrayBuffer> {
-    const request = this.http.get(url, {responseType: 'arraybuffer'}).pipe(switchMap(response => {   
-      return of(response);  
+    const request = this.http.get(url, {responseType: 'arraybuffer'}).pipe(retryWhen(errors => { 
+      console.warn('retrying audio download');
+      return errors.pipe(delay(25000), take(10));
     }));
     return request;
   }
