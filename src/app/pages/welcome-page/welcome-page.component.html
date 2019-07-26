@@ -1,32 +1,32 @@
 <header class="page-header">
-    Welcome <mat-icon id="headset">headset</mat-icon>
+  Welcome <mat-icon id="headset">headset</mat-icon>
 </header>
 <section class="page-content smaller-font" fxLayout="column">
-    This website contains a listening test which takes about 10 minutes to complete. During the test you will be asked to listen to short music recordings and to indicate the direction where an ensemble of musicians is located. It requires using headphones.
-    <p>
-        It’s part of the research into perception of 3D audio carried out at <a href="https://pb.edu.pl/en/">Bialystok University of Technology</a> and <a href="https://www.hud.ac.uk">Huddersfield University</a>. The tests are coordinated by Dr S. Zielinski (email: <a href="mailto:s.zielinski@pb.edu.pl">s.zielinski@pb.edu.pl</a>).
-    </p>
-    <p>
-        For the research purposes, we gather anonymous data, including information regarding listeners’ age, background, and model of headphones used.
-    </p>
-    <div id="checkbox-container" fxLayoutAlign="center">
-        <div fxLayour="row" style="margin-bottom: 26px;">
-            <div fxFlex="10%">
-                <mat-checkbox [(ngModel)]="data.consentChecked" disableRipple="true"></mat-checkbox>
-            </div>
-            <div class="smaller-font">
-                I hereby grant my consent to participate in the listening test and agree to 
-                <a routerLink="/policy" skipLocationChange="true" (click)="onPolicyClick()">terms and privacy policy</a>.*
-            </div>
-        </div>
+  This website contains a listening test which takes about 10 minutes to complete. During the test you will be asked to listen to short music recordings and to indicate the direction where an ensemble of musicians is located. It requires using headphones.
+  <p class="only-top-margin">
+    It’s part of the research into perception of 3D audio carried out at <a href="https://pb.edu.pl/en/">Bialystok University of Technology</a> and <a href="https://www.hud.ac.uk">Huddersfield University</a>. The tests are coordinated by Dr S. Zielinski (email: <a href="mailto:s.zielinski@pb.edu.pl">s.zielinski@pb.edu.pl</a>).
+  </p>
+  <p class="only-top-margin">
+    For the research purposes, we gather anonymous data, including information regarding listeners’ age, background, and model of headphones used.
+  </p>
+  <div id="checkbox-container" fxLayoutAlign="center">
+    <div fxLayour="row" style="margin-bottom: 26px;">
+      <div fxFlex="10%">
+        <mat-checkbox [(ngModel)]="data.consentChecked" disableRipple="true"></mat-checkbox>
+      </div>
+      <div class="smaller-font">
+        I hereby grant my consent to participate in the listening test and agree to 
+        <a routerLink="/policy" skipLocationChange="true" (click)="onPolicyClick()">terms and privacy policy</a>.*
+      </div>
     </div>
-    <hr id="section-nav-divider">
+  </div>
+  <hr id="section-nav-divider">
 </section>
 <nav class="page-navigation">
-    <app-navigation-button text="Start" destinationUrl="/questionnaire" [condition]="data.consentChecked" 
-        [disabled]="!data.consentChecked" (failure)="showProblemMessage()">
-    </app-navigation-button>
-    <div id="navigation-info">To begin click the Start button or use keyboard arrows.</div>
+  <app-navigation-button text="Start" destinationUrl="/questionnaire" [condition]="data.consentChecked" 
+  [disabled]="!data.consentChecked" (failure)="showProblemMessage()">
+  </app-navigation-button>
+  <div id="navigation-info">To begin click the Start button or use keyboard arrows.</div>
 </nav>
 
 <div id="version-box">v. {{ appVersion }}</div>

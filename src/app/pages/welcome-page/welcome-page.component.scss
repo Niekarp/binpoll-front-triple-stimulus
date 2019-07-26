@@ -1,7 +1,4 @@
-p {
-	margin-bottom: 0;
-	margin-top: 1.5em;
-}
+/* Page structure */
 
 .page-header {
 	line-height: 2.5;
@@ -15,6 +12,8 @@ p {
 	align-items: center;
 	justify-content: space-between;
 }
+
+/* Page elements */
 
 #headset {
 	width: 100px;
@@ -50,10 +49,17 @@ p {
 	color: gray;
 }
 
+/* General */
+
+.only-top-margin {
+  margin-bottom: 0;
+	margin-top: 1.5em;
+}
+
 .smaller-font {
 	font-size: 23px;
 }
 
-::ng-deep .mat-checkbox-inner-container-no-side-margin {
-	transform: scale(1.8) translate(6px, 4px) !important;
+:host ::ng-deep .mat-checkbox-inner-container-no-side-margin {
+	transform: scale(1.8) translate(4px, 5px);
 }
