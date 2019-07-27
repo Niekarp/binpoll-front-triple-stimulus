@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.4](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.1.3...v1.1.4) (2019-07-27)
+
+
+### Bug Fixes
+
+* **poll-page:** add move style once ([4320274](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/4320274))
+* **poll-page:** init poll data despite audio loaded ([9d092ec](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/9d092ec))
+* **poll-page:** preserve poll data across pages ([c413050](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/c413050))
+* **poll-page:** task counter text aligned vertically ([dd1c753](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/dd1c753))
+
+
+
 ### [1.1.3](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.1.2...v1.1.3) (2019-07-25)
 
 
