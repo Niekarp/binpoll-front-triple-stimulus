@@ -119,13 +119,14 @@ button:hover img.grayscale {
 }
 
 #test-counter {
-	width: 100%;
+  width: 100%;
+  height: 20px;
 	position: absolute;
 	top: 0;
 	left: 0;
 	text-align: center;
 	font-weight: bold;
-	line-height: 1.4;
+	line-height: 20px;
 	color: rgb(46, 117, 182); 
 
 	/* padding-top: 30px;
