@@ -76,73 +76,24 @@ export class PollPageComponent implements OnInit {
         this.spinner.show();
       }, 100);
       
-      let spinnerUpdateInterval = setInterval(() => {
-        if (this.spinnerLoadingProgress < this.audioLoadingProgress) {
-          this.spinnerLoadingProgress += 1;
-          this.updateSpinnerProgress();
-        }
-      }, 100);
+      let spinnerUpdateInterval = setInterval(() => { this.updateSpinner() }, 100);
       
       this.audio.notifyOnAllPollAudioLoaded(() => { 
-        let scenes = this.audio.getScenes();
-        for(let i = 0; i < this.testCount; ++i) {
-          this.audioPool[i] = [
-            {text:'audio 1', id:1, scene: scenes[i][0]},
-            {text:'audio 2', id:2, scene: scenes[i][1]},
-            {text:'audio 3', id:3, scene: scenes[i][2]}
-          ];
-          this.fbDropZone[i] = [];
-          this.bfDropZone[i] = [];
-          this.ffDropZone[i] = [];
-          this.wasAudioPlayed[i] = [false, false, false];
-        }
-        
+        this.initDropZones();
+
         clearInterval(spinnerUpdateInterval);
         this.completeSpinnerProgress(() => { this.spinner.hide(); });
-      }, () => { 
-        this.audioLoadingProgress = this.audio.getPollLoadingProgressPercentage();
-      }, () => {
-        console.error('loading audio timeout') 
-      });
-    }
-    else {
-      let scenes = this.audio.getScenes();
-      for(let i = 0; i < this.testCount; ++i) {
-        this.audioPool[i] = [
-          {text:'audio 1', id:1, scene: scenes[i][0]},
-          {text:'audio 2', id:2, scene: scenes[i][1]},
-          {text:'audio 3', id:3, scene: scenes[i][2]}
-        ];
-        this.fbDropZone[i] = [];
-        this.bfDropZone[i] = [];
-        this.ffDropZone[i] = [];
-        this.wasAudioPlayed[i] = [false, false, false];
-      }
+        }, () => { 
+          this.audioLoadingProgress = this.audio.getPollLoadingProgressPercentage();
+        }, () => {
+          console.error('loading audio timeout') 
+        });
+    } else {
+      this.initDropZones();
     }
   }
-  
-    
-private updateSpinnerProgress() {
-  this.spinnerText.nativeElement.innerText = 'loading audio' + '(' + this.spinnerLoadingProgress + '%)';
-}
 
-private completeSpinnerProgress(onComplete: () => void) {
-  if (this.spinnerLoadingProgress < 5) {
-    onComplete();
-    return;
-  }
-  
-  let spinnerUpdateInterval = setInterval(() => {
-    if (this.spinnerLoadingProgress < 100) {
-      this.spinnerLoadingProgress += 1;
-      this.updateSpinnerProgress();
-    }
-    else {
-      clearInterval(spinnerUpdateInterval);
-      onComplete();
-    }
-  }, 50);
-}
+  // Drag & drop related
 
 drop(event: CdkDragDrop<string[]>) {
   
@@ -418,11 +369,54 @@ drop(event: CdkDragDrop<string[]>) {
         });
       }
 
+  // Init related
+
   private createMoveAnimationStyle() {
     let moveAnimationStyle = document.createElement('style');
     moveAnimationStyle.type = 'text/css';
     moveAnimationStyle.id = 'move';
     return moveAnimationStyle;
+  }
+    
+  // Intended to be called when audio is loaded
+  private initDropZones(): void {
+    let scenes = this.audio.getScenes();
+    for(let i = 0; i < this.testCount; ++i) {
+      this.audioPool[i] = [
+        {text:'audio 1', id:1, scene: scenes[i][0]},
+        {text:'audio 2', id:2, scene: scenes[i][1]},
+        {text:'audio 3', id:3, scene: scenes[i][2]}
+      ];
+      this.fbDropZone[i] = [];
+      this.bfDropZone[i] = [];
+      this.ffDropZone[i] = [];
+      this.wasAudioPlayed[i] = [false, false, false];
+    }
+  }
+
+  // Spinner related
+ 
+  private updateSpinner(): boolean {
+    if (this.spinnerLoadingProgress < this.audioLoadingProgress) {
+      this.spinnerLoadingProgress += 1;
+      this.spinnerText.nativeElement.innerText = 'loading audio' + '(' + this.spinnerLoadingProgress + '%)';
+      return true;
+    } else { return false; }
+  }
+
+  // Intended to call when audio is loaded
+  private completeSpinnerProgress(onComplete: () => void): void {
+    if (this.spinnerLoadingProgress < 5) {
+      // Skip spinner update to 100
+      onComplete();
+      return;
+    }
+    let spinnerUpdateInterval = setInterval(() => {
+      if (this.updateSpinner() === false) {
+        clearInterval(spinnerUpdateInterval);
+        onComplete();
+      }
+    }, 50);
   }
 }
         
