@@ -22,10 +22,11 @@ export class PollPageComponent implements OnInit {
   @ViewChildren('audioButtons') audioButtons: QueryList<PlayAudioButtonComponent>;
   @ViewChild('spinnerText') spinnerText: ElementRef;
   
-  public audioPool = [];
-  public fbDropZone = [];
-  public bfDropZone = [];
-  public ffDropZone = [];
+  public audioPool: any[][];
+  public fbDropZone: any[][];
+  public bfDropZone: any[][];
+  public ffDropZone: any[][];
+  private wasAudioPlayed: any[][];
   
   private currentDropZoneId: string;
   private dragInitialPositionRect: ClientRect;
@@ -39,14 +40,10 @@ export class PollPageComponent implements OnInit {
   public testCount: number;
   public currentTestIndex: number = 0;
   
-  private wasAudioPlayed = Array<boolean[]>(10);
-  
-  private startDate: Date;
-  
   public spinnerLoadingProgress = 0;
   public audioLoadingProgress = 0;
   
-  // specify if activity logs should be displayed
+  // Specify if more logs should be displayed
   private verboseLog: boolean;
   
   constructor(
@@ -61,7 +58,12 @@ export class PollPageComponent implements OnInit {
       private sharedConfig: SharedConfig) {
     this.verboseLog = false;
     this.testCount = sharedConfig.testCount;
-    this.startDate = new Date();
+    // Load data shared across components
+    this.audioPool = this.data.audioPool;
+    this.fbDropZone = this.data.fbDropZone;
+    this.bfDropZone = this.data.bfDropZone;
+    this.ffDropZone = this.data.ffDropZone;
+    this.wasAudioPlayed = this.data.wasAudioPlayed;
   }
     
   ngOnInit() {
@@ -80,6 +82,7 @@ export class PollPageComponent implements OnInit {
       
       this.audio.notifyOnAllPollAudioLoaded(() => { 
         this.initDropZones();
+        this.data.startDate = new Date();
 
         clearInterval(spinnerUpdateInterval);
         this.completeSpinnerProgress(() => { this.spinner.hide(); });
@@ -88,286 +91,284 @@ export class PollPageComponent implements OnInit {
         }, () => {
           console.error('loading audio timeout') 
         });
-    } else {
-      this.initDropZones();
     }
   }
 
   // Drag & drop related
 
-drop(event: CdkDragDrop<string[]>) {
+  drop(event: CdkDragDrop<string[]>) {
   
-  (event.container.element.nativeElement as HTMLElement).parentElement.style.boxShadow = null
-  $('.mat-ripple-element').removeAttr('style');
-  
-  let audios = document.getElementsByClassName('audio-dropped');
-  for (let i = 0; i < audios.length; ++i) {
-    (audios.item(i) as HTMLElement).classList.remove('no-mouse-transition');
-    (audios.item(i) as HTMLElement).classList.remove('move');
-  }
-  
-  if (this.stopTheDrop) {
-    this.stopTheDrop = false; 
-    if (this.draggingContainer.id === 'audioPool') {
-      document.getElementById('audioPool').style.animationName = 'refresh-pool';
+    (event.container.element.nativeElement as HTMLElement).parentElement.style.boxShadow = null
+    $('.mat-ripple-element').removeAttr('style');
+    
+    let audios = document.getElementsByClassName('audio-dropped');
+    for (let i = 0; i < audios.length; ++i) {
+      (audios.item(i) as HTMLElement).classList.remove('no-mouse-transition');
+      (audios.item(i) as HTMLElement).classList.remove('move');
     }
-    this.dragging = false;
-    this.draggingContainer = null;    
-    this.draggingConteinerChanged = false;
-    return;
-  }
-  if (event.previousContainer === event.container) {
-    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-  } 
-  else {
-    // move item: old container -> new container
-    transferArrayItem(event.previousContainer.data,
-      event.container.data,
-      event.previousIndex,
-      event.currentIndex);
-      
+    
+    if (this.stopTheDrop) {
+      this.stopTheDrop = false; 
+      if (this.draggingContainer.id === 'audioPool') {
+        document.getElementById('audioPool').style.animationName = 'refresh-pool';
+      }
+      this.dragging = false;
+      this.draggingContainer = null;    
+      this.draggingConteinerChanged = false;
+      return;
+    }
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } 
+    else {
+      // move item: old container -> new container
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+        
       // move item: new container -> old container
       if (event.container.id !== 'audioPool' && event.container.data.length === 2) {
         transferArrayItem(event.container.data,
           event.previousContainer.data,
           event.currentIndex ? 0 : 1,
           event.previousIndex);
-        }
       }
-      
-      this.dragging = false;
-      this.draggingContainer = null;    
-      this.draggingConteinerChanged = false;
     }
+        
+    this.dragging = false;
+    this.draggingContainer = null;    
+    this.draggingConteinerChanged = false;
+  }
     
-    onDragStart(event: CdkDragStart) {
-      this.dragging = true;
-      this.draggingContainer = event.source.dropContainer;
-      this.draggingData = event.source.data.text;
-      this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
-      
-      document.getElementById('audioPool').style.animationName = '';
-    }
+  onDragStart(event: CdkDragStart) {
+    this.dragging = true;
+    this.draggingContainer = event.source.dropContainer;
+    this.draggingData = event.source.data.text;
+    this.dragInitialPositionRect = event.source.getRootElement().getClientRects().item(0);
     
-    onDragReleased(event: CdkDragRelease) {
-      if (this.draggingConteinerChanged && this.isOverNewContainer === false) {
-        // need custom animation
-        let dragPreview = document.getElementsByClassName('cdk-drag-preview').item(0) as HTMLElement;
-        
-        let style = document.getElementById('move');
-        style.innerHTML = '.move { transform: translate3d(' + this.dragInitialPositionRect.left + 'px ,' + this.dragInitialPositionRect.top + 'px, 0px) !important; }';
-        
-        dragPreview.classList.add('no-mouse-transition');
-        dragPreview.classList.add('move');
-        
-        this.stopTheDrop = true;
-      }
-      if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
-        let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
-        let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
-        
-        if (audioAndPlaceholder.length === 2 && placeholder.classList.contains('cdk-drag-placeholder')) {
-          // it really is a placeholder
-          placeholder.style.top = '-50px';
-        }
-      }
-      
-      this.dragging = false;
-      this.draggingData = null;
-    }
-    
-    onMouseEnter(event: MouseEvent) {
-      const dropZoneId = (event.target as HTMLElement).id;
-      this.currentDropZoneId = dropZoneId;
-      
-      if (this.dragging === false) return;
-      if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '0px 5px 18px #888888';
-      
-      this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
-      if (this.draggingConteinerChanged) this.isOverNewContainer = true;
-      
-      if (this[dropZoneId][this.currentTestIndex].length === 0) return;
-      if (this.draggingConteinerChanged === false) return;
-      if (dropZoneId === 'audioPool') return;
-      
-      let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
-      if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
-      
-      const audioRect = (audioElement as Element).getBoundingClientRect();
+    document.getElementById('audioPool').style.animationName = '';
+  }
+  
+  onDragReleased(event: CdkDragRelease) {
+    if (this.draggingConteinerChanged && this.isOverNewContainer === false) {
+      // need custom animation
+      let dragPreview = document.getElementsByClassName('cdk-drag-preview').item(0) as HTMLElement;
       
       let style = document.getElementById('move');
+      style.innerHTML = '.move { transform: translate3d(' + this.dragInitialPositionRect.left + 'px ,' + this.dragInitialPositionRect.top + 'px, 0px) !important; }';
       
-      let bias = 0;
-      if (this.draggingContainer.id === 'audioPool' && this.audioPool[this.currentTestIndex].length === 2) {
-        let left = (this.audioPool[this.currentTestIndex].findIndex((value) => { 
-          return value.text === this.draggingData;
-        })) === 0;
-        bias += left ? -1 : 1;
-        bias *= 150;   
+      dragPreview.classList.add('no-mouse-transition');
+      dragPreview.classList.add('move');
+      
+      this.stopTheDrop = true;
+    }
+    if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
+      let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
+      let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
+      
+      if (audioAndPlaceholder.length === 2 && placeholder.classList.contains('cdk-drag-placeholder')) {
+        // it really is a placeholder
+        placeholder.style.top = '-50px';
       }
-      
-      style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
-      audioElement.classList.add('no-mouse-transition');
-      audioElement.classList.add('move');
     }
     
-    onMouseLeave(event: MouseEvent) {        
-      const dropZoneId = (event.target as HTMLElement).id;
-      this.currentDropZoneId = null;
-      
-      (event.target as HTMLElement).parentElement.style.boxShadow = null
-      
-      if (this.isOverNewContainer) this.isOverNewContainer = false;
-      
-      if (this.dragging === false) return;
-      if (this[dropZoneId][this.currentTestIndex].length === 0) return;
-      if (this.draggingContainer.id === dropZoneId) return;
-      if (dropZoneId === 'audioPool') return;
-      
-      let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
-      if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
-      audioElement.classList.remove('move');
+    this.dragging = false;
+    this.draggingData = null;
+  }
+    
+  onMouseEnter(event: MouseEvent) {
+    const dropZoneId = (event.target as HTMLElement).id;
+    this.currentDropZoneId = dropZoneId;
+    
+    if (this.dragging === false) return;
+    if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '0px 5px 18px #888888';
+    
+    this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
+    if (this.draggingConteinerChanged) this.isOverNewContainer = true;
+    
+    if (this[dropZoneId][this.currentTestIndex].length === 0) return;
+    if (this.draggingConteinerChanged === false) return;
+    if (dropZoneId === 'audioPool') return;
+    
+    let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
+    if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
+    
+    const audioRect = (audioElement as Element).getBoundingClientRect();
+    
+    let style = document.getElementById('move');
+    
+    let bias = 0;
+    if (this.draggingContainer.id === 'audioPool' && this.audioPool[this.currentTestIndex].length === 2) {
+      let left = (this.audioPool[this.currentTestIndex].findIndex((value) => { 
+        return value.text === this.draggingData;
+      })) === 0;
+      bias += left ? -1 : 1;
+      bias *= 150;   
     }
     
-    public onAudioButtonInit(initedAudio: PlayAudioButtonComponent) {
-      if (this.audio.isPlaying(initedAudio.audioId)) initedAudio.play(); 
-    }
+    style.innerHTML = '.move { transform: translate3d(' + (this.dragInitialPositionRect.left - audioRect.left + bias) + 'px , ' + (this.dragInitialPositionRect.top - audioRect.top) + 'px, 0px) !important; }';
+    audioElement.classList.add('no-mouse-transition');
+    audioElement.classList.add('move');
+  }
     
-    public onAudioButtonClick(clickedButton: PlayAudioButtonComponent) {
-      if (this.verboseLog) {
-        let allAudioData = this.audioPool[this.currentTestIndex]
-        .concat(this.fbDropZone[this.currentTestIndex])
-        .concat(this.bfDropZone[this.currentTestIndex])
-        .concat(this.ffDropZone[this.currentTestIndex]);
-        
-        let clickedAudioData = allAudioData.find((audioData) => { return audioData.id === clickedButton.audioId });
-        
-        if (clickedAudioData === undefined) {
-          console.error('cannot find clicked button\'s audio data');
-        }
-        else {
-          console.log('clicked button\'s audio: ', this.audio.getSamplesName()[this.currentTestIndex], clickedAudioData.scene);
-        }
+  onMouseLeave(event: MouseEvent) {        
+    const dropZoneId = (event.target as HTMLElement).id;
+    this.currentDropZoneId = null;
+    
+    (event.target as HTMLElement).parentElement.style.boxShadow = null
+    
+    if (this.isOverNewContainer) this.isOverNewContainer = false;
+    
+    if (this.dragging === false) return;
+    if (this[dropZoneId][this.currentTestIndex].length === 0) return;
+    if (this.draggingContainer.id === dropZoneId) return;
+    if (dropZoneId === 'audioPool') return;
+    
+    let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
+    if (audioElement.classList.contains('cdk-drag-placeholder')) audioElement = audioElement.nextElementSibling as HTMLElement;
+    audioElement.classList.remove('move');
+  }
+  
+  public onAudioButtonInit(initedAudio: PlayAudioButtonComponent) {
+    if (this.audio.isPlaying(initedAudio.audioId)) initedAudio.play(); 
+  }
+    
+  public onAudioButtonClick(clickedButton: PlayAudioButtonComponent) {
+    if (this.verboseLog) {
+      let allAudioData = this.audioPool[this.currentTestIndex]
+      .concat(this.fbDropZone[this.currentTestIndex])
+      .concat(this.bfDropZone[this.currentTestIndex])
+      .concat(this.ffDropZone[this.currentTestIndex]);
+      
+      let clickedAudioData = allAudioData.find((audioData) => { return audioData.id === clickedButton.audioId });
+      
+      if (clickedAudioData === undefined) {
+        console.error('cannot find clicked button\'s audio data');
       }
-      
-      this.wasAudioPlayed[this.currentTestIndex][clickedButton.audioId - 1] = true;
-      
-      this.audioButtons.toArray().forEach((audioButton) => {           
-        if(audioButton === clickedButton) {
-          if(clickedButton.isPlaying() == true) {
-            clickedButton.pause();
-            this.audio.pause();
-          } else {
-            clickedButton.play();
-            if(clickedButton.audioId === 1) {
-              this.audio.play(this.currentTestIndex, 0);
-            } else if(clickedButton.audioId === 2) {
-              this.audio.play(this.currentTestIndex, 1);
-            } else if(clickedButton.audioId === 3) {
-              this.audio.play(this.currentTestIndex, 2);
-            } else {
-              console.error('invalid audio id');
-            }
-          }
+      else {
+        console.log('clicked button\'s audio: ', this.audio.getSamplesName()[this.currentTestIndex], clickedAudioData.scene);
+      }
+    }
+    
+    this.wasAudioPlayed[this.currentTestIndex][clickedButton.audioId - 1] = true;
+    
+    this.audioButtons.toArray().forEach((audioButton) => {           
+      if(audioButton === clickedButton) {
+        if(clickedButton.isPlaying() == true) {
+          clickedButton.pause();
+          this.audio.pause();
         } else {
-          audioButton.pause();
-        }        
-      });
+          clickedButton.play();
+          if(clickedButton.audioId === 1) {
+            this.audio.play(this.currentTestIndex, 0);
+          } else if(clickedButton.audioId === 2) {
+            this.audio.play(this.currentTestIndex, 1);
+          } else if(clickedButton.audioId === 3) {
+            this.audio.play(this.currentTestIndex, 2);
+          } else {
+            console.error('invalid audio id');
+          }
+        }
+      } else {
+        audioButton.pause();
+      }        
+    });
+  }
+    
+  public goToNextTest() {
+    if (this.fbDropZone[this.currentTestIndex].length === 0 || 
+      this.bfDropZone[this.currentTestIndex].length === 0 || 
+      this.ffDropZone[this.currentTestIndex].length === 0)
+    {
+      this.showMessage('match recordings with acoustic scenes');
+      return;
+    }
+    else if (this.wasAudioPlayed[this.currentTestIndex].includes(false)) {
+      let notPlayedAudiosIndices = this.getAllIndexes(this.wasAudioPlayed[this.currentTestIndex], false);
+      if (notPlayedAudiosIndices.length === 1) {
+        this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
+      }
+      else if (notPlayedAudiosIndices.length === 2) {
+        this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' and audio ' + (notPlayedAudiosIndices[1] + 1) + ' weren\'t played');
+      }
+      else {
+        this.showMessage('audio 1, 2 and 3 weren\'t played');
+      }
+      return;
     }
     
-    public goToNextTest() {
-      if (this.fbDropZone[this.currentTestIndex].length === 0 || 
-        this.bfDropZone[this.currentTestIndex].length === 0 || 
-        this.ffDropZone[this.currentTestIndex].length === 0)
-        {
-          this.showMessage('match recordings with acoustic scenes');
-          return;
+    this.audio.pause();
+    this.currentTestIndex += 1;
+    
+    if (this.currentTestIndex === this.testCount) {
+      let sampleNames = this.audio.getSamplesName();
+      let answer = {};
+      for (let i = 0; i < 10; ++i) {
+        answer[sampleNames[i]] = {
+          'answer_FB': this.fbDropZone[i][0].scene,
+          'answer_BF': this.bfDropZone[i][0].scene,
+          'answer_FF': this.ffDropZone[i][0].scene
+        };
+      }
+      
+      this.apiClient.sendPollData({
+        startDate: this.data.startDate,
+        endDate: new Date(),
+        answer: answer,
+        assignedSetId: this.audio.pollAudioSet.id,
+        userInfo: {
+          age: this.data.questionnaire.age,
+          hearing_difficulties: this.data.questionnaire.hearingDifficulties,
+          headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
+          listening_test_participated: this.data.questionnaire.listeningTestParticipation
         }
-        else if (this.wasAudioPlayed[this.currentTestIndex].includes(false)) {
-          let notPlayedAudiosIndices = this.getAllIndexes(this.wasAudioPlayed[this.currentTestIndex], false);
-          if (notPlayedAudiosIndices.length === 1) {
-            this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
-          }
-          else if (notPlayedAudiosIndices.length === 2) {
-            this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' and audio ' + (notPlayedAudiosIndices[1] + 1) + ' weren\'t played');
-          }
-          else {
-            this.showMessage('audio 1, 2 and 3 weren\'t played');
-          }
-          return;
-        }
-        
-        this.audio.pause();
-        this.currentTestIndex += 1;
-        
-        if (this.currentTestIndex === this.testCount) {
-          let sampleNames = this.audio.getSamplesName();
-          let answer = {};
-          for (let i = 0; i < 10; ++i) {
-            answer[sampleNames[i]] = {
-              'answer_FB': this.fbDropZone[i][0].scene,
-              'answer_BF': this.bfDropZone[i][0].scene,
-              'answer_FF': this.ffDropZone[i][0].scene
-            };
-          }
-          
-          this.apiClient.sendPollData({
-            startDate: this.startDate,
-            endDate: new Date(),
-            answer: answer,
-            assignedSetId: this.audio.pollAudioSet.id,
-            userInfo: {
-              age: this.data.questionnaire.age,
-              hearing_difficulties: this.data.questionnaire.hearingDifficulties,
-              headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
-              listening_test_participated: this.data.questionnaire.listeningTestParticipation
-            }
-          });
-          this.router.navigateByUrl('finish', { skipLocationChange: true });
-        } 
-      }
+      });
+      this.router.navigateByUrl('finish', { skipLocationChange: true });
+    } 
+  }
       
-      public goToPreviousTest(): void {
-        this.audio.pause();
-        this.currentTestIndex -= 1;
-        
-        if (this.currentTestIndex === -1) {
-          this.keyboardNav.active = true;
-          this.router.navigateByUrl('headphones-test', { skipLocationChange: true });
-        } 
-      }
+  public goToPreviousTest(): void {
+    this.audio.pause();
+    this.currentTestIndex -= 1;
+    
+    if (this.currentTestIndex === -1) {
+      this.keyboardNav.active = true;
+      this.router.navigateByUrl('headphones-test', { skipLocationChange: true });
+    } 
+  }
       
-      public onFurtherHelpClick() {
-        this.audio.pause();
-        this.audioButtons.toArray().forEach((audioButton) => {
-          audioButton.pause();
-        });
-        const dialogRef = this.dialog.open(FurtherHelpDialogComponent, {
-          height: '600px',
-          width: '400px',
-        });
-        dialogRef.afterClosed().subscribe(() => {
-        });
-      }
+  public onFurtherHelpClick() {
+    this.audio.pause();
+    this.audioButtons.toArray().forEach((audioButton) => {
+      audioButton.pause();
+    });
+    const dialogRef = this.dialog.open(FurtherHelpDialogComponent, {
+      height: '600px',
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(() => {
+    });
+  }
       
-      private getAllIndexes(arr, val) {
-        var indexes = [], i;
-        for(i = 0; i < arr.length; i++)
-        if (arr[i] === val)
-        indexes.push(i);
-        return indexes;
-      }
+  private getAllIndexes(arr, val) {
+    var indexes = [], i;
+    for(i = 0; i < arr.length; i++)
+    if (arr[i] === val)
+    indexes.push(i);
+    return indexes;
+  }
       
-      private showMessage(msg: string) {
-        let $snackbar = this.snackbar.open(msg, null, {
-          duration: 2000,
-          verticalPosition: "top",
-          panelClass: ['my-snackbar-problem'],
-        });
-        $snackbar.afterOpened().subscribe(() => {
-          ($snackbar as any).containerInstance._elementRef.nativeElement.parentElement.style.pointerEvents = 'none';
-        });
-      }
+  private showMessage(msg: string) {
+    let $snackbar = this.snackbar.open(msg, null, {
+      duration: 2000,
+      verticalPosition: "top",
+      panelClass: ['my-snackbar-problem'],
+    });
+    $snackbar.afterOpened().subscribe(() => {
+      ($snackbar as any).containerInstance._elementRef.nativeElement.parentElement.style.pointerEvents = 'none';
+    });
+  }
 
   // Init related
 

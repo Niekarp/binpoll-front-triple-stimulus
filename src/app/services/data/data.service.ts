@@ -5,12 +5,23 @@ import { Questionnaire } from 'src/app/models/questionnaire';
   providedIn: 'root'
 })
 export class DataService {
-
-  public consentChecked = false;
-
-  public questionnaire = new Questionnaire();
   public dataResponseId = null;
 
+  // Welcome page data
+  public consentChecked = false;
+
+  // Questionnaire page data
+  public questionnaire = new Questionnaire();
+
+  // Poll page data
+  public audioPool = [];
+  public fbDropZone = [];
+  public bfDropZone = [];
+  public ffDropZone = [];
+  public wasAudioPlayed = Array<boolean[]>(10);
+  public startDate: Date;
+
+  // ???
   public stupidThing = false;
 
   constructor() { }
