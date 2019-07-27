@@ -9,14 +9,10 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
   styleUrls: ['./terms-sounds-page.component.scss']
 })
 export class TermsSoundsPageComponent implements OnInit {
-
-  constructor(public keyboardNav: KeyboardNavigationService) {
-  }
+  constructor(public keyboardNav: KeyboardNavigationService) {}
 
   ngOnInit() {
     this.keyboardNav.goBackCondition = () => { return true; }
-    this.keyboardNav.goNextCondition = () => { return true };
+    this.keyboardNav.goNextCondition = () => { return true; };
   }
-
-  onMouseEnterImage() { throw 'moj throw'; }
 }

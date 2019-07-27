@@ -1,6 +1,5 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
-import { MatSnackBar, MatSelect } from '@angular/material';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 import { AudioService } from 'src/app/services/audio/audio.service';
 import { Questionnaire } from 'src/app/models/questionnaire';
 import { DataService } from 'src/app/services/data/data.service';
@@ -17,9 +16,7 @@ export interface Age {
   styleUrls: ['./questionnaire-page.component.scss']
 })
 export class QuestionnairePageComponent implements OnInit {
-
   public model: Questionnaire;
-
   public ages: Age[] = [
     { value: 'Under 18', viewValue: 'Under 18' },
     { value: '18-24', viewValue: '18-24' },
@@ -29,10 +26,12 @@ export class QuestionnairePageComponent implements OnInit {
     { value: 'Above 54', viewValue: 'Above 54' }
   ];
 
-  constructor(public snackbar: MatSnackBar, 
-              public audio: AudioService,
-              public data: DataService,
-              public keyboardNav: KeyboardNavigationService) { }
+  constructor(
+      public snackbar: MatSnackBar, 
+      public audio: AudioService,
+      public data: DataService,
+      public keyboardNav: KeyboardNavigationService) {
+  }
 
   ngOnInit() {
     this.keyboardNav.goBackCondition = () => { return true; }
@@ -45,13 +44,13 @@ export class QuestionnairePageComponent implements OnInit {
     this.model = this.data.questionnaire;
   }
 
-  public get formValid() {
+  public get formValid(): boolean {
     return this.model.age !== undefined &&
-           this.model.hearingDifficulties !== undefined &&
-           this.model.listeningTestParticipation !== undefined 
+        this.model.hearingDifficulties !== undefined &&
+        this.model.listeningTestParticipation !== undefined 
   }
   
-  public showProblemMessage() {
+  public showProblemMessage(): void {
     this.snackbar.open('the first three fields are required', null, {
       duration: 2000,
       verticalPosition: "top",
@@ -59,8 +58,5 @@ export class QuestionnairePageComponent implements OnInit {
     });
   }
 
-  public blur() {
-    // console.log(event);
-    event.stopPropagation();
-  }
+  public blur(): void { event.stopPropagation(); }
 }

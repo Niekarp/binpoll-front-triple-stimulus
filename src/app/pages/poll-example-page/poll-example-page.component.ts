@@ -7,12 +7,10 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
   styleUrls: ['./poll-example-page.component.scss']
 })
 export class PollExamplePageComponent implements OnInit {
-
-  constructor(public keyboardNav: KeyboardNavigationService) {
-  }
+  constructor(public keyboardNav: KeyboardNavigationService) {}
 
   ngOnInit() {
     this.keyboardNav.goBackCondition = () => { return true; }
-    this.keyboardNav.goNextCondition = () => { return true };
+    this.keyboardNav.goNextCondition = () => { return true; };
   }
 }

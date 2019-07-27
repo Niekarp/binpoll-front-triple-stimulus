@@ -1,5 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { FurtherHelpDialogComponent } from './further-help-dialog/further-help-dialog.component';
 import { AudioService } from 'src/app/services/audio/audio.service';
@@ -13,19 +12,20 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
   styleUrls: ['./headphones-test.component.scss']
 })
 export class HeadphonesTestComponent implements OnInit {
-
   @ViewChild('leftAudioButton')  leftAudioButton:  PlayAudioButtonComponent;
   @ViewChild('rightAudioButton') rightAudioButton: PlayAudioButtonComponent;
   @ViewChild('spinnerText') spinnerText: ElementRef;
 
-  constructor(private dialog: MatDialog,
-              private audio: AudioService,
-              private spinner: NgxSpinnerService,
-              public keyboardNav: KeyboardNavigationService) { }
+  constructor(
+      private dialog: MatDialog,
+      private audio: AudioService,
+      private spinner: NgxSpinnerService,
+      public keyboardNav: KeyboardNavigationService) {
+  }
 
   ngOnInit() {
-    this.keyboardNav.goBackCondition = () => { return this.audio.isAllTestAudioLoaded(); true; };
-    this.keyboardNav.goNextCondition = () => { return this.audio.isAllTestAudioLoaded(); true; };
+    this.keyboardNav.goBackCondition = () => { return this.audio.isAllTestAudioLoaded(); };
+    this.keyboardNav.goNextCondition = () => { return this.audio.isAllTestAudioLoaded(); };
     this.keyboardNav.onGoNextConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
     this.keyboardNav.onGoBackConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
     this.keyboardNav.deactivateOnNext = true;
@@ -41,22 +41,14 @@ export class HeadphonesTestComponent implements OnInit {
         // console.log('audio loaded'); 
         this.spinner.hide();
       }, () => { 
-        this.spinnerText.nativeElement.innerText = 'loading audio' 
-                                                    + '(' + this.audio.getTestLoadingProgressPercentage() + '%)';
+        this.spinnerText.nativeElement.innerText = 'loading audio' +
+          '(' + this.audio.getTestLoadingProgressPercentage() + '%)';
       }, () => {
         console.error('loading audio timeout') 
       });
     }
 
     this.audio.headphonesTestLeftChannelAudio.onended = () => {
-      // console.log('left audio stopped');
-      this.leftAudioButton.toggle();
-    }
-    this.audio.headphonesTestRightChannelAudio.onended = () => {
-      this.rightAudioButton.toggle();
-    }
-    this.audio.headphonesTestLeftChannelAudio.onended = () => {
-      // console.log('left audio stopped');
       this.leftAudioButton.toggle();
     }
     this.audio.headphonesTestRightChannelAudio.onended = () => {
@@ -64,27 +56,27 @@ export class HeadphonesTestComponent implements OnInit {
     }
   }
 
-  public onLeftAudioButtonClick() {
+  public onLeftAudioButtonClick(): void {
     if (this.audio.headphonesTestRightChannelAudio.paused === false) this.toggleRightAudioButtonAndAudio();
     this.toggleLeftAudioButtonAndAudio();
   }
 
-  public onRightAudioButtonClick() {
+  public onRightAudioButtonClick(): void {
     if (this.audio.headphonesTestLeftChannelAudio.paused === false) this.toggleLeftAudioButtonAndAudio();
     this.toggleRightAudioButtonAndAudio();
   }
 
-  public toggleLeftAudioButtonAndAudio() {
+  public toggleLeftAudioButtonAndAudio(): void {
     this.leftAudioButton.toggle();
     this.audio.toggleHeadphonesTestLeftChannelAudio();
   }
 
-  public toggleRightAudioButtonAndAudio() {
+  public toggleRightAudioButtonAndAudio(): void {
     this.rightAudioButton.toggle();
     this.audio.toggleHeadphonesTestRightChannelAudio();
   }
 
-  public onFurtherHelpClick() {
+  public onFurtherHelpClick(): void {
     this.audio.pauseHeadphonesTestAudio();
     this.leftAudioButton.pause();
     this.rightAudioButton.pause();
@@ -99,12 +91,12 @@ export class HeadphonesTestComponent implements OnInit {
     });
   }
 
-  onNavigationButtonSuccess() {
+  public onNavigationButtonSuccess(): void {
     this.keyboardNav.active = false;
     this.stopAudio();
   }
 
-  stopAudio() {
+  public stopAudio(): void {
     this.audio.pauseHeadphonesTestAudio();
   }
 }

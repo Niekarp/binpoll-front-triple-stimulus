@@ -14,25 +14,25 @@ export class ReportProblemPageComponent implements OnInit {
   private isReportSend: boolean = false;
 
   constructor(
-    public snackbar: MatSnackBar,
-    public audio: AudioService,
-    private api: ApiClientService,
-    private data: DataService) { }
+      public snackbar: MatSnackBar,
+      public audio: AudioService,
+      private api: ApiClientService,
+      private data: DataService) {
+  }
 
   ngOnInit() {
     //this.audio.stopAudioLoading();
     this.data.stupidThing = false;
   }
 
-  onSendCommentButtonClick() {
+  public onSendCommentButtonClick(): void {
     if (this.isReportSend) {
       this.snackbar.open('report already sent', null, {
         duration: 2000,
         verticalPosition: "top",
         panelClass: ['my-snackbar-confirm']
       });
-    }
-    else if (this.isReportSend === false && /\S/.test(this.message)) {
+    } else if (this.isReportSend === false && /\S/.test(this.message)) {
       this.api.reportProblem({
         user_info: {
           headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
@@ -47,11 +47,11 @@ export class ReportProblemPageComponent implements OnInit {
           verticalPosition: "top",
           panelClass: ['my-snackbar-confirm']
         });
-        (document.getElementsByClassName('navigation-button').item(0) as HTMLElement).style.backgroundColor = 'gray';
+        (document.getElementsByClassName('navigation-button').item(0) as HTMLElement)
+          .style.backgroundColor = 'gray';
         this.isReportSend = true;
       });
-    }
-    else {
+    } else {
       this.snackbar.open('report field must not be empty', null, {
         duration: 2000,
         verticalPosition: "top",

@@ -9,7 +9,6 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
   styleUrls: ['./poll-description-page.component.scss']
 })
 export class PollDescriptionPageComponent implements OnInit {
-
   private testCount: number;
 
   constructor(public sharedConfig: SharedConfig, public keyboardNav: KeyboardNavigationService) {
@@ -18,6 +17,6 @@ export class PollDescriptionPageComponent implements OnInit {
 
   ngOnInit() {
     this.keyboardNav.goBackCondition = () => { return true; }
-    this.keyboardNav.goNextCondition = () => { return true };
+    this.keyboardNav.goNextCondition = () => { return true; };
   }
 }
