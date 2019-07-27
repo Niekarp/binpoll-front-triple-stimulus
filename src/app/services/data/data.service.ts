@@ -14,6 +14,7 @@ export class DataService {
   public questionnaire = new Questionnaire();
 
   // Poll page data
+  public pollDataInitiated = false;
   public audioPool = [];
   public fbDropZone = [];
   public bfDropZone = [];

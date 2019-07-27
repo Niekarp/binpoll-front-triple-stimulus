@@ -81,9 +81,7 @@ export class PollPageComponent implements OnInit {
       let spinnerUpdateInterval = setInterval(() => { this.updateSpinner() }, 100);
       
       this.audio.notifyOnAllPollAudioLoaded(() => { 
-        this.initDropZones();
-        this.data.startDate = new Date();
-
+        this.initPollData();
         clearInterval(spinnerUpdateInterval);
         this.completeSpinnerProgress(() => { this.spinner.hide(); });
         }, () => { 
@@ -91,6 +89,8 @@ export class PollPageComponent implements OnInit {
         }, () => {
           console.error('loading audio timeout') 
         });
+    } else if (this.data.pollDataInitiated === false) {
+      this.initPollData();
     }
   }
 
@@ -376,6 +376,13 @@ export class PollPageComponent implements OnInit {
     moveAnimationStyle.type = 'text/css';
     moveAnimationStyle.id = 'move';
     return moveAnimationStyle;
+  }
+
+  // Intended to be called when audio is loaded
+  private initPollData() {
+    this.initDropZones();
+    this.data.startDate = new Date();
+    this.data.pollDataInitiated = true;
   }
     
   // Intended to be called when audio is loaded
