@@ -3,10 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { WelcomePageComponent } from './pages/welcome-page/welcome-page.component';
 import { QuestionnairePageComponent } from './pages/questionnaire-page/questionnaire-page.component'
 import { PollDescriptionPageComponent } from './pages/poll-description-page/poll-description-page.component';
-import { TermsSoundsPageComponent } from './pages/terms-sounds-page/terms-sounds-page.component';
-import { TermsFrontScenePageComponent } from './pages/terms-front-scene-page/terms-front-scene-page.component';
-import { TermsBackScenePageComponent } from './pages/terms-back-scene-page/terms-back-scene-page.component';
-import { TermsAllAroundScenePageComponent } from './pages/terms-all-around-scene-page/terms-all-around-scene-page.component';
 import { HeadphonesTestComponent } from './pages/headphones-test/headphones-test.component';
 import { PollPageComponent } from './pages/poll-page/poll-page.component';
 import { FinishPageComponent } from './pages/finish-page/finish-page.component';
@@ -15,13 +11,14 @@ import { ReportProblemPageComponent } from './pages/report-problem-page/report-p
 import { CreditsPageComponent } from './pages/credits-page/credits-page.component';
 import { PollExamplePageComponent } from './pages/poll-example-page/poll-example-page.component';
 import { AdditionalInformationPageComponent } from './pages/additional-information-page/additional-information-page.component';
+import { AcousticScenesPageComponent } from './pages/acoustic-scenes-page/acoustic-scenes-page.component';
 
 const routes: Routes = [
   { path: 'credits', component: CreditsPageComponent },
   { path: '', component: WelcomePageComponent },
   { path: 'questionnaire', component: QuestionnairePageComponent },
   { path: 'poll-description', component: PollDescriptionPageComponent },
-  { path: 'terms-acoustic-scenes', component: TermsSoundsPageComponent },
+  { path: 'acoustic-scenes', component: AcousticScenesPageComponent },
   { path: 'poll-example', component: PollExamplePageComponent },
   { path: 'additional-information', component: AdditionalInformationPageComponent },
   { path: 'headphones-test', component: HeadphonesTestComponent },
@@ -33,14 +30,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  // imports: [RouterModule.forRoot(routes, { initialNavigation: false })],
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-
-/* 
-  { path: 'terms-front-scene', component: TermsFrontScenePageComponent },
-  { path: 'terms-back-scene', component: TermsBackScenePageComponent },
-  { path: 'terms-all-around-scene', component: TermsAllAroundScenePageComponent },
-*/

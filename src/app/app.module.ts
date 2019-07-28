@@ -44,6 +44,7 @@ import { NavigationButtonComponent } from './common/ui-elements/navigation-butto
 import { CreditsPageComponent } from './pages/credits-page/credits-page.component';
 import { PollExamplePageComponent } from './pages/poll-example-page/poll-example-page.component';
 import { AdditionalInformationPageComponent } from './pages/additional-information-page/additional-information-page.component';
+import { AcousticScenesPageComponent } from './pages/acoustic-scenes-page/acoustic-scenes-page.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { AdditionalInformationPageComponent } from './pages/additional-informati
     NavigationButtonComponent,
     CreditsPageComponent,
     PollExamplePageComponent,
-    AdditionalInformationPageComponent
+    AdditionalInformationPageComponent,
+    AcousticScenesPageComponent
   ],
   imports: [
     BrowserModule,
