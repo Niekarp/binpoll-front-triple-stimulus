@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { ConfigService } from '../../config/config.service'
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { Questionnaire } from 'src/app/models/questionnaire';
 import { DataService } from '../data/data.service';
 import { PollData } from "../../models/PollData"
 import { ProblemReport } from "../../models/ProblemReport"
@@ -12,17 +11,16 @@ import { ProblemReport } from "../../models/ProblemReport"
   providedIn: 'root'
 })
 export class ApiClientService {
-
   private configObservable: Observable<any>;
   private sampleSetObservable: Observable<{[id: string]: any}>;
 
   constructor(
-    public data: DataService,
-    private http: HttpClient,
-    private configService: ConfigService) { 
-      this.configObservable = configService.getConfig();
-      this.sampleSetObservable = this.prepareSampleSet();
-    }
+      public data: DataService,
+      private http: HttpClient,
+      private configService: ConfigService) { 
+    this.configObservable = configService.getConfig();
+    this.sampleSetObservable = this.prepareSampleSet();
+  }
   
   public sendPollData(pollData: PollData): void {
     this.configObservable.subscribe(config => {
@@ -130,18 +128,16 @@ export class ApiClientService {
       } else {
         return this.http.get<{[id: string]: any}>(apiUrl + 'generate_set').pipe(
           switchMap(audioSet => {
-            
             console.log('getSampleSet -> audioSet: ');
             console.log(audioSet);
-
             let samples = audioSet['samples'] as Array<string[]>;
             samples.forEach(function forEachSample(sampleVariants, sampleIndex) {
-              (samples[sampleIndex] as Array<Object>) = sampleVariants.map(function toUrlAndSceneObject(sampleVariantName) {
-                return {
-                  url: pollSoundsUrl + sampleVariantName,
-                  scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
-                }
-              });
+              (samples[sampleIndex] as Array<Object>) = sampleVariants.map(
+                function toUrlAndSceneObject(sampleVariantName) {
+                  return {
+                    url: pollSoundsUrl + sampleVariantName,
+                    scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
+                }});
             });
             return of(audioSet);
         }));

@@ -1,5 +1,4 @@
 export class AudioPlayerSet {
-
 	public headphonesTestPlayers: Map<String, HTMLAudioElement>;
 	public pollBuffers: Array<AudioBuffer[]>;
   
@@ -12,7 +11,7 @@ export class AudioPlayerSet {
 	  this.headphonesTestPlayers.set('right', new Audio());
   
 	  for (let i = 0; i < pollTasksCount; ++i) {
-		this.pollBuffers[i] = new Array<AudioBuffer>(3);
+		  this.pollBuffers[i] = new Array<AudioBuffer>(3);
 	  }
 	}
-  }
+}
