@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { WelcomePageComponent } from './pages/welcome-page/welcome-page.component';
 import { QuestionnairePageComponent } from './pages/questionnaire-page/questionnaire-page.component'
 import { PollDescriptionPageComponent } from './pages/poll-description-page/poll-description-page.component';
-import { HeadphonesTestComponent } from './pages/headphones-test/headphones-test.component';
 import { PollPageComponent } from './pages/poll-page/poll-page.component';
 import { FinishPageComponent } from './pages/finish-page/finish-page.component';
 import { PolicyPageComponent } from './pages/policy-page/policy-page.component';
