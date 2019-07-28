@@ -12,6 +12,7 @@ import { CreditsPageComponent } from './pages/credits-page/credits-page.componen
 import { PollExamplePageComponent } from './pages/poll-example-page/poll-example-page.component';
 import { AdditionalInformationPageComponent } from './pages/additional-information-page/additional-information-page.component';
 import { AcousticScenesPageComponent } from './pages/acoustic-scenes-page/acoustic-scenes-page.component';
+import { HeadphonesTestPageComponent } from './pages/headphones-test-page/headphones-test-page.component';
 
 const routes: Routes = [
   { path: 'credits', component: CreditsPageComponent },
@@ -21,7 +22,7 @@ const routes: Routes = [
   { path: 'acoustic-scenes', component: AcousticScenesPageComponent },
   { path: 'poll-example', component: PollExamplePageComponent },
   { path: 'additional-information', component: AdditionalInformationPageComponent },
-  { path: 'headphones-test', component: HeadphonesTestComponent },
+  { path: 'headphones-test', component: HeadphonesTestPageComponent },
   { path: 'poll', component: PollPageComponent },
   { path: 'finish', component: FinishPageComponent },
   { path: 'policy', component: PolicyPageComponent },

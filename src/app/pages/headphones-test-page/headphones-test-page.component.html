@@ -1,0 +1,34 @@
+<header class="page-header">
+  Now, put your headphones on…
+</header>
+<section class="page-content">
+  and listen to the audio clips by pressing the buttons below. Adjust the volume to a comfortable level. Make sure that the headphones are placed correctly and work fine.
+  <div id="headset-channels-container" fxLayout="row">
+    <div class="channel-container" fxFlex="33%" fxLayoutAlign="center center" fxLayout="column">
+      <app-play-audio-button #leftAudioButton (onClick)="onLeftAudioButtonClick()"></app-play-audio-button>
+      <div>Left channel</div>
+    </div>
+    <div fxFlex="33%" fxLayoutAlign="center center">
+      <mat-icon id="headset-image">headset</mat-icon>
+    </div>
+    <div class="channel-container" fxFlex="33%" fxLayoutAlign="center center" fxLayout="column">
+      <app-play-audio-button #rightAudioButton (onClick)="onRightAudioButtonClick()"></app-play-audio-button>
+      <div>Right channel</div>
+    </div>
+  </div>
+  Please keep your headphones on during all the tests. Adjust the volume at any time so that the clips are played back at a comfortable level. 
+</section>
+<nav class="page-navigation">
+  <app-navigation-button text="Start the test" destinationUrl="/poll" (success)="onNavigationButtonSuccess()">
+  </app-navigation-button>
+  <app-navigation-button text="Previous" destinationUrl="/additional-information" (success)="stopAudio()">
+  </app-navigation-button>
+  <div id="help-note">
+    If you encounter problems with the audio playback, check your audio setting on your device, and refresh this page. 
+    <span class="link-like" (click)="onFurtherHelpClick()">Further help</span>
+  </div>
+</nav>
+
+<ngx-spinner [fullScreen]="false" type="ball-spin-clockwise" size="medium">
+	<span #spinnerText class="spinner-text"></span>
+</ngx-spinner>

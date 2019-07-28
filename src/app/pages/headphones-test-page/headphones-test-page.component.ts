@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { FurtherHelpDialogComponent } from '../headphones-test-page/further-help-dialog/further-help-dialog.component';
+import { FurtherHelpDialogComponent } from './further-help-dialog/further-help-dialog.component';
 import { AudioService } from 'src/app/services/audio/audio.service';
 import { PlayAudioButtonComponent } from 'src/app/common/ui-elements/play-audio-button/play-audio-button.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
 
 @Component({
-  selector: 'app-headphones-test',
-  templateUrl: './headphones-test.component.html',
-  styleUrls: ['./headphones-test.component.scss']
+  selector: 'app-headphones-test-page',
+  templateUrl: './headphones-test-page.component.html',
+  styleUrls: ['./headphones-test-page.component.scss']
 })
-export class HeadphonesTestComponent implements OnInit {
+export class HeadphonesTestPageComponent implements OnInit {
   @ViewChild('leftAudioButton')  leftAudioButton:  PlayAudioButtonComponent;
   @ViewChild('rightAudioButton') rightAudioButton: PlayAudioButtonComponent;
   @ViewChild('spinnerText') spinnerText: ElementRef;
