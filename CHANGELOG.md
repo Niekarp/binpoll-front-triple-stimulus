@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.5](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.1.4...v1.1.5) (2019-07-29)
+
+
+### Bug Fixes
+
+* **component-names:** replaced terms-sounds-page with acoustic-scenes-page ([8fae1c6](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/8fae1c6))
+* **components-names:** added page to headphones-component name ([9931ff7](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/9931ff7))
+
+
+
 ### [1.1.4](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.1.3...v1.1.4) (2019-07-27)
 
 
