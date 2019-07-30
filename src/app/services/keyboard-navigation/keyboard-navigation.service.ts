@@ -17,6 +17,7 @@ export class KeyboardNavigationService {
   public deactivateOnNext = false;
   
   // navigation condition (restarted after each navigation)
+  public activeCondition: () => boolean;
   public goBackCondition: () => boolean;
   public goNextCondition: () => boolean;
   
@@ -32,8 +33,9 @@ export class KeyboardNavigationService {
   }
 
   public restart() {
-    this.goBackCondition = () => { return false };
-    this.goNextCondition = () => { return false };
+    this.activeCondition = () => { return true; };
+    this.goBackCondition = () => { return false; };
+    this.goNextCondition = () => { return false; };
     this.onGoNextConditionOK = () => { };
     this.onGoNextConditionFail = () => { };
     this.onGoBackConditionOK = () => { };
@@ -44,7 +46,7 @@ export class KeyboardNavigationService {
   private onKeydown(event: KeyboardEvent): void {
     // console.log('navigation keydown');
     
-    if (this.active === false) return;
+    if (this.active === false || this.activeCondition() === false) return;
     // console.log('navigationKeyboard active');
     
     let currentRouteIndex = this.router.config.findIndex((route: any) => {
@@ -66,6 +68,7 @@ export class KeyboardNavigationService {
     }
     else if (event.key === 'ArrowRight')
     {
+      debugger;
       if (this.goNextCondition())
       {
         this.onGoNextConditionOK();

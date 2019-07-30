@@ -13,6 +13,9 @@ import { moveItemInArray, CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, 
 
 import * as $ from 'jquery';
 
+interface TestStatus { done: boolean, problem: null | ProblemName };
+enum ProblemName { NotMatched, NotPlayed };
+
 @Component({
   selector: 'app-poll-page',
   templateUrl: './poll-page.component.html',
@@ -43,6 +46,8 @@ export class PollPageComponent implements OnInit {
   public spinnerLoadingProgress = 0;
   public audioLoadingProgress = 0;
   
+  private isFurtherHelpOpen: boolean = false;
+
   // Specify if more logs should be displayed
   private verboseLog: boolean;
   
@@ -92,6 +97,8 @@ export class PollPageComponent implements OnInit {
     } else if (this.data.pollDataInitiated === false) {
       this.initPollData();
     }
+
+    this.initKeyboardNavigation();
   }
 
   // Drag & drop related
@@ -347,7 +354,9 @@ export class PollPageComponent implements OnInit {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe(() => {
+      this.isFurtherHelpOpen = false;
     });
+    this.isFurtherHelpOpen = true;
   }
       
   private getAllIndexes(arr, val): any[] {
@@ -356,6 +365,30 @@ export class PollPageComponent implements OnInit {
       if (arr[i] === val) indexes.push(i);
     }
     return indexes;
+  }
+
+  private showProblemMessage(problem: ProblemName): void {
+    switch(problem) {
+      case ProblemName.NotMatched: {
+        this.showMessage('match recordings with acoustic scenes');
+        break;
+      } case ProblemName.NotPlayed: {
+        let notPlayedAudiosIndices = this.getAllIndexes(this.wasAudioPlayed[this.currentTestIndex], false);
+        switch(notPlayedAudiosIndices.length) {
+          case 1: {
+            this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
+            break;
+          } case 2: {
+            this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + 
+              ' and audio ' + (notPlayedAudiosIndices[1] + 1) + ' weren\'t played');
+            break;
+          } default: {
+            this.showMessage('audio 1, 2 and 3 weren\'t played');
+          }
+        }
+        break;
+      }
+    }
   }
       
   private showMessage(msg: string): void {
@@ -401,6 +434,34 @@ export class PollPageComponent implements OnInit {
     }
   }
 
+  private initKeyboardNavigation() {
+    this.keyboardNav.activeCondition = () => {
+      return this.audio.isAllPollAudioLoaded() && !this.isFurtherHelpOpen;
+    };
+
+    this.keyboardNav.goBackCondition = () => { return this.currentTestIndex === 0; }
+    this.keyboardNav.goNextCondition = () => {
+      return this.currentTestStatus.done && (this.currentTestIndex + 1) === this.testCount
+    };
+
+    this.keyboardNav.onGoBackConditionFail = () => {
+      this.audio.pause();
+      this.currentTestIndex -= 1;
+    };
+    this.keyboardNav.onGoNextConditionFail = () => {
+      let currentTestStatus = this.currentTestStatus;
+      if (currentTestStatus.done === false) {
+        this.showProblemMessage(currentTestStatus.problem);
+      } else {
+        this.audio.pause();
+        this.currentTestIndex += 1;
+      }
+    };
+
+    this.keyboardNav.onGoBackConditionOK = () => { this.audio.pause(); this.keyboardNav.active = true; }
+    this.keyboardNav.onGoNextConditionOK = () => { this.audio.pause(); this.prepareAndSendPollAnswer(); };
+  }
+
   // Spinner related
  
   private updateSpinner(): boolean {
@@ -424,6 +485,56 @@ export class PollPageComponent implements OnInit {
         onComplete();
       }
     }, 50);
+  }
+
+  // When test is completed
+
+  private prepareAndSendPollAnswer() {
+    let sampleNames = this.audio.getSamplesName();
+    let answer = {};
+    for (let i = 0; i < 10; ++i) {
+      answer[sampleNames[i]] = {
+        'answer_FB': this.fbDropZone[i][0].scene,
+        'answer_BF': this.bfDropZone[i][0].scene,
+        'answer_FF': this.ffDropZone[i][0].scene
+      };
+    }
+    
+    this.apiClient.sendPollData({
+      startDate: this.data.startDate,
+      endDate: new Date(),
+      answer: answer,
+      assignedSetId: this.audio.pollAudioSet.id,
+      userInfo: {
+        age: this.data.questionnaire.age,
+        hearing_difficulties: this.data.questionnaire.hearingDifficulties,
+        headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
+        listening_test_participated: this.data.questionnaire.listeningTestParticipation
+      }
+    });
+  }
+
+  // Other
+
+  private get currentTestStatus(): TestStatus {
+    if (this.fbDropZone[this.currentTestIndex].length === 0 || 
+        this.bfDropZone[this.currentTestIndex].length === 0 || 
+        this.ffDropZone[this.currentTestIndex].length === 0) {
+      return {
+        done: false,
+        problem: ProblemName.NotMatched
+      };
+    } else if (this.wasAudioPlayed[this.currentTestIndex].includes(false)) {
+      return {
+        done: false,
+        problem: ProblemName.NotPlayed
+      };
+    } else {
+      return {
+        done: true,
+        problem: null
+      };
+    }
   }
 }
         

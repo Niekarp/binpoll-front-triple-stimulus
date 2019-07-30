@@ -28,7 +28,7 @@ export class HeadphonesTestPageComponent implements OnInit {
     this.keyboardNav.goNextCondition = () => { return this.audio.isAllTestAudioLoaded(); };
     this.keyboardNav.onGoNextConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
     this.keyboardNav.onGoBackConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
-    this.keyboardNav.deactivateOnNext = true;
+    // this.keyboardNav.deactivateOnNext = true;
 
     this.audio.loadAudioPlayers();
 
@@ -92,7 +92,7 @@ export class HeadphonesTestPageComponent implements OnInit {
   }
 
   public onNavigationButtonSuccess(): void {
-    this.keyboardNav.active = false;
+    // this.keyboardNav.active = false;
     this.stopAudio();
   }
 
