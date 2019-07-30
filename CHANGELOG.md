@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.1.5...v1.2.0) (2019-07-30)
+
+
+### Bug Fixes
+
+* **poll-page:** audio button width adjusted ([7bdee56](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/7bdee56))
+* **poll-page:** remove shadow flickering ([37fc085](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/37fc085))
+* **poll-page:** removed border-content gap ([b8fd600](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/b8fd600))
+
+
+### Features
+
+* **poll-page:** add keyboard navigation ([3e78e88](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/3e78e88))
+
+
+
 ### [1.1.5](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.1.4...v1.1.5) (2019-07-29)
 
 
