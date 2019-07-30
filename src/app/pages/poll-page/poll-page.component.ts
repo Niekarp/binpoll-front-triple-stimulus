@@ -186,7 +186,7 @@ export class PollPageComponent implements OnInit {
     this.currentDropZoneId = dropZoneId;
     
     if (this.dragging === false) return;
-    if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '0px 5px 18px #888888';
+    if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '0px 5px 18px 1px #888888';
     
     this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
     if (this.draggingConteinerChanged) this.isOverNewContainer = true;
