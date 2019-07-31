@@ -380,27 +380,14 @@ export class PollPageComponent implements OnInit {
       return this.audio.isAllPollAudioLoaded() && !this.isFurtherHelpOpen;
     };
 
-    this.keyboardNav.goBackCondition = () => { return this.currentTestIndex === 0; }
-    this.keyboardNav.goNextCondition = () => {
-      return this.currentTestStatus.done && (this.currentTestIndex + 1) === this.testCount
-    };
+    this.keyboardNav.goBackCondition = () => { return this.leaveTestCondition; }
+    this.keyboardNav.goNextCondition = () => { return this.finishTestCondition; };
 
-    this.keyboardNav.onGoBackConditionFail = () => {
-      this.audio.pause();
-      this.currentTestIndex -= 1;
-    };
-    this.keyboardNav.onGoNextConditionFail = () => {
-      let currentTestStatus = this.currentTestStatus;
-      if (currentTestStatus.done === false) {
-        this.showProblemMessage(currentTestStatus.problem);
-      } else {
-        this.audio.pause();
-        this.currentTestIndex += 1;
-      }
-    };
+    this.keyboardNav.onGoBackConditionFail = () => { this.goToPastTask(); };
+    this.keyboardNav.onGoNextConditionFail = () => { this.goToNextTask(); };
 
-    this.keyboardNav.onGoBackConditionOK = () => { this.audio.pause(); this.keyboardNav.active = true; }
-    this.keyboardNav.onGoNextConditionOK = () => { this.audio.pause(); this.prepareAndSendPollAnswer(); };
+    this.keyboardNav.onGoBackConditionOK = () => { this.onLeaveTest(); }
+    this.keyboardNav.onGoNextConditionOK = () => { this.onFinishTest(); };
   }
 
   // Navigation
