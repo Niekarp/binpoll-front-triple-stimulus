@@ -48,8 +48,14 @@
   </div>
 </section>
 <nav class="page-navigation">
-  <a mat-raised-button class="navigation-button" (click)="goToNextTest()">Next</a>
-  <a mat-raised-button class="navigation-button" (click)="goToPreviousTest()">Previous</a>
+  <app-navigation-button text="Next" destinationUrl="/finish"
+      [condition]="data.pollDataInitiated ? finishTestCondition : false"
+      (failure)="goToNextTask()" (success)="onFinishTest()">
+  </app-navigation-button>
+  <app-navigation-button text="Previous" destinationUrl="/headphones-test"
+      [condition]="data.pollDataInitiated ? leaveTestCondition : false"
+      (failure)="goToPastTask()" (success)="onLeaveTest()">
+  </app-navigation-button>
   <div id="help-note">
     If you encounter problems with the audio playback, check audio setting on your device.
     <span class="link-like" (click)="onFurtherHelpClick()">Further help</span>

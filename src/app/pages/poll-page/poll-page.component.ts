@@ -284,65 +284,6 @@ export class PollPageComponent implements OnInit {
       }        
     });
   }
-    
-  public goToNextTest(): void {
-    if (this.fbDropZone[this.currentTestIndex].length === 0 || 
-        this.bfDropZone[this.currentTestIndex].length === 0 || 
-        this.ffDropZone[this.currentTestIndex].length === 0) {
-      this.showMessage('match recordings with acoustic scenes');
-      return;
-    } else if (this.wasAudioPlayed[this.currentTestIndex].includes(false)) {
-      let notPlayedAudiosIndices = this.getAllIndexes(this.wasAudioPlayed[this.currentTestIndex], false);
-      if (notPlayedAudiosIndices.length === 1) {
-        this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
-      } else if (notPlayedAudiosIndices.length === 2) {
-        this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + 
-          ' and audio ' + (notPlayedAudiosIndices[1] + 1) + ' weren\'t played');
-      } else {
-        this.showMessage('audio 1, 2 and 3 weren\'t played');
-      }
-      return;
-    }
-    
-    this.audio.pause();
-    this.currentTestIndex += 1;
-    
-    if (this.currentTestIndex === this.testCount) {
-      let sampleNames = this.audio.getSamplesName();
-      let answer = {};
-      for (let i = 0; i < 10; ++i) {
-        answer[sampleNames[i]] = {
-          'answer_FB': this.fbDropZone[i][0].scene,
-          'answer_BF': this.bfDropZone[i][0].scene,
-          'answer_FF': this.ffDropZone[i][0].scene
-        };
-      }
-      
-      this.apiClient.sendPollData({
-        startDate: this.data.startDate,
-        endDate: new Date(),
-        answer: answer,
-        assignedSetId: this.audio.pollAudioSet.id,
-        userInfo: {
-          age: this.data.questionnaire.age,
-          hearing_difficulties: this.data.questionnaire.hearingDifficulties,
-          headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
-          listening_test_participated: this.data.questionnaire.listeningTestParticipation
-        }
-      });
-      this.router.navigateByUrl('finish', { skipLocationChange: true });
-    } 
-  }
-      
-  public goToPreviousTest(): void {
-    this.audio.pause();
-    this.currentTestIndex -= 1;
-    
-    if (this.currentTestIndex === -1) {
-      this.keyboardNav.active = true;
-      this.router.navigateByUrl('headphones-test', { skipLocationChange: true });
-    } 
-  }
       
   public onFurtherHelpClick() {
     this.audio.pause();
@@ -460,6 +401,41 @@ export class PollPageComponent implements OnInit {
 
     this.keyboardNav.onGoBackConditionOK = () => { this.audio.pause(); this.keyboardNav.active = true; }
     this.keyboardNav.onGoNextConditionOK = () => { this.audio.pause(); this.prepareAndSendPollAnswer(); };
+  }
+
+  // Navigation
+
+  public get leaveTestCondition(): boolean {
+    return this.currentTestIndex === 0;
+  }
+
+  public get finishTestCondition(): boolean {
+    return this.currentTestStatus.done && (this.currentTestIndex + 1) === this.testCount
+  }
+
+  public goToPastTask(): void {
+    this.audio.pause(); 
+    this.currentTestIndex -= 1;
+  }
+
+  public goToNextTask(): void {
+    let currentTestStatus = this.currentTestStatus;
+    if (currentTestStatus.done === false) {
+      this.showProblemMessage(currentTestStatus.problem);
+    } else {
+      this.audio.pause();
+      this.currentTestIndex += 1;
+    }
+  }
+
+  public onLeaveTest(): void {
+    this.audio.pause(); 
+    this.keyboardNav.active = true;
+  }
+
+  public onFinishTest(): void {
+    this.audio.pause(); 
+    this.prepareAndSendPollAnswer();
   }
 
   // Spinner related
