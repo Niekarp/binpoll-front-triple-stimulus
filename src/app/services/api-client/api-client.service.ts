@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { ConfigService } from '../../config/config.service'
 import { Observable, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, map, concatAll } from 'rxjs/operators';
 import { DataService } from '../data/data.service';
 import { PollData } from "../../models/PollData"
 import { ProblemReport } from "../../models/ProblemReport"
@@ -146,5 +146,21 @@ export class ApiClientService {
       console.error(error);
       return of({});
     }));
+  }
+
+  public getExampleVideo(): Observable<Blob> {
+    return this.configObservable.pipe(
+        map(config => {
+          let url: string = config['assetsUrl'];
+          if(url == null) {
+            console.error('assetsUrl property not found');
+          } else {
+            return this.http.get(url + 'example-movie/poll-example-movie.mov', {responseType: 'blob'});
+          }
+        }),
+        concatAll()
+        ).pipe(catchError(error => {
+          throw 'error during example movie prefetch download';
+        }));
   }
 }

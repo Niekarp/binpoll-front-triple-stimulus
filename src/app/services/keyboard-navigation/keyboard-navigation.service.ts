@@ -68,7 +68,6 @@ export class KeyboardNavigationService {
     }
     else if (event.key === 'ArrowRight')
     {
-      debugger;
       if (this.goNextCondition())
       {
         this.onGoNextConditionOK();

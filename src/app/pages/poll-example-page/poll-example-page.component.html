@@ -2,9 +2,9 @@
   How to do the test – Demo
 </header>
 <section class="page-content smaller-font">
-  <video width="100%" height="325px" autoplay loop>
-    <source src="../../../assets/poll-example-movie.webm" type="video/webm">
-    <source src="../../../assets/poll-example-movie.mov" type="video/mp4">
+  <video [src]="data.exampleVideoUrl ? data.exampleVideoUrl : '../../../assets/example-movie/poll-example-movie.mov'"
+      width="100%" height="325px" autoplay loop
+      [poster]="data.exampleVideoUrl ? '' : '../../../assets/example-movie/poll-example-movie-loading.gif'">
   </video>
   <ul id="instructions-list">
     <li>Listen to the recording by clicking on its audio button</li>

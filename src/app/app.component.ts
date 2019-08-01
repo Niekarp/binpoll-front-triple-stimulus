@@ -4,7 +4,7 @@ import { KeyboardNavigationService } from './services/keyboard-navigation/keyboa
 import { DataService } from './services/data/data.service';
 import { ApiClientService } from './services/api-client/api-client.service';
 import { LogService } from './services/log/log.service';
-import { HttpClient } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,13 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   title = 'binpoll-front';
   
-  constructor(public router: Router, public keyboardNav: KeyboardNavigationService, public data: DataService, public api: ApiClientService, public logService: LogService) {
+  constructor(
+      public router: Router, 
+      public keyboardNav: KeyboardNavigationService,
+      public data: DataService,
+      public api: ApiClientService,
+      public logService: LogService,
+      private sanitizer: DomSanitizer) {
     if (window.location.pathname === '/credits') return;
 
     this.router.navigate(['/'], { replaceUrl: true });
@@ -22,6 +28,16 @@ export class AppComponent {
     this.keyboardNav.active = true;
 
     logService.setLoggingToServer();
+
+    // Preload video
+    this.api.getExampleVideo().subscribe(response => {
+      let videoBlob = response;
+      let videoBlobUrl = URL.createObjectURL(videoBlob);
+      let trustedVideoBlobUrl = sanitizer.bypassSecurityTrustUrl(videoBlobUrl);
+      this.data.exampleVideoUrl = trustedVideoBlobUrl;
+    }, error => {
+      console.error(error);
+    });
   }
 
   ngOnInit() { }

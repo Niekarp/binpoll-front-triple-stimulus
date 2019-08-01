@@ -11,7 +11,6 @@ export class AcousticScenesPageComponent implements OnInit {
   constructor(public keyboardNav: KeyboardNavigationService) {}
   
   ngOnInit() {
-    debugger
     this.keyboardNav.goBackCondition = () => { return true; }
     this.keyboardNav.goNextCondition = () => { return true; };
   }

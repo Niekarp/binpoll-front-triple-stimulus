@@ -25,5 +25,8 @@ export class DataService {
   // ???
   public stupidThing = false;
 
+  // Resources
+  public exampleVideoUrl = null;
+
   constructor() { }
 }
