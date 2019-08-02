@@ -52,24 +52,37 @@
 
 .scene-audio-container {
 	height: 344px;
-  // border: 4px solid $primary-color-light;
-  // position: relative;
-	border-radius: 10px;
-  transition: box-shadow 0.5s;
 }
 
 .audio-drop-zone {
 	width: 100%;
   height: 100%;
+  position: relative;
   box-sizing: border-box;
-  background-color: #d9dbde;
   border: 5px solid #5b9bd5;
-	border-radius: 10px;
+  border-radius: 10px;
+  background-color: #d9dbde;
+  --after-opacity: 0;
+}
+
+.audio-drop-zone::after {
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 10px;
+  box-shadow: 0px 4px 18px 5px #888888;
+  opacity: var(--after-opacity);
+  transition: opacity 0.5s;
 }
 
 .audio-dropped {
 	position: relative;
-	left: 0;
+  left: 0;
+  z-index: 999; // z-index: 1000 is for dragging button
 	background-color: $primary-color-light;
 	transition: left 0.5s;
 }

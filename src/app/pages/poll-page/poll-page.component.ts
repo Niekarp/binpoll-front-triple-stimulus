@@ -104,7 +104,7 @@ export class PollPageComponent implements OnInit {
   // Drag & drop related
 
   public drop(event: CdkDragDrop<string[]>): void {
-    (event.container.element.nativeElement as HTMLElement).parentElement.style.boxShadow = null
+    (event.container.element.nativeElement as HTMLElement).style.setProperty('--after-opacity', '0');
     $('.mat-ripple-element').removeAttr('style');
     
     let audios = document.getElementsByClassName('audio-dropped');
@@ -186,8 +186,8 @@ export class PollPageComponent implements OnInit {
     this.currentDropZoneId = dropZoneId;
     
     if (this.dragging === false) return;
-    if (dropZoneId !== 'audioPool') (event.target as HTMLElement).parentElement.style.boxShadow = '0px 5px 18px 1px #888888';
-    
+    if (dropZoneId !== 'audioPool') (event.target as HTMLElement).style.setProperty('--after-opacity', '1');
+        
     this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
     if (this.draggingConteinerChanged) this.isOverNewContainer = true;
     
@@ -222,7 +222,7 @@ export class PollPageComponent implements OnInit {
     const dropZoneId = (event.target as HTMLElement).id;
     this.currentDropZoneId = null;
     
-    (event.target as HTMLElement).parentElement.style.boxShadow = null
+    (event.target as HTMLElement).style.setProperty('--after-opacity', '0');
     
     if (this.isOverNewContainer) this.isOverNewContainer = false;
     if (this.dragging === false) return;
