@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.2.1...v1.2.2) (2019-08-03)
+
+
+### Bug Fixes
+
+* **example-page:** video updated ([7215ec9](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/7215ec9))
+* **poll-page:** img shadow flickering on safari removed ([ec9d739](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/ec9d739))
+* **resources:** predownload images and movie ([d9d368d](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/d9d368d))
+
+
+
 ### [1.2.1](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.2.0...v1.2.1) (2019-07-31)
 
 
