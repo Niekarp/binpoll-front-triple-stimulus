@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { AudioPlayerSet } from './audio-player-set';
 import { HttpClient } from '@angular/common/http'
 import { ApiClientService } from '../api-client/api-client.service';
-import { Subscription, of, Observable } from 'rxjs';
-import { switchMap, retryWhen, delay, take } from 'rxjs/operators';
+import { Subscription, of, Observable, throwError } from 'rxjs';
+import { switchMap, retryWhen, delay, take, tap, map } from 'rxjs/operators';
 import { ConfigService } from 'src/app/config/config.service';
+import { DataService } from '../data/data.service';
 
 
 const audioSampleRate = 44100;
@@ -32,7 +33,11 @@ export class AudioService {
 
   private audioRequests = new Array<Subscription>();
 
-  constructor(private http: HttpClient, private api: ApiClientService, private config: ConfigService) {
+  constructor(
+      private http: HttpClient,
+      private api: ApiClientService,
+      private config: ConfigService,
+      private data: DataService) {
     // console.log('audio service created');
     this.audioPlayers = new AudioPlayerSet(30);
 
@@ -232,11 +237,26 @@ export class AudioService {
   }
 
   private loadAudioBlob(url: string): Observable<ArrayBuffer> {
-    const request = this.http.get(url, {responseType: 'arraybuffer'}).pipe(retryWhen(errors => { 
-      console.warn('retrying audio download');
-      return errors.pipe(delay(25000), take(10));
+    return this.http.get(url, {responseType: 'arraybuffer'}).pipe(retryWhen(errors => {
+      if (this.data.redownloadStarted === false) {
+        this.data.redownloadStarted = true;
+        console.warn('retrying audio download started');
+      }
+      let downloadCount = 0;
+      return errors.pipe(
+          tap(error => {
+            downloadCount += 1;
+            if (downloadCount >= this.data.redownloadCount) {
+              console.warn(`could not download audio(attempt ${downloadCount})`);
+              console.error(error);
+              this.data.redownloadCount += 1;
+            }
+            if (downloadCount >= 10) {
+              throw 'could not download audio after 10 attempts';
+            }
+          }),
+          delay(25000));
     }));
-    return request;
   }
 
   private loadTestAudioPlayer(url: string, audio: HTMLAudioElement): void {

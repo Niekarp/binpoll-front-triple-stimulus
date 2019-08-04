@@ -28,5 +28,9 @@ export class DataService {
   // Resources
   public exampleVideoUrl = null;
 
+  // Audio download (used in audio-service)
+  public redownloadStarted: boolean = false;
+  public redownloadCount: number = 1;
+
   constructor() { }
 }
