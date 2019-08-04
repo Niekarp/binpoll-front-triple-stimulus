@@ -156,7 +156,7 @@ export class PollPageComponent implements OnInit {
   
   public onDragReleased(event: CdkDragRelease): void {
     if (this.draggingConteinerChanged && this.isOverNewContainer === false) {
-      // need custom animation
+      // Need custom animation
       let dragPreview = document.getElementsByClassName('cdk-drag-preview').item(0) as HTMLElement;
       
       let style = document.getElementById('move');
@@ -172,7 +172,7 @@ export class PollPageComponent implements OnInit {
       let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
       
       if (audioAndPlaceholder.length === 2 && placeholder.classList.contains('cdk-drag-placeholder')) {
-        // it really is a placeholder
+        // It really is a placeholder
         placeholder.style.top = '-50px';
       }
     }

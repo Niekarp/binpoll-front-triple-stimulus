@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ViewChild, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import * as $ from 'jquery';
 import { MatAnchor } from '@angular/material';
 
 @Component({
@@ -9,7 +8,6 @@ import { MatAnchor } from '@angular/material';
   styleUrls: ['./navigation-button.component.scss']
 })
 export class NavigationButtonComponent implements OnInit {
-
   @ViewChild('button')
   public button: MatAnchor;
 
@@ -38,21 +36,20 @@ export class NavigationButtonComponent implements OnInit {
 
   ngOnInit() { }
 
-  navigate() {
+  navigate(): void {
     if (this.condition || this.condition === undefined) {
       this.success.emit();
       this.router.navigateByUrl(this.destinationUrl, { skipLocationChange: true });
-    }
-    else {
+    } else {
       this.failure.emit();
     }
   }
 
-  onNavigationButtonClick() {
+  onNavigationButtonClick(): void {
     this.navigate();
   }
 
-  onNavigationButtonKeydown(event: KeyboardEvent) {
+  onNavigationButtonKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter' || event.key === ' ') {
       this.navigate();
     }

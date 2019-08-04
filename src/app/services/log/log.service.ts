@@ -6,13 +6,13 @@ var prune = require('json-prune');
   providedIn: 'root'
 })
 export class LogService {
-  // config
+  // Config
   private readonly MESSAGE_OBJECT_DEPTH = 5;
   private readonly MESSAGE_MAX_BYTE_SIZE = 100000; // 100KB
   private readonly CONSOLE_MESSAGE_PRUNE_OPTIONS = { depthDecr: this.MESSAGE_OBJECT_DEPTH, inheritedProperties: false, prunedString: '"-pruned-"' };
   private readonly ERROR_EVENT_MESSAGE_OPTIONS = { depthDecr: this.MESSAGE_OBJECT_DEPTH, inheritedProperties: true, prunedString: '"-pruned-"' };
 
-  // fields to prevent infinite message loops
+  // Fields to prevent infinite message loops
   private readonly MESSAGE_LIMIT = 500;
   private readonly MESSAGE_PAUSE_LIMIT = 50;
   private readonly MESSAGE_PAUSE_TIME = 20000; // 20s
@@ -30,7 +30,7 @@ export class LogService {
     this.errorEventListener = (event: any) => { this.prepareAndSendMessage('error event', undefined, [event], this.ERROR_EVENT_MESSAGE_OPTIONS); return false; };
   }
 
-  public setLoggingToServer() {
+  public setLoggingToServer(): void {
     console.log = (message?: any, ...optionalParams: any[]) => {
       this.defaultConsoleLog(message, ...optionalParams);
       this.prepareAndSendMessage('log', message, optionalParams, this.CONSOLE_MESSAGE_PRUNE_OPTIONS);
@@ -54,7 +54,7 @@ export class LogService {
     window.addEventListener('error', this.errorEventListener, { capture: true });
   }
 
-  public resetLogging() {
+  public resetLogging(): void {
     console.log = this.defaultConsoleLog;
     console.info = this.defaultConsoleInfo;
     console.warn = this.defaultConsoleWarn;
@@ -92,13 +92,13 @@ export class LogService {
     this.pauseOrStopLoggingIfLoopAppeared();
   }
 
-  private pruneReplacer(value, defaultValue, circular) {
+  private pruneReplacer(value, defaultValue, circular): string {
       if (circular) return '"-circular-"';
       if (Array.isArray(value)) return defaultValue.replace(/]$/, ',"-truncated-"]');
       return '"-pruned-"';
   }
 
-  private pauseOrStopLoggingIfLoopAppeared() {
+  private pauseOrStopLoggingIfLoopAppeared(): void {
     if (this.messageCount >= this.MESSAGE_LIMIT) { 
       this.messagePause = true;
       this.resetLogging();

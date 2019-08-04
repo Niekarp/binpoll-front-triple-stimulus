@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { MatIcon } from '@angular/material';
 
 @Component({
@@ -7,14 +7,13 @@ import { MatIcon } from '@angular/material';
   styleUrls: ['./play-audio-button.component.scss']
 })
 export class PlayAudioButtonComponent implements OnInit {
-
   @ViewChild('buttonIcon') buttonIcon: MatIcon;
 
   @Input()
-  public text = '';
+  public text: string = '';
 
   @Input()
-  public audioId = 0;
+  public audioId: number = 0;
 
   @Output()
   public onClick = new EventEmitter();
@@ -24,19 +23,17 @@ export class PlayAudioButtonComponent implements OnInit {
 
   private playState: boolean = false;
 
-  constructor() { 
-    // console.log('audio button created'); 
-  }
+  constructor() { }
 
   ngOnInit() {
     this.onInit.emit(this);
   }
 
-  public onButtonClick() {
+  public onButtonClick(): void {
     this.onClick.emit(this);
   }
 
-  public toggle() {
+  public toggle(): void {
     if(this.playState) {
       this.pause();
     } else {
@@ -44,12 +41,12 @@ export class PlayAudioButtonComponent implements OnInit {
     }
   }
 
-  public pause() {
+  public pause(): void {
     this.buttonIcon._elementRef.nativeElement.textContent = 'play_circle_outline';
     this.playState = false;
   }
 
-  public play() {
+  public play(): void {
     this.buttonIcon._elementRef.nativeElement.textContent = 'pause';
     this.playState = true;
   }
@@ -58,11 +55,11 @@ export class PlayAudioButtonComponent implements OnInit {
     return this.playState;
   }
 
-  public focus() {
+  public focus(): void {
     document.getElementById('audio-button').focus();
   }
 
-  public blur() {
+  public blur(): void {
     document.getElementById('audio-button').blur();
   }
 }

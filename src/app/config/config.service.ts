@@ -7,17 +7,16 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ConfigService {
-
   private configUrl = 'assets/config.json';
 
   constructor(private http: HttpClient) { }
 
   public getConfig() : Observable<any> {
     return this.http.get(this.configUrl).pipe(
-      catchError((err:HttpErrorResponse) => {
-        console.error(err);
-        console.error("config.json not found");
-        return of({});
-    }));
+        catchError((err:HttpErrorResponse) => {
+          console.error(err);
+          console.error("config.json not found");
+          return of({});
+        }));
   }
 }

@@ -7,21 +7,21 @@ import { fromEvent } from 'rxjs';
   providedIn: 'root'
 })
 export class KeyboardNavigationService {
-  // back & next mean navigation directions
+  // Back & next mean navigation directions
   
-  // iserted automatically on application start
+  // Iserted automatically on application start
   public router: Router;
   
-  // options
+  // Options
   public active = false;
   public deactivateOnNext = false;
   
-  // navigation condition (restarted after each navigation)
+  // Navigation condition (restarted after each navigation)
   public activeCondition: () => boolean;
   public goBackCondition: () => boolean;
   public goNextCondition: () => boolean;
   
-  // events
+  // Events
   public onGoNextConditionOK = () => {};
   public onGoNextConditionFail = () => {};
   
@@ -32,7 +32,7 @@ export class KeyboardNavigationService {
     fromEvent(document, 'keydown').subscribe((event: KeyboardEvent) => { this.onKeydown(event); });
   }
 
-  public restart() {
+  public restart(): void {
     this.activeCondition = () => { return true; };
     this.goBackCondition = () => { return false; };
     this.goNextCondition = () => { return false; };
@@ -53,32 +53,22 @@ export class KeyboardNavigationService {
       return this.router.url === '/' + route.path;
     });
     
-    if (event.key === 'ArrowLeft')
-    {
-      if (this.goBackCondition())
-      {
+    if (event.key === 'ArrowLeft') {
+      if (this.goBackCondition()) {
         this.onGoBackConditionOK();
         this.router.navigateByUrl(this.router.config[currentRouteIndex - 1].path, { skipLocationChange: true });
-      }
-      else
-      {
+      } else {
         this.onGoBackConditionFail();
       }
       event.stopPropagation();
-    }
-    else if (event.key === 'ArrowRight')
-    {
-      if (this.goNextCondition())
-      {
+    } else if (event.key === 'ArrowRight') {
+      if (this.goNextCondition()) {
         this.onGoNextConditionOK();
-        if (this.deactivateOnNext)
-        {
+        if (this.deactivateOnNext) {
           this.active = false;
         }
         this.router.navigateByUrl(this.router.config[currentRouteIndex + 1].path, { skipLocationChange: true });
-      }
-      else
-      {
+      } else {
         this.onGoNextConditionFail();
       }
       event.stopPropagation();
