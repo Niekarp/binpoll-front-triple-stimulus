@@ -22,7 +22,7 @@ export class ReportProblemPageComponent implements OnInit {
 
   ngOnInit() {
     //this.audio.stopAudioLoading();
-    this.data.stupidThing = false;
+    this.data.shouldDisplayDialogWithWarning = false;
   }
 
   public onSendCommentButtonClick(): void {

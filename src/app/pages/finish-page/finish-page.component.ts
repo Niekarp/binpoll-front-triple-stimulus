@@ -22,7 +22,7 @@ export class FinishPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.data.stupidThing = false;
+    this.data.shouldDisplayDialogWithWarning = false;
   }
 
   public onSendCommentButtonClick(): void {

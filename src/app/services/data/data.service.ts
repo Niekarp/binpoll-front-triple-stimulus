@@ -22,8 +22,8 @@ export class DataService {
   public wasAudioPlayed = Array<boolean[]>(10);
   public startDate: Date;
 
-  // ???
-  public stupidThing = false;
+  // Dialog with warning on page leave
+  public shouldDisplayDialogWithWarning = false;
 
   // Resources
   public exampleVideoUrl = null;

@@ -47,8 +47,8 @@ export class AppComponent {
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  displayDialogWithWarning($event) {
-    if (this.data.stupidThing)
+  displayDialogWithWarning($event): void {
+    if (this.data.shouldDisplayDialogWithWarning)
       $event.returnValue = true;
     else
       $event = undefined;
