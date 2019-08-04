@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { FurtherHelpDialogComponent } from './further-help-dialog/further-help-dialog.component';
+import { FurtherHelpDialogComponent } from '../../common/ui-elements/further-help-dialog/further-help-dialog.component';
 import { AudioService } from 'src/app/services/audio/audio.service';
 import { PlayAudioButtonComponent } from 'src/app/common/ui-elements/play-audio-button/play-audio-button.component';
 import { NgxSpinnerService } from 'ngx-spinner';

@@ -30,7 +30,7 @@ import { PollDescriptionPageComponent } from './pages/poll-description-page/poll
 import { PollPageComponent } from './pages/poll-page/poll-page.component';
 import { FinishPageComponent } from './pages/finish-page/finish-page.component';
 import { PolicyPageComponent } from './pages/policy-page/policy-page.component';
-import { FurtherHelpDialogComponent } from './pages/headphones-test-page/further-help-dialog/further-help-dialog.component';
+import { FurtherHelpDialogComponent } from './common/ui-elements/further-help-dialog/further-help-dialog.component';
 import { ReportProblemPageComponent } from './pages/report-problem-page/report-problem-page.component';
 import { PlayAudioButtonComponent } from './common/ui-elements/play-audio-button/play-audio-button.component';
 

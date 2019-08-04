@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener, ViewChild, ElementRef, QueryList, View
 import { Router } from '@angular/router';
 import { SharedConfig } from '../../config/shared-config';
 import { MatSnackBar, MatDialog } from '@angular/material';
-import { FurtherHelpDialogComponent } from '../headphones-test-page/further-help-dialog/further-help-dialog.component';
+import { FurtherHelpDialogComponent } from '../../common/ui-elements/further-help-dialog/further-help-dialog.component';
 import { ApiClientService } from '../../services/api-client/api-client.service';
 import { AudioService } from 'src/app/services/audio/audio.service';
 import { PlayAudioButtonComponent } from 'src/app/common/ui-elements/play-audio-button/play-audio-button.component';
