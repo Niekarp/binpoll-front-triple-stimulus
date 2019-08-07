@@ -35,8 +35,6 @@ export class AppComponent {
       let videoBlobUrl = URL.createObjectURL(videoBlob);
       let trustedVideoBlobUrl = sanitizer.bypassSecurityTrustUrl(videoBlobUrl);
       this.data.exampleVideoUrl = trustedVideoBlobUrl;
-    }, error => {
-      console.error(error);
     });
   }
 

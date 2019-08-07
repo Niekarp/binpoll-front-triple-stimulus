@@ -7,7 +7,7 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
   styleUrls: ['./additional-information-page.component.scss']
 })
 export class AdditionalInformationPageComponent implements OnInit {
-  constructor(public keyboardNav: KeyboardNavigationService) { }
+  constructor(private keyboardNav: KeyboardNavigationService) { }
 
   ngOnInit() {
     this.keyboardNav.goBackCondition = () => { return true; };

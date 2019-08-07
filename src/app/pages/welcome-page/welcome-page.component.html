@@ -24,7 +24,7 @@
 </section>
 <nav class="page-navigation">
   <app-navigation-button text="Start" destinationUrl="/questionnaire" [condition]="data.consentChecked" 
-  [disabled]="!data.consentChecked" (failure)="showProblemMessage()">
+      [disabled]="!data.consentChecked" (failure)="showProblemMessage()">
   </app-navigation-button>
   <div id="navigation-info">To begin click the Start button or use keyboard arrows.</div>
 </nav>

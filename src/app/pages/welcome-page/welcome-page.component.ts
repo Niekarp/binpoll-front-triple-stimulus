@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedConfig } from '../../config/shared-config';
-import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
 import { DataService } from 'src/app/services/data/data.service';
+import { ConfigService } from 'src/app/services/config/config.service';
 
 @Component({
   selector: 'app-welcome-page',
@@ -11,23 +10,22 @@ import { DataService } from 'src/app/services/data/data.service';
   styleUrls: ['./welcome-page.component.scss']
 })
 export class WelcomePageComponent implements OnInit {
-  public testCount: number;
   public appVersion: string;
+  public testCount: number;
 
   constructor(
-      public sharedConfig: SharedConfig,
-      public router: Router,
-      public snackbar: MatSnackBar,
       public data: DataService,
-      public keyboardNav: KeyboardNavigationService) { 
-    this.appVersion = sharedConfig.appVersion;
-    this.testCount = sharedConfig.testCount;
+      private snackbar: MatSnackBar,
+      private config: ConfigService,
+      private keyboardNav: KeyboardNavigationService) { 
+    this.appVersion = config.appVersion;
+    this.testCount = config.testCount;
   }
 
   ngOnInit() {
     this.keyboardNav.active = true;
-    this.keyboardNav.goNextCondition = () => { return this.data.consentChecked };
-    this.keyboardNav.onGoNextConditionFail = () => { this.showProblemMessage(); }
+    this.keyboardNav.goNextCondition = () => { return this.data.consentChecked; };
+    this.keyboardNav.onGoNextConditionFail = () => { this.showProblemMessage(); };
   }
 
   public showProblemMessage(): void {

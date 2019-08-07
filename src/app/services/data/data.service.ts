@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Questionnaire } from 'src/app/models/questionnaire';
+import { Questionnaire } from 'src/app/models/questionnaire.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
+  // Api
   public dataResponseId = null;
+  public seed = null;
 
   // Welcome page data
   public consentChecked = false;

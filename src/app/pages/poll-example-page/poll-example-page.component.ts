@@ -8,11 +8,10 @@ import { DataService } from 'src/app/services/data/data.service';
   styleUrls: ['./poll-example-page.component.scss']
 })
 export class PollExamplePageComponent implements OnInit {
-  constructor(public keyboardNav: KeyboardNavigationService, public data: DataService) {
-  }
+  constructor(public data: DataService, private keyboardNav: KeyboardNavigationService) { }
 
   ngOnInit() {
-    this.keyboardNav.goBackCondition = () => { return true; }
+    this.keyboardNav.goBackCondition = () => { return true; };
     this.keyboardNav.goNextCondition = () => { return true; };
   }
 }

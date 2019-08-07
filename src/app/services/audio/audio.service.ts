@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http'
 import { ApiClientService } from '../api-client/api-client.service';
 import { Subscription, of, Observable, throwError } from 'rxjs';
 import { switchMap, retryWhen, delay, take, tap, map } from 'rxjs/operators';
-import { ConfigService } from 'src/app/config/config.service';
+import { ConfigService } from 'src/app/services/config/config.service';
 import { DataService } from '../data/data.service';
 
 
@@ -58,7 +58,7 @@ export class AudioService {
     this.testLoadedCount = 0;
     this.pollLoadedCount = 0;
 
-    let baseUrl = '/assets/headphones test sounds/';
+    let baseUrl = '/assets/headphones-test-sounds/';
 
     let leftTestUrl = baseUrl + 'Hungarian_1_hrtf4_sector2.wav';
     let rightTestUrl = baseUrl + 'Hungarian_1_hrtf4_sector4.wav';
@@ -76,9 +76,11 @@ export class AudioService {
     this.api.getSampleSet().subscribe(audioSet => {
       // console.log(audioSet);
       this.audioSet = audioSet;
+      this.data.seed = audioSet.seed;
       this.config.getConfig().subscribe(config => {
         this.downloadAudioSet(audioSet, config['pollSoundsUrl']);
       });
+    }, error => {
     });
   }
   
@@ -238,7 +240,7 @@ export class AudioService {
 
   private loadAudioBlob(url: string): Observable<ArrayBuffer> {
     return this.http.get(url, {responseType: 'arraybuffer'}).pipe(retryWhen(errors => {
-      if (this.data.redownloadStarted === false) {
+      if (!this.data.redownloadStarted) {
         this.data.redownloadStarted = true;
         console.warn('retrying audio download started');
       }

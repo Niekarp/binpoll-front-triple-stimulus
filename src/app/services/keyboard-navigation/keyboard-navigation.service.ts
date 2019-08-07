@@ -46,7 +46,7 @@ export class KeyboardNavigationService {
   private onKeydown(event: KeyboardEvent): void {
     // console.log('navigation keydown');
     
-    if (this.active === false || this.activeCondition() === false) return;
+    if (!this.active || !this.activeCondition()) return;
     // console.log('navigationKeyboard active');
     
     let currentRouteIndex = this.router.config.findIndex((route: any) => {

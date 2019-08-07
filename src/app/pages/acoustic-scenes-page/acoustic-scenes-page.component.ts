@@ -8,7 +8,7 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
   styleUrls: ['./acoustic-scenes-page.component.scss']
 })
 export class AcousticScenesPageComponent implements OnInit {
-  constructor(public keyboardNav: KeyboardNavigationService) { }
+  constructor(private keyboardNav: KeyboardNavigationService) { }
   
   ngOnInit() {
     this.keyboardNav.goBackCondition = () => { return true; };

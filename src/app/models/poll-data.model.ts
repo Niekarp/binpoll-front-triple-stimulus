@@ -1,3 +1,4 @@
+import { UserInfo } from './user-info.model';
 
 export class PollData {
     public startDate: Date;

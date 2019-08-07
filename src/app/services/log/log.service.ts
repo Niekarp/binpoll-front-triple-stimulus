@@ -27,7 +27,10 @@ export class LogService {
   private errorEventListener: (event: any) => boolean;
 
   constructor(public api: ApiClientService) {
-    this.errorEventListener = (event: any) => { this.prepareAndSendMessage('error event', undefined, [event], this.ERROR_EVENT_MESSAGE_OPTIONS); return false; };
+    this.errorEventListener = (event: any) => {
+      this.prepareAndSendMessage('error event', undefined, [event], this.ERROR_EVENT_MESSAGE_OPTIONS);
+      return false;
+    };
   }
 
   public setLoggingToServer(): void {
@@ -83,9 +86,13 @@ export class LogService {
       pruneOptions['depthDecr'] -= 1;
     } while(true)
 
-    this.api.sendConsoleMessage({
-      message: prunedMessage + ',' + prunedOptionalParams.toString(),
-      message_type: messageType
+    let consoleMessage = {
+      content: prunedMessage + ',' + prunedOptionalParams.toString(),
+      type: messageType
+    };
+    this.api.sendConsoleMessage(consoleMessage).subscribe(() => {}, error => {
+      this.defaultConsoleError('log message could not be sent');
+      this.defaultConsoleError(error);
     });
 
     this.messageCount += 1;
@@ -93,9 +100,9 @@ export class LogService {
   }
 
   private pruneReplacer(value, defaultValue, circular): string {
-      if (circular) return '"-circular-"';
-      if (Array.isArray(value)) return defaultValue.replace(/]$/, ',"-truncated-"]');
-      return '"-pruned-"';
+    if (circular) return '"-circular-"';
+    if (Array.isArray(value)) return defaultValue.replace(/]$/, ',"-truncated-"]');
+    return '"-pruned-"';
   }
 
   private pauseOrStopLoggingIfLoopAppeared(): void {

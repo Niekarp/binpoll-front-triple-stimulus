@@ -20,7 +20,7 @@ export class HeadphonesTestPageComponent implements OnInit {
       private dialog: MatDialog,
       private audio: AudioService,
       private spinner: NgxSpinnerService,
-      public keyboardNav: KeyboardNavigationService) {
+      private keyboardNav: KeyboardNavigationService) {
   }
 
   ngOnInit() {
@@ -28,11 +28,10 @@ export class HeadphonesTestPageComponent implements OnInit {
     this.keyboardNav.goNextCondition = () => { return this.audio.isAllTestAudioLoaded(); };
     this.keyboardNav.onGoNextConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
     this.keyboardNav.onGoBackConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
-    // this.keyboardNav.deactivateOnNext = true;
-
+    
     this.audio.loadAudioPlayers();
 
-    if (this.audio.isAllTestAudioLoaded() === false) {
+    if (!this.audio.isAllTestAudioLoaded()) {
       setTimeout(() => {
         this.spinner.show();
       }, 100);
@@ -57,12 +56,12 @@ export class HeadphonesTestPageComponent implements OnInit {
   }
 
   public onLeftAudioButtonClick(): void {
-    if (this.audio.headphonesTestRightChannelAudio.paused === false) this.toggleRightAudioButtonAndAudio();
+    if (!this.audio.headphonesTestRightChannelAudio.paused) this.toggleRightAudioButtonAndAudio();
     this.toggleLeftAudioButtonAndAudio();
   }
 
   public onRightAudioButtonClick(): void {
-    if (this.audio.headphonesTestLeftChannelAudio.paused === false) this.toggleLeftAudioButtonAndAudio();
+    if (!this.audio.headphonesTestLeftChannelAudio.paused) this.toggleLeftAudioButtonAndAudio();
     this.toggleRightAudioButtonAndAudio();
   }
 
@@ -92,7 +91,6 @@ export class HeadphonesTestPageComponent implements OnInit {
   }
 
   public onNavigationButtonSuccess(): void {
-    // this.keyboardNav.active = false;
     this.stopAudio();
   }
 

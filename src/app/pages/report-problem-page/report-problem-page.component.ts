@@ -14,26 +14,21 @@ export class ReportProblemPageComponent implements OnInit {
   private isReportSend: boolean = false;
 
   constructor(
-      public snackbar: MatSnackBar,
-      public audio: AudioService,
+      private snackbar: MatSnackBar,
+      private audio: AudioService,
       private api: ApiClientService,
       private data: DataService) {
-  }
-
-  ngOnInit() {
     //this.audio.stopAudioLoading();
     this.data.shouldDisplayDialogWithWarning = false;
   }
 
+  ngOnInit() { }
+
   public onSendCommentButtonClick(): void {
     if (this.isReportSend) {
-      this.snackbar.open('report already sent', null, {
-        duration: 2000,
-        verticalPosition: "top",
-        panelClass: ['my-snackbar-confirm']
-      });
-    } else if (this.isReportSend === false && /\S/.test(this.message)) {
-      this.api.reportProblem({
+      this.showSuccessMessage('report already sent');
+    } else if (!this.isReportSend && /\S/.test(this.message)) {
+      let problemReport = {
         user_info: {
           headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
           hearing_difficulties: this.data.questionnaire.hearingDifficulties,
@@ -41,22 +36,33 @@ export class ReportProblemPageComponent implements OnInit {
           age: this.data.questionnaire.age,
         },
         message: this.message
-      }).subscribe(() => {
-        this.snackbar.open('report has been sent', null, {
-          duration: 2000,
-          verticalPosition: "top",
-          panelClass: ['my-snackbar-confirm']
-        });
+      };
+
+      this.api.sendProblemReport(problemReport).subscribe(() => {
+        this.showSuccessMessage('report has been sent');
         (document.getElementsByClassName('navigation-button').item(0) as HTMLElement)
-          .style.backgroundColor = 'gray';
+          .style
+          .backgroundColor = 'gray';
         this.isReportSend = true;
       });
     } else {
-      this.snackbar.open('report field must not be empty', null, {
-        duration: 2000,
-        verticalPosition: "top",
-        panelClass: ['my-snackbar-problem']
-      });
+      this.showProblemMessage('report field must not be empty');
     }
+  }
+
+  private showProblemMessage(message: string): void {
+    this.snackbar.open(message, null, {
+      duration: 2000,
+      verticalPosition: "top",
+      panelClass: ['my-snackbar-problem']
+    });
+  }
+
+  private showSuccessMessage(message: string): void {
+    this.snackbar.open(message, null, {
+      duration: 2000,
+      verticalPosition: "top",
+      panelClass: ['my-snackbar-confirm']
+    });
   }
 }

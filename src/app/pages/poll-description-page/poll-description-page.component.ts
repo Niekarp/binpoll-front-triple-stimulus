@@ -1,7 +1,6 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
-import { SharedConfig } from 'src/app/config/shared-config';
+import { Component, OnInit } from '@angular/core';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
+import { ConfigService } from 'src/app/services/config/config.service';
 
 @Component({
   selector: 'app-poll-description-page',
@@ -9,10 +8,10 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
   styleUrls: ['./poll-description-page.component.scss']
 })
 export class PollDescriptionPageComponent implements OnInit {
-  private testCount: number;
+  public testCount: number;
 
-  constructor(public sharedConfig: SharedConfig, public keyboardNav: KeyboardNavigationService) {
-    this.testCount = sharedConfig.testCount;
+  constructor(private config: ConfigService, private keyboardNav: KeyboardNavigationService) {
+    this.testCount = config.testCount;
   }
 
   ngOnInit() {

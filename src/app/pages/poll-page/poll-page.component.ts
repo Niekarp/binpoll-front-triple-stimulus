@@ -1,6 +1,5 @@
 import { Component, OnInit, HostListener, ViewChild, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
-import { SharedConfig } from '../../config/shared-config';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { FurtherHelpDialogComponent } from '../../common/ui-elements/further-help-dialog/further-help-dialog.component';
 import { ApiClientService } from '../../services/api-client/api-client.service';
@@ -12,6 +11,7 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
 import { moveItemInArray, CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, CdkDragStart, CdkDragRelease } from '@angular/cdk/drag-drop';
 
 import * as $ from 'jquery';
+import { ConfigService } from 'src/app/services/config/config.service';
 
 interface TestStatus { done: boolean, problem: null | ProblemName };
 enum ProblemName { NotMatched, NotPlayed };
@@ -31,6 +31,14 @@ export class PollPageComponent implements OnInit {
   public ffDropZone: any[][];
   private wasAudioPlayed: any[][];
   
+  public testCount: number;
+  public currentTestIndex: number = 0;
+  
+  public spinnerLoadingProgress = 0;
+  public audioLoadingProgress = 0;
+  
+  private isFurtherHelpOpen: boolean = false;
+
   private currentDropZoneId: string;
   private dragInitialPositionRect: ClientRect;
   private dragging: boolean = false;
@@ -39,14 +47,6 @@ export class PollPageComponent implements OnInit {
   private isOverNewContainer: boolean = false;
   private stopTheDrop: boolean = false;
   private draggingData: string;
-  
-  public testCount: number;
-  public currentTestIndex: number = 0;
-  
-  public spinnerLoadingProgress = 0;
-  public audioLoadingProgress = 0;
-  
-  private isFurtherHelpOpen: boolean = false;
 
   // Specify if more logs should be displayed
   private verboseLog: boolean;
@@ -60,9 +60,9 @@ export class PollPageComponent implements OnInit {
       private router: Router,
       private spinner: NgxSpinnerService,
       private audio: AudioService,
-      private sharedConfig: SharedConfig) {
+      private config: ConfigService) {
     this.verboseLog = false;
-    this.testCount = sharedConfig.testCount;
+    this.testCount = config.testCount;
     // Load data shared across components
     this.audioPool = this.data.audioPool;
     this.fbDropZone = this.data.fbDropZone;
@@ -72,13 +72,13 @@ export class PollPageComponent implements OnInit {
   }
     
   ngOnInit() {
-    if (document.getElementById('move') === null) {
+    if (!document.getElementById('move')) {
       document.getElementsByTagName('head')[0].appendChild(this.createMoveAnimationStyle());
     }
     
     this.audio.loadAudioPlayers();
     
-    if (this.audio.isAllPollAudioLoaded() === false) {
+    if (!this.audio.isAllPollAudioLoaded()) {
       setTimeout(() => {
         this.spinner.show();
       }, 100);
@@ -94,7 +94,7 @@ export class PollPageComponent implements OnInit {
         }, () => {
           console.error('loading audio timeout') 
         });
-    } else if (this.data.pollDataInitiated === false) {
+    } else if (!this.data.pollDataInitiated) {
       this.initPollData();
     }
 
@@ -155,7 +155,7 @@ export class PollPageComponent implements OnInit {
   }
   
   public onDragReleased(event: CdkDragRelease): void {
-    if (this.draggingConteinerChanged && this.isOverNewContainer === false) {
+    if (this.draggingConteinerChanged && !this.isOverNewContainer) {
       // Need custom animation
       let dragPreview = document.getElementsByClassName('cdk-drag-preview').item(0) as HTMLElement;
       
@@ -185,14 +185,14 @@ export class PollPageComponent implements OnInit {
     const dropZoneId = (event.target as HTMLElement).id;
     this.currentDropZoneId = dropZoneId;
     
-    if (this.dragging === false) return;
+    if (!this.dragging) return;
     if (dropZoneId !== 'audioPool') (event.target as HTMLElement).style.setProperty('--after-opacity', '1');
         
     this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
     if (this.draggingConteinerChanged) this.isOverNewContainer = true;
     
     if (this[dropZoneId][this.currentTestIndex].length === 0) return;
-    if (this.draggingConteinerChanged === false) return;
+    if (!this.draggingConteinerChanged) return;
     if (dropZoneId === 'audioPool') return;
     
     let audioElement = document.getElementById(dropZoneId).firstElementChild as HTMLElement;
@@ -225,7 +225,7 @@ export class PollPageComponent implements OnInit {
     (event.target as HTMLElement).style.setProperty('--after-opacity', '0');
     
     if (this.isOverNewContainer) this.isOverNewContainer = false;
-    if (this.dragging === false) return;
+    if (!this.dragging) return;
     if (this[dropZoneId][this.currentTestIndex].length === 0) return;
     if (this.draggingContainer.id === dropZoneId) return;
     if (dropZoneId === 'audioPool') return;
@@ -310,25 +310,26 @@ export class PollPageComponent implements OnInit {
 
   private showProblemMessage(problem: ProblemName): void {
     switch(problem) {
-      case ProblemName.NotMatched: {
+      case ProblemName.NotMatched:
         this.showMessage('match recordings with acoustic scenes');
         break;
-      } case ProblemName.NotPlayed: {
+
+      case ProblemName.NotPlayed:
         let notPlayedAudiosIndices = this.getAllIndexes(this.wasAudioPlayed[this.currentTestIndex], false);
         switch(notPlayedAudiosIndices.length) {
-          case 1: {
+          case 1:
             this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
             break;
-          } case 2: {
+
+          case 2:
             this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + 
               ' and audio ' + (notPlayedAudiosIndices[1] + 1) + ' weren\'t played');
             break;
-          } default: {
+
+          default:
             this.showMessage('audio 1, 2 and 3 weren\'t played');
-          }
         }
         break;
-      }
     }
   }
       
@@ -407,7 +408,7 @@ export class PollPageComponent implements OnInit {
 
   public goToNextTask(): void {
     let currentTestStatus = this.currentTestStatus;
-    if (currentTestStatus.done === false) {
+    if (!currentTestStatus.done) {
       this.showProblemMessage(currentTestStatus.problem);
     } else {
       this.audio.pause();
@@ -443,7 +444,7 @@ export class PollPageComponent implements OnInit {
       return;
     }
     let spinnerUpdateInterval = setInterval(() => {
-      if (this.updateSpinner() === false) {
+      if (!this.updateSpinner()) {
         clearInterval(spinnerUpdateInterval);
         onComplete();
       }
@@ -462,8 +463,8 @@ export class PollPageComponent implements OnInit {
         'answer_FF': this.ffDropZone[i][0].scene
       };
     }
-    
-    this.apiClient.sendPollData({
+
+    let pollData = {
       startDate: this.data.startDate,
       endDate: new Date(),
       answer: answer,
@@ -474,6 +475,10 @@ export class PollPageComponent implements OnInit {
         headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
         listening_test_participated: this.data.questionnaire.listeningTestParticipation
       }
+    };
+    
+    this.apiClient.sendPollData(pollData).subscribe((response) => {
+      this.data.dataResponseId = response['id'];
     });
   }
 

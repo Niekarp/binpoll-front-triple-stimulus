@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { AudioService } from 'src/app/services/audio/audio.service';
-import { Questionnaire } from 'src/app/models/questionnaire';
+import { Questionnaire } from 'src/app/models/questionnaire.model';
 import { DataService } from 'src/app/services/data/data.service';
+import { Age } from '../../models/age.model';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
-
-export interface Age {
-  value: String,
-  viewValue: String
-}
 
 @Component({
   selector: 'app-questionnaire-page',
@@ -31,17 +27,15 @@ export class QuestionnairePageComponent implements OnInit {
       public audio: AudioService,
       public data: DataService,
       public keyboardNav: KeyboardNavigationService) {
+    this.model = this.data.questionnaire;
+    this.data.shouldDisplayDialogWithWarning = true;
   }
 
   ngOnInit() {
     this.keyboardNav.goBackCondition = () => { return true; }
     this.keyboardNav.goNextCondition = () => { return this.formValid };
     this.keyboardNav.onGoNextConditionFail = () => { this.showProblemMessage(); }
-
-    this.data.shouldDisplayDialogWithWarning = true;
-
     this.audio.loadAudioPlayers();
-    this.model = this.data.questionnaire;
   }
 
   public get formValid(): boolean {
@@ -57,6 +51,4 @@ export class QuestionnairePageComponent implements OnInit {
       panelClass: ['my-snackbar-problem']
     });
   }
-
-  public blur(): void { event.stopPropagation(); }
 }

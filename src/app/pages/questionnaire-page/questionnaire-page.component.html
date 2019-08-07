@@ -48,15 +48,8 @@
 </section>
 <nav class="page-navigation">
   <app-navigation-button text="Next" destinationUrl="/poll-description" [condition]="formValid" 
-                         [disabled]="!formValid" (failure)="showProblemMessage()">
+      [disabled]="!formValid" (failure)="showProblemMessage()">
   </app-navigation-button>
   <app-navigation-button text="Previous" destinationUrl="/">
   </app-navigation-button>
 </nav>
-
-<!-- 
-<p>{{ model.age }}</p>
-<p>{{ model.hearingDifficulties }}</p>
-<p>{{ model.listeningTestParticipation }}</p>
-<p>{{ model.typedHeadphonesMakeAndModel }}</p>
- -->

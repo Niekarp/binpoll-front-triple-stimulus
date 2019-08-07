@@ -14,41 +14,45 @@ export class FinishPageComponent implements OnInit {
   private isCommeentSend: boolean = false;
 
   constructor(
-      public snackbar: MatSnackBar,
-      public audio: AudioService,
-      public apiClient: ApiClientService,
-      public data: DataService) {
+      private snackbar: MatSnackBar,
+      private audio: AudioService,
+      private apiClient: ApiClientService,
+      private data: DataService) {
     window.onbeforeunload = null;
-  }
-
-  ngOnInit() {
     this.data.shouldDisplayDialogWithWarning = false;
   }
 
+  ngOnInit() { }
+
   public onSendCommentButtonClick(): void {
     if (this.isCommeentSend) {
-      this.snackbar.open('comment already sent', null, {
-        duration: 2000,
-        verticalPosition: "top",
-        panelClass: ['my-snackbar-confirm']
-      });
-    } else if (this.isCommeentSend === false && /\S/.test(this.comment)) {
-      this.apiClient.sendComment(this.comment, () => {
-        this.snackbar.open('comment has been sent', null, {
-          duration: 2000,
-          verticalPosition: "top",
-          panelClass: ['my-snackbar-confirm']
-        });
+      this.showSuccessMessage('comment already sent');
+    } else if (!this.isCommeentSend && /\S/.test(this.comment)) {
+      this.apiClient.sendComment(this.comment).subscribe(() => {
+        this.showSuccessMessage('comment has been sent');
         (document.getElementsByClassName('navigation-button').item(0) as HTMLElement)
-          .style.backgroundColor = 'gray';
+          .style
+          .backgroundColor = 'gray';
         this.isCommeentSend = true;
-      })
-    } else {
-      this.snackbar.open('comment field must not be empty', null, {
-        duration: 2000,
-        verticalPosition: "top",
-        panelClass: ['my-snackbar-problem']
       });
+    } else {
+      this.showProblemMessage('comment field must not be empty');
     }
+  }
+
+  private showProblemMessage(message: string): void {
+    this.snackbar.open(message, null, {
+      duration: 2000,
+      verticalPosition: "top",
+      panelClass: ['my-snackbar-problem']
+    });
+  }
+
+  private showSuccessMessage(message: string): void {
+    this.snackbar.open(message, null, {
+      duration: 2000,
+      verticalPosition: "top",
+      panelClass: ['my-snackbar-confirm']
+    });
   }
 }
