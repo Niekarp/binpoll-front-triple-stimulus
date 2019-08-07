@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
 import { ApiClientService } from 'src/app/services/api-client/api-client.service';
 import { DataService } from 'src/app/services/data/data.service';
 import { AudioService } from 'src/app/services/audio/audio.service';
+import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
 
 @Component({
   selector: 'app-report-problem-page',
@@ -14,7 +14,7 @@ export class ReportProblemPageComponent implements OnInit {
   private isReportSend: boolean = false;
 
   constructor(
-      private snackbar: MatSnackBar,
+      private popUp: PopUpService,
       private audio: AudioService,
       private api: ApiClientService,
       private data: DataService) {
@@ -26,7 +26,7 @@ export class ReportProblemPageComponent implements OnInit {
 
   public onSendCommentButtonClick(): void {
     if (this.isReportSend) {
-      this.showSuccessMessage('report already sent');
+      this.popUp.showSuccessMessage('report already sent');
     } else if (!this.isReportSend && /\S/.test(this.message)) {
       let problemReport = {
         user_info: {
@@ -39,30 +39,14 @@ export class ReportProblemPageComponent implements OnInit {
       };
 
       this.api.sendProblemReport(problemReport).subscribe(() => {
-        this.showSuccessMessage('report has been sent');
+        this.popUp.showSuccessMessage('report has been sent');
         (document.getElementsByClassName('navigation-button').item(0) as HTMLElement)
           .style
           .backgroundColor = 'gray';
         this.isReportSend = true;
       });
     } else {
-      this.showProblemMessage('report field must not be empty');
+      this.popUp.showProblemMessage('report field must not be empty');
     }
-  }
-
-  private showProblemMessage(message: string): void {
-    this.snackbar.open(message, null, {
-      duration: 2000,
-      verticalPosition: "top",
-      panelClass: ['my-snackbar-problem']
-    });
-  }
-
-  private showSuccessMessage(message: string): void {
-    this.snackbar.open(message, null, {
-      duration: 2000,
-      verticalPosition: "top",
-      panelClass: ['my-snackbar-confirm']
-    });
   }
 }

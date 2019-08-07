@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
 import { AudioService } from 'src/app/services/audio/audio.service';
 import { Questionnaire } from 'src/app/models/questionnaire.model';
 import { DataService } from 'src/app/services/data/data.service';
 import { Age } from '../../models/age.model';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
+import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
 
 @Component({
   selector: 'app-questionnaire-page',
@@ -21,12 +21,13 @@ export class QuestionnairePageComponent implements OnInit {
     { value: '45-54', viewValue: '45-54' },
     { value: 'Above 54', viewValue: 'Above 54' }
   ];
+  public EMPTY_FIELDS_POP_UP_MESSAGE = 'the first three fields are required';
 
   constructor(
-      public snackbar: MatSnackBar, 
-      public audio: AudioService,
       public data: DataService,
-      public keyboardNav: KeyboardNavigationService) {
+      public popUp: PopUpService,
+      private audio: AudioService,
+      private keyboardNav: KeyboardNavigationService) {
     this.model = this.data.questionnaire;
     this.data.shouldDisplayDialogWithWarning = true;
   }
@@ -34,7 +35,9 @@ export class QuestionnairePageComponent implements OnInit {
   ngOnInit() {
     this.keyboardNav.goBackCondition = () => { return true; }
     this.keyboardNav.goNextCondition = () => { return this.formValid };
-    this.keyboardNav.onGoNextConditionFail = () => { this.showProblemMessage(); }
+    this.keyboardNav.onGoNextConditionFail = () => { 
+      this.popUp.showProblemMessage(this.EMPTY_FIELDS_POP_UP_MESSAGE);
+    }
     this.audio.loadAudioPlayers();
   }
 
@@ -42,13 +45,5 @@ export class QuestionnairePageComponent implements OnInit {
     return this.model.age !== undefined &&
         this.model.hearingDifficulties !== undefined &&
         this.model.listeningTestParticipation !== undefined 
-  }
-  
-  public showProblemMessage(): void {
-    this.snackbar.open('the first three fields are required', null, {
-      duration: 2000,
-      verticalPosition: "top",
-      panelClass: ['my-snackbar-problem']
-    });
   }
 }

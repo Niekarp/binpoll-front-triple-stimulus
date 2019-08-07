@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, ViewChild, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { FurtherHelpDialogComponent } from '../../common/ui-elements/further-help-dialog/further-help-dialog.component';
 import { ApiClientService } from '../../services/api-client/api-client.service';
 import { AudioService } from 'src/app/services/audio/audio.service';
@@ -12,6 +12,7 @@ import { moveItemInArray, CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, 
 
 import * as $ from 'jquery';
 import { ConfigService } from 'src/app/services/config/config.service';
+import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
 
 interface TestStatus { done: boolean, problem: null | ProblemName };
 enum ProblemName { NotMatched, NotPlayed };
@@ -52,11 +53,11 @@ export class PollPageComponent implements OnInit {
   private verboseLog: boolean;
   
   constructor(
-      public snackbar: MatSnackBar,
       public dialog: MatDialog,
       public apiClient: ApiClientService,
       public data: DataService,
       public keyboardNav: KeyboardNavigationService,
+      private popUp: PopUpService,
       private router: Router,
       private spinner: NgxSpinnerService,
       private audio: AudioService,
@@ -311,37 +312,26 @@ export class PollPageComponent implements OnInit {
   private showProblemMessage(problem: ProblemName): void {
     switch(problem) {
       case ProblemName.NotMatched:
-        this.showMessage('match recordings with acoustic scenes');
+        this.popUp.showProblemMessage('match recordings with acoustic scenes');
         break;
 
       case ProblemName.NotPlayed:
         let notPlayedAudiosIndices = this.getAllIndexes(this.wasAudioPlayed[this.currentTestIndex], false);
         switch(notPlayedAudiosIndices.length) {
           case 1:
-            this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
+            this.popUp.showProblemMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
             break;
 
           case 2:
-            this.showMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + 
+            this.popUp.showProblemMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + 
               ' and audio ' + (notPlayedAudiosIndices[1] + 1) + ' weren\'t played');
             break;
 
           default:
-            this.showMessage('audio 1, 2 and 3 weren\'t played');
+            this.popUp.showProblemMessage('audio 1, 2 and 3 weren\'t played');
         }
         break;
     }
-  }
-      
-  private showMessage(msg: string): void {
-    let $snackbar = this.snackbar.open(msg, null, {
-      duration: 2000,
-      verticalPosition: "top",
-      panelClass: ['my-snackbar-problem'],
-    });
-    $snackbar.afterOpened().subscribe(() => {
-      ($snackbar as any).containerInstance._elementRef.nativeElement.parentElement.style.pointerEvents = 'none';
-    });
   }
 
   // Init related

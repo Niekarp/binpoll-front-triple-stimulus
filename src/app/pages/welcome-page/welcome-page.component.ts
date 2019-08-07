@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
 import { DataService } from 'src/app/services/data/data.service';
 import { ConfigService } from 'src/app/services/config/config.service';
+import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
 
 @Component({
   selector: 'app-welcome-page',
@@ -12,10 +12,11 @@ import { ConfigService } from 'src/app/services/config/config.service';
 export class WelcomePageComponent implements OnInit {
   public appVersion: string;
   public testCount: number;
+  public readonly ACCEPT_TERMS_POP_UP_MESSAGE : string = 'terms and policy must be accepted';
 
   constructor(
       public data: DataService,
-      private snackbar: MatSnackBar,
+      public popUp: PopUpService,
       private config: ConfigService,
       private keyboardNav: KeyboardNavigationService) { 
     this.appVersion = config.appVersion;
@@ -25,15 +26,9 @@ export class WelcomePageComponent implements OnInit {
   ngOnInit() {
     this.keyboardNav.active = true;
     this.keyboardNav.goNextCondition = () => { return this.data.consentChecked; };
-    this.keyboardNav.onGoNextConditionFail = () => { this.showProblemMessage(); };
-  }
-
-  public showProblemMessage(): void {
-    this.snackbar.open('terms and policy must be accepted', null, {
-      duration: 2000,
-      verticalPosition: "top",
-      panelClass: ['my-snackbar-problem']
-    });
+    this.keyboardNav.onGoNextConditionFail = () => { 
+      this.popUp.showProblemMessage(this.ACCEPT_TERMS_POP_UP_MESSAGE);
+    };
   }
 
   public onPolicyClick(): void {

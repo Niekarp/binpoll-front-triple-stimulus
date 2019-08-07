@@ -23,8 +23,9 @@
   <hr id="section-nav-divider">
 </section>
 <nav class="page-navigation">
-  <app-navigation-button text="Start" destinationUrl="/questionnaire" [condition]="data.consentChecked" 
-      [disabled]="!data.consentChecked" (failure)="showProblemMessage()">
+  <app-navigation-button text="Start" destinationUrl="/questionnaire" 
+      [condition]="data.consentChecked" [disabled]="!data.consentChecked" 
+      (failure)="popUp.showProblemMessage(ACCEPT_TERMS_POP_UP_MESSAGE)">
   </app-navigation-button>
   <div id="navigation-info">To begin click the Start button or use keyboard arrows.</div>
 </nav>
