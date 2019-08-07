@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.0.0...v2.1.0) (2019-08-07)
+
+
+### Features
+
+* add and apply pop-up service ([00c1a26](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/00c1a26))
+
+
+
 ## [2.0.0](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.2.3...v2.0.0) (2019-08-07)
 
 
