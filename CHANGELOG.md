@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.2.3...v2.0.0) (2019-08-07)
+
+
+### refactor
+
+* changes in many parts of the application ([202f396](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/202f396))
+
+
+### BREAKING CHANGES
+
+* rename & move & delete files, add models, api.service change, shared-config remove and move to config.service, seed download once and save to data.service, log.service error handling, code refactor
+
+
+
 ### [1.2.3](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.2.2...v1.2.3) (2019-08-07)
 
 
