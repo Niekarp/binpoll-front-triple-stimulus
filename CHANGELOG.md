@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.3](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.2.2...v1.2.3) (2019-08-07)
+
+
+### Bug Fixes
+
+* **data-service:** stupidThing renamed ([0e54d49](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/0e54d49))
+* **files:** move further-help-comp to common ui elements ([26dc5e0](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/26dc5e0))
+* **poll-page:** remove snackbar cover by drag button ([b952567](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/b952567))
+
+
+
 ### [1.2.2](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v1.2.1...v1.2.2) (2019-08-03)
 
 
