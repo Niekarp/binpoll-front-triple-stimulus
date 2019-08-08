@@ -10,7 +10,7 @@ export class LogService {
   private readonly MESSAGE_OBJECT_DEPTH = 5;
   private readonly MESSAGE_MAX_BYTE_SIZE = 100000; // 100KB
   private readonly CONSOLE_MESSAGE_PRUNE_OPTIONS = { depthDecr: this.MESSAGE_OBJECT_DEPTH, inheritedProperties: false, prunedString: '"-pruned-"' };
-  private readonly ERROR_EVENT_MESSAGE_OPTIONS = { depthDecr: this.MESSAGE_OBJECT_DEPTH, inheritedProperties: true, prunedString: '"-pruned-"' };
+  private readonly ERROR_EVENT_MESSAGE_OPTIONS = { depthDecr: this.MESSAGE_OBJECT_DEPTH, allProperties: true, prunedString: '"-pruned-"' };
 
   // Fields to prevent infinite message loops
   private readonly MESSAGE_LIMIT = 500;
@@ -48,7 +48,7 @@ export class LogService {
     }
     console.error = (message?: any, ...optionalParams: any[]) => {
       this.defaultConsoleError(message, ...optionalParams);
-      this.prepareAndSendMessage('error', message, optionalParams, this.CONSOLE_MESSAGE_PRUNE_OPTIONS);
+      this.prepareAndSendMessage('error', message, optionalParams, this.ERROR_EVENT_MESSAGE_OPTIONS);
     }
     console.debug = (message?: any, ...optionalParams: any[]) => {
       this.defaultConsoleDebug(message, ...optionalParams);
@@ -67,14 +67,14 @@ export class LogService {
   }
 
   private prepareAndSendMessage(messageType: string, message: any, optionalParams: any[], pruneOptions: object): void {
-    if (this.messagePause === true) return;
-
-    if (message === undefined) message = '';
+    if (this.messagePause) return;
+    debugger;
+    if (!message) message = '';
     pruneOptions['replacer'] = this.pruneReplacer;
     
     let prunedMessage;
     let prunedOptionalParams;
-    do{
+    do {
       prunedMessage = prune(message, pruneOptions);
       prunedOptionalParams = optionalParams.map((param) => prune(param, pruneOptions));
 
@@ -84,7 +84,7 @@ export class LogService {
       };
 
       pruneOptions['depthDecr'] -= 1;
-    } while(true)
+    } while(true);
 
     let consoleMessage = {
       content: prunedMessage + ',' + prunedOptionalParams.toString(),
