@@ -9,8 +9,11 @@
 }
 
 .page-navigation {
-	align-items: center;
-	justify-content: space-between;
+}
+
+.navigation-note {
+  height: initial;
+	font-size: 23px;
 }
 
 /* Page elements */
@@ -34,10 +37,6 @@
 	position: absolute;
 	bottom: 0;
 	color: gray;
-}
-
-#navigation-info {
-	font-size: 23px;
 }
 
 #version-box {

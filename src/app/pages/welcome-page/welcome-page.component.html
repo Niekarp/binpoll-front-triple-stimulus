@@ -23,11 +23,13 @@
   <hr id="section-nav-divider">
 </section>
 <nav class="page-navigation">
-  <app-navigation-button text="Start" destinationUrl="/questionnaire" 
-      [condition]="data.consentChecked" [disabled]="!data.consentChecked" 
-      (failure)="popUp.showProblemMessage(ACCEPT_TERMS_POP_UP_MESSAGE)">
-  </app-navigation-button>
-  <div id="navigation-info">To begin click the Start button or use keyboard arrows.</div>
+  <div class="navigation-note">To begin click the Start button or use keyboard arrows.</div>
+  <div class="navigation-buttons-container">
+    <app-navigation-button text="Start" destinationUrl="/questionnaire" 
+        [condition]="data.consentChecked" [disabled]="!data.consentChecked" 
+        (failure)="popUp.showProblemMessage(ACCEPT_TERMS_POP_UP_MESSAGE)">
+    </app-navigation-button>
+  </div>
 </nav>
 
 <div id="version-box">v. {{ appVersion }}</div>

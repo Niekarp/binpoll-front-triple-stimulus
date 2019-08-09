@@ -10,8 +10,8 @@ import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
   styleUrls: ['./report-problem-page.component.scss']
 })
 export class ReportProblemPageComponent implements OnInit {
+  public isReportSend: boolean = false;
   public message: string = '';
-  private isReportSend: boolean = false;
 
   constructor(
       private popUp: PopUpService,
@@ -24,7 +24,7 @@ export class ReportProblemPageComponent implements OnInit {
 
   ngOnInit() { }
 
-  public onSendCommentButtonClick(): void {
+  public onSendReportButtonClick(): void {
     if (this.isReportSend) {
       this.popUp.showSuccessMessage('report already sent');
     } else if (!this.isReportSend && /\S/.test(this.message)) {
@@ -40,9 +40,6 @@ export class ReportProblemPageComponent implements OnInit {
 
       this.api.sendProblemReport(problemReport).subscribe(() => {
         this.popUp.showSuccessMessage('report has been sent');
-        (document.getElementsByClassName('navigation-button').item(0) as HTMLElement)
-          .style
-          .backgroundColor = 'gray';
         this.isReportSend = true;
       });
     } else {

@@ -47,9 +47,12 @@
   </mat-grid-list>
 </section>
 <nav class="page-navigation">
-  <app-navigation-button text="Next" destinationUrl="/poll-description" [condition]="formValid" 
-      [disabled]="!formValid" (failure)="popUp.showProblemMessage(EMPTY_FIELDS_POP_UP_MESSAGE)">
-  </app-navigation-button>
-  <app-navigation-button text="Previous" destinationUrl="/">
-  </app-navigation-button>
+  <div class="navigation-note"></div>
+  <div class="navigation-buttons-container">
+    <app-navigation-button text="Previous" destinationUrl="/">
+    </app-navigation-button>
+    <app-navigation-button text="Next" destinationUrl="/poll-description" [condition]="formValid" 
+        [disabled]="!formValid" (failure)="popUp.showProblemMessage(EMPTY_FIELDS_POP_UP_MESSAGE)">
+    </app-navigation-button>
+  </div>
 </nav>

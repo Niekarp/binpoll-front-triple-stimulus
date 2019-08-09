@@ -10,8 +10,12 @@
   </mat-card>
 </section>
 <nav class="page-navigation">
-  <a mat-raised-button class="navigation-button" (click)="onSendCommentButtonClick()">Send report</a>
-  <div class="credits-info">
+  <div class="navigation-note">
     <b>Credits:</b> to see a list of credits, <a routerLink="/credits" target="_blank">click here</a>
+  </div>
+  <div class="navigation-buttons-container">
+    <app-navigation-button text="Send report" [condition]="false" [disabled]="isReportSend" 
+        (failure)="onSendReportButtonClick()">
+    </app-navigation-button> 
   </div>
 </nav>

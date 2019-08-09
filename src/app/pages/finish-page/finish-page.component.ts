@@ -10,8 +10,8 @@ import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
   styleUrls: ['./finish-page.component.scss']
 })
 export class FinishPageComponent implements OnInit {
+  public isCommeentSend: boolean = false;
   private comment: string = '';
-  private isCommeentSend: boolean = false;
 
   constructor(
       private popUp: PopUpService,
@@ -30,9 +30,6 @@ export class FinishPageComponent implements OnInit {
     } else if (!this.isCommeentSend && /\S/.test(this.comment)) {
       this.apiClient.sendComment(this.comment).subscribe(() => {
         this.popUp.showSuccessMessage('comment has been sent');
-        (document.getElementsByClassName('navigation-button').item(0) as HTMLElement)
-          .style
-          .backgroundColor = 'gray';
         this.isCommeentSend = true;
       });
     } else {

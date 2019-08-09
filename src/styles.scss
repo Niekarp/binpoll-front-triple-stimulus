@@ -17,8 +17,23 @@
 }
 
 .page-navigation {
+  height: 50px;
 	display: flex;
-	flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  app-navigation-button:nth-last-of-type(2) {
+    margin-right: 16px;
+  }
+}
+
+.navigation-note {
+  height: 100%;
+  margin-right: 10px;
+}
+
+.navigation-buttons-container {
+  display: flex;
+  flex-direction: row;  
 }
 
 .navigation-button {
@@ -37,14 +52,6 @@ nav {
 	.navigation-button {
 		width: 266px;
 	}
-}
-
-app-navigation-button ~ app-navigation-button {
-	margin-right: 16px;
-}
-
-.mat-raised-button ~ .mat-raised-button {
-	margin-right: 16px;
 }
 
 // -----------FORM COMPONENTS-----------
@@ -77,11 +84,6 @@ app-navigation-button ~ app-navigation-button {
 	li {
 		margin-bottom: 4px;
 	}
-}
-
-.credits-info {
-	width: 668px;
-	margin-top: 15px;
 }
 
 // -----------OTHERS-----------
