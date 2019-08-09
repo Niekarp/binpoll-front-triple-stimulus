@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.1](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.1.0...v2.1.1) (2019-08-09)
+
+
+### Bug Fixes
+
+* **log-service:** more detailed error message ([07fc0e7](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/07fc0e7))
+* **page-navigation:** style, alignment and standarisation ([e4787ba](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/e4787ba))
+
+
+
 ## [2.1.0](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.0.0...v2.1.0) (2019-08-07)
 
 
