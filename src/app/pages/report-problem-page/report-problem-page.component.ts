@@ -18,7 +18,7 @@ export class ReportProblemPageComponent implements OnInit {
       private audio: AudioService,
       private api: ApiClientService,
       private data: DataService) {
-    //this.audio.stopAudioLoading();
+    this.audio.stopAudioLoading();
     this.data.shouldDisplayDialogWithWarning = false;
   }
 

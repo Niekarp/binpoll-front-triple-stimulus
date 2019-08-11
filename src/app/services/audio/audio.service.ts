@@ -85,9 +85,7 @@ export class AudioService {
   }
   
   public stopAudioLoading(): void {
-    this.audioRequests.forEach((subscription: Subscription) => {
-      subscription.unsubscribe();
-    });
+    this.audioRequests.forEach((subscription: Subscription) => { subscription.unsubscribe(); });
   }
 
   public isAllTestAudioLoaded(): boolean {
@@ -223,17 +221,17 @@ export class AudioService {
 
     for(let sample_i = 0; sample_i < samples.length; ++sample_i) {
       for(let sampleScene_i = 0; sampleScene_i < 3; ++sampleScene_i) {
-        this.loadAudioBlob(samples[sample_i][sampleScene_i]['url']).subscribe(arrayBufer => {
-          this.audioContext.decodeAudioData(arrayBufer, (audioBuffer => {
-            // console.log('downloaded: ', samples[sample_i][sampleScene_i]);
-            this.audioPlayers.pollBuffers[sample_i][sampleScene_i] = audioBuffer;
-            this.pollLoadedCount += 1; 
-            // console.log('poll loaded audio count: ' + this.pollLoadedCount); 
-          }), err => {
-            console.error('audio download error');
-            console.error(err);
+        let request = this.loadAudioBlob(samples[sample_i][sampleScene_i]['url'])
+          .subscribe(arrayBufer => {
+            this.audioContext.decodeAudioData(arrayBufer, (audioBuffer => {
+              this.audioPlayers.pollBuffers[sample_i][sampleScene_i] = audioBuffer;
+              this.pollLoadedCount += 1; 
+            }), err => {
+              console.error('audio download error');
+              console.error(err);
+            });
           });
-        });
+        this.audioRequests.push(request);
       }
     }
   }
@@ -272,7 +270,7 @@ export class AudioService {
     const request = this.http.get(url, {responseType: 'blob'}).subscribe(response => {
       let audioBlob = response;
       let audioUrl = URL.createObjectURL(audioBlob);
-      // console.log('audio loaded: ' + audioUrl);
+      
       audio.src = audioUrl;
       audio.load();
       
