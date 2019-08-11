@@ -68,7 +68,7 @@ export class LogService {
 
   private prepareAndSendMessage(messageType: string, message: any, optionalParams: any[], pruneOptions: object): void {
     if (this.messagePause) return;
-    debugger;
+    
     if (!message) message = '';
     pruneOptions['replacer'] = this.pruneReplacer;
     

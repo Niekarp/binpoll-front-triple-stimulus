@@ -19,8 +19,8 @@ export class WelcomePageComponent implements OnInit {
       public popUp: PopUpService,
       private config: ConfigService,
       private keyboardNav: KeyboardNavigationService) { 
-    this.appVersion = config.appVersion;
-    this.testCount = config.testCount;
+    this.appVersion = config.APP_VERSION;
+    this.testCount = config.TEST_COUNT;
   }
 
   ngOnInit() {

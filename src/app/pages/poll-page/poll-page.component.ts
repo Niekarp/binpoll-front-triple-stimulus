@@ -63,7 +63,7 @@ export class PollPageComponent implements OnInit {
       private audio: AudioService,
       private config: ConfigService) {
     this.verboseLog = false;
-    this.testCount = config.testCount;
+    this.testCount = config.TEST_COUNT;
     // Load data shared across components
     this.audioPool = this.data.audioPool;
     this.fbDropZone = this.data.fbDropZone;

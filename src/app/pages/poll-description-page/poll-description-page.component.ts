@@ -11,7 +11,7 @@ export class PollDescriptionPageComponent implements OnInit {
   public testCount: number;
 
   constructor(private config: ConfigService, private keyboardNav: KeyboardNavigationService) {
-    this.testCount = config.testCount;
+    this.testCount = config.TEST_COUNT;
   }
 
   ngOnInit() {

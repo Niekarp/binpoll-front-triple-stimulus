@@ -8,10 +8,10 @@ import { ConfigService } from 'src/app/services/config/config.service';
 import { DataService } from '../data/data.service';
 
 
-const audioSampleRate = 44100;
-const audioLengthSeconds = 7;
-const audioNumOfChannels = 2;
-const fadeTimeSeconds = 0.005;
+const AUDIO_SAMPLE_RATE = 44100;
+const AUDIO_LENGTH_SECONDS = 7;
+const AUDIO_NUM_OF_CHANNELS = 2;
+const FADE_TIME_SECONDS = 0.005;
 
 @Injectable({
   providedIn: 'root',
@@ -68,7 +68,7 @@ export class AudioService {
     this.loadTestAudioPlayer(leftTestUrl, leftTestPlayer);
     this.loadTestAudioPlayer(rightTestUrl, rightTestPlayer);
 
-    this.generateRaisedCosineEnvelope(2 * fadeTimeSeconds, audioSampleRate);
+    this.generateRaisedCosineEnvelope(2 * FADE_TIME_SECONDS, AUDIO_SAMPLE_RATE);
     // console.log('raisedCosineEnvelopeFadeInOut');
     // console.log(this.raisedCosineEnvelopeFadeInOut);
 
@@ -179,7 +179,7 @@ export class AudioService {
     let startTime = this.audioContext.currentTime;
     for(let i = 0; i < this.currentlyPlayingSources.length; ++i) {
       if(this.currentlyPlayingSources[i]) { 
-        this.currentlyPlayingSources[i].stop(startTime + fadeTimeSeconds);
+        this.currentlyPlayingSources[i].stop(startTime + FADE_TIME_SECONDS);
       }
       delete this.currentlyPlayingSources[i];
     }
@@ -286,14 +286,14 @@ export class AudioService {
     // fade out -> fade in
     //this.gainNode.gain.cancelScheduledValues(startTime);
     this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, this.audioContext.currentTime);
-    this.gainNode.gain.setValueCurveAtTime(this.raisedCosineEnvelopeFadeInOut, this.audioContext.currentTime, 2 * fadeTimeSeconds);
+    this.gainNode.gain.setValueCurveAtTime(this.raisedCosineEnvelopeFadeInOut, this.audioContext.currentTime, 2 * FADE_TIME_SECONDS);
     let startTime = this.audioContext.currentTime;
     let stopTime = startTime;
 
     if(this.currentlyPlayingSources.length > 0) {
       for(let i = 0; i < this.currentlyPlayingSources.length; ++i) {
         if(this.currentlyPlayingSources[i]) { 
-          this.currentlyPlayingSources[i].stop(startTime + fadeTimeSeconds);
+          this.currentlyPlayingSources[i].stop(startTime + FADE_TIME_SECONDS);
         }
       }
       stopTime = this.audioContext.currentTime;
@@ -310,7 +310,7 @@ export class AudioService {
     this.currentlyPlayingSources.push(sourceNode);
     let offset = (stopTime - this.audioLastStartTime) % 7;
     sourceNode.loop = true;
-    sourceNode.start(stopTime + fadeTimeSeconds, offset);
+    sourceNode.start(stopTime + FADE_TIME_SECONDS, offset);
   }
 
   private toggleAudio(audio: HTMLAudioElement): boolean {
