@@ -2,6 +2,7 @@ import { Injectable, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Route } from '@angular/compiler/src/core';
 import { fromEvent } from 'rxjs';
+import { KeyCallbackSet } from '../../models/key-callback-set.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +15,11 @@ export class KeyboardNavigationService {
   
   // Options
   public active = false;
-  public deactivateOnNext = false;
   
   // Navigation condition (restarted after each navigation)
-  public activeCondition: () => boolean;
-  public goBackCondition: () => boolean;
-  public goNextCondition: () => boolean;
+  public activeCondition = () => true;
+  public goBackCondition = () => false;
+  public goNextCondition = () => false;
   
   // Events
   public onGoNextConditionOK = () => {};
@@ -27,8 +27,24 @@ export class KeyboardNavigationService {
   
   public onGoBackConditionOK = () => {};
   public onGoBackConditionFail = () => {};
+
+  // Key callback sets
+
+  private readonly ARROW_LEFT_CALLBACK_SET: KeyCallbackSet = {
+    goCondition: () => { return this.goBackCondition(); },
+    onGoConditionOK: () => { this.onGoBackConditionOK(); },
+    onGoConditionFail: () => { this.onGoBackConditionFail(); },
+    navigate: () => { this.navigateToIndex(this.getCurrentRouteIndex() - 1); }
+  }
+
+  private readonly ARROW_RIGHT_CALLBACK_SET: KeyCallbackSet = {
+    goCondition: () => { return this.goNextCondition(); },
+    onGoConditionOK: () => { this.onGoNextConditionOK(); },
+    onGoConditionFail: () => { this.onGoNextConditionFail(); },
+    navigate: () => { this.navigateToIndex(this.getCurrentRouteIndex() + 1); }
+  }
   
-  constructor() { 
+  constructor() {
     fromEvent(document, 'keydown').subscribe((event: KeyboardEvent) => { this.onKeydown(event); });
   }
 
@@ -40,38 +56,35 @@ export class KeyboardNavigationService {
     this.onGoNextConditionFail = () => { };
     this.onGoBackConditionOK = () => { };
     this.onGoBackConditionFail = () => { };
-    this.deactivateOnNext = false;
   }
   
   private onKeydown(event: KeyboardEvent): void {
-    // console.log('navigation keydown');
-    
-    if (!this.active || !this.activeCondition()) return;
-    // console.log('navigationKeyboard active');
-    
-    let currentRouteIndex = this.router.config.findIndex((route: any) => {
-      return this.router.url === '/' + route.path;
-    });
-    
-    if (event.key === 'ArrowLeft') {
-      if (this.goBackCondition()) {
-        this.onGoBackConditionOK();
-        this.router.navigateByUrl(this.router.config[currentRouteIndex - 1].path, { skipLocationChange: true });
-      } else {
-        this.onGoBackConditionFail();
-      }
-      event.stopPropagation();
-    } else if (event.key === 'ArrowRight') {
-      if (this.goNextCondition()) {
-        this.onGoNextConditionOK();
-        if (this.deactivateOnNext) {
-          this.active = false;
-        }
-        this.router.navigateByUrl(this.router.config[currentRouteIndex + 1].path, { skipLocationChange: true });
-      } else {
-        this.onGoNextConditionFail();
-      }
-      event.stopPropagation();
+    let keyCallbackSet = this.getCallbackSet(event.key);
+
+    if (!keyCallbackSet || !this.active || !this.activeCondition()) return;
+
+    if (keyCallbackSet.goCondition()) {
+      keyCallbackSet.onGoConditionOK();
+      keyCallbackSet.navigate();
+    } else {
+      keyCallbackSet.onGoConditionFail();
     }
+    event.stopPropagation();
+  }
+
+  private getCallbackSet(key: string): KeyCallbackSet {
+    switch(key) {
+      case 'ArrowLeft': return this.ARROW_LEFT_CALLBACK_SET;
+      case 'ArrowRight': return this.ARROW_RIGHT_CALLBACK_SET;
+      default: return null;
+    }
+  }
+
+  private navigateToIndex(index: number): void {
+    this.router.navigateByUrl(this.router.config[index].path, { skipLocationChange: true });
+  }
+
+  private getCurrentRouteIndex(): number {
+    return this.router.config.findIndex((route: any) => { return this.router.url === '/' + route.path; });
   }
 }
