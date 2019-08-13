@@ -29,7 +29,6 @@ export class KeyboardNavigationService {
   public onGoBackConditionFail = () => {};
 
   // Key callback sets
-
   private readonly ARROW_LEFT_CALLBACK_SET: KeyCallbackSet = {
     goCondition: () => { return this.goBackCondition(); },
     onGoConditionOK: () => { this.onGoBackConditionOK(); },

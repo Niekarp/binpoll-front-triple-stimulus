@@ -221,60 +221,28 @@ export class AudioService {
 
     for(let sample_i = 0; sample_i < samples.length; ++sample_i) {
       for(let sampleScene_i = 0; sampleScene_i < 3; ++sampleScene_i) {
-        let request = this.loadAudioBlob(samples[sample_i][sampleScene_i]['url'])
+        let request = this.api.getAudioBlob(samples[sample_i][sampleScene_i]['url'])
           .subscribe(arrayBufer => {
             this.audioContext.decodeAudioData(arrayBufer, (audioBuffer => {
               this.audioPlayers.pollBuffers[sample_i][sampleScene_i] = audioBuffer;
               this.pollLoadedCount += 1; 
-            }), err => {
-              console.error('audio download error');
-              console.error(err);
-            });
+            }));
           });
         this.audioRequests.push(request);
       }
     }
   }
 
-  private loadAudioBlob(url: string): Observable<ArrayBuffer> {
-    return this.http.get(url, {responseType: 'arraybuffer'}).pipe(retryWhen(errors => {
-      if (!this.data.redownloadStarted) {
-        this.data.redownloadStarted = true;
-        console.warn('retrying audio download started');
-      }
-      let downloadCount = 0;
-      return errors.pipe(
-          tap(error => {
-            downloadCount += 1;
-            if (downloadCount >= this.data.redownloadCount) {
-              console.warn(`could not download audio(attempt ${downloadCount})`);
-              console.error(error);
-              this.data.redownloadCount += 1;
-            }
-            if (downloadCount >= 10) {
-              throw 'could not download audio after 10 attempts';
-            }
-          }),
-          delay(25000));
-    }));
-  }
-
   private loadTestAudioPlayer(url: string, audio: HTMLAudioElement): void {
-    this.loadAudioPlayer(url, audio, () => { 
-      this.testLoadedCount += 1;
-      // console.log('headset-test loaded audio count: ' + this.testLoadedCount); 
-    });
-  }
-
-  private loadAudioPlayer(url: string, audio: HTMLAudioElement, onLoaded: () => void): void {
-    const request = this.http.get(url, {responseType: 'blob'}).subscribe(response => {
+    const request = this.api.getAudioPlayer(url).subscribe(response => {
       let audioBlob = response;
       let audioUrl = URL.createObjectURL(audioBlob);
       
       audio.src = audioUrl;
       audio.load();
       
-      onLoaded();
+      this.testLoadedCount += 1;
+      // console.log('headset-test loaded audio count: ' + this.testLoadedCount); 
     });
 
     this.audioRequests.push(request);

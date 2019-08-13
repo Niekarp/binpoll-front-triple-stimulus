@@ -32,6 +32,7 @@ export class DataService {
 
   // Audio download (used in audio-service)
   public redownloadStarted: boolean = false;
+  public redownloadSuccessLogged: boolean = false;
   public redownloadCount: number = 1;
 
   constructor() { }

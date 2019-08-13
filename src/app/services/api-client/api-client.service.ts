@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { ConfigService } from '../config/config.service'
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, retryWhen, delay, tap } from 'rxjs/operators';
 import { DataService } from '../data/data.service';
 import { PollData } from "../../models/poll-data.model"
 import { ProblemReport } from "../../models/problem-report.model"
@@ -42,6 +42,43 @@ export class ApiClientService {
 
                 return audioSet;
               }));
+        }),
+        catchError(this.handleError));
+  }
+
+  public getAudioPlayer(url: string): Observable<Blob> {
+    return this.http.get(url, {responseType: 'blob'}).pipe(
+        catchError(this.handleError)
+    );
+  }
+
+  public getAudioBlob(url: string): Observable<ArrayBuffer> {
+    return this.http.get(url, {responseType: 'arraybuffer'}).pipe(
+        retryWhen(errors => {
+          if (!this.data.redownloadStarted) {
+            this.data.redownloadStarted = true;
+            console.warn('retrying audio download started');
+          }
+          let downloadCount = 0;
+          return errors.pipe(
+              tap(error => {
+                downloadCount += 1;
+                if (downloadCount >= this.data.redownloadCount) {
+                  console.warn(`could not download audio(attempt ${downloadCount})`);
+                  console.error(error);
+                  this.data.redownloadCount += 1;
+                }
+                if (downloadCount >= 10) {
+                  throw 'could not download audio after 10 attempts';
+                }
+              }),
+              delay(25000));
+        }),
+        tap(response => {
+          if (this.data.redownloadStarted && !this.data.redownloadSuccessLogged) {
+            this.data.redownloadSuccessLogged = true;
+            console.info('audio downloaded after redownload');
+          }
         }),
         catchError(this.handleError));
   }
