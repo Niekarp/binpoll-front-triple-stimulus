@@ -10,8 +10,8 @@ import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
   styleUrls: ['./report-problem-page.component.scss']
 })
 export class ReportProblemPageComponent implements OnInit {
-  public reportSent: boolean = false;
-  public message: string = '';
+  public reportSent = false;
+  public message = '';
 
   constructor(
       private popUp: PopUpService,
@@ -28,7 +28,7 @@ export class ReportProblemPageComponent implements OnInit {
     if (this.reportSent) {
       this.popUp.showSuccessMessage('report already sent');
     } else if (!this.reportSent && /\S/.test(this.message)) {
-      let problemReport = {
+      const problemReport = {
         user_info: {
           headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
           hearing_difficulties: this.data.questionnaire.hearingDifficultiesPresent,

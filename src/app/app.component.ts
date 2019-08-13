@@ -13,15 +13,15 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class AppComponent {
   title = 'binpoll-front';
-  
+
   constructor(
-      public router: Router, 
+      public router: Router,
       public keyboardNav: KeyboardNavigationService,
       public data: DataService,
       public api: ApiClientService,
       public logService: LogService,
       private sanitizer: DomSanitizer) {
-    if (window.location.pathname === '/credits') return;
+    if (window.location.pathname === '/credits') { return; }
 
     this.router.navigate(['/'], { replaceUrl: true });
     this.keyboardNav.router = this.router;
@@ -31,24 +31,23 @@ export class AppComponent {
 
     // Preload video
     this.api.getExampleVideo().subscribe(response => {
-      let videoBlob = response;
-      let videoBlobUrl = URL.createObjectURL(videoBlob);
-      let trustedVideoBlobUrl = sanitizer.bypassSecurityTrustUrl(videoBlobUrl);
+      const videoBlob = response;
+      const videoBlobUrl = URL.createObjectURL(videoBlob);
+      const trustedVideoBlobUrl = sanitizer.bypassSecurityTrustUrl(videoBlobUrl);
       this.data.exampleVideoUrl = trustedVideoBlobUrl;
     });
   }
 
-  ngOnInit() { }
-
-  onActivate($event) {    
+  onActivate($event) {
     this.keyboardNav.restart();
   }
 
   @HostListener('window:beforeunload', ['$event'])
   displayDialogWithWarning($event): void {
-    if (this.data.shouldDisplayDialogWithWarning)
+    if (this.data.shouldDisplayDialogWithWarning) {
       $event.returnValue = true;
-    else
+    } else {
       $event = undefined;
+    }
   }
 }
