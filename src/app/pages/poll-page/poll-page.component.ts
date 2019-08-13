@@ -30,7 +30,7 @@ export class PollPageComponent implements OnInit {
   public fbDropZone: any[][];
   public bfDropZone: any[][];
   public ffDropZone: any[][];
-  private wasAudioPlayed: any[][];
+  private audioPlayed: any[][];
   
   public testCount: number;
   public currentTestIndex: number = 0;
@@ -38,15 +38,15 @@ export class PollPageComponent implements OnInit {
   public spinnerLoadingProgress = 0;
   public audioLoadingProgress = 0;
   
-  private isFurtherHelpOpen: boolean = false;
+  private furtherHelpOpen: boolean = false;
 
   private currentDropZoneId: string;
   private dragInitialPositionRect: ClientRect;
   private dragging: boolean = false;
   private draggingContainer: CdkDropList = null;
   private draggingConteinerChanged: boolean = false;
-  private isOverNewContainer: boolean = false;
-  private stopTheDrop: boolean = false;
+  private draggableOverNewContainer: boolean = false;
+  private dropStopped: boolean = false;
   private draggingData: string;
 
   // Specify if more logs should be displayed
@@ -69,7 +69,7 @@ export class PollPageComponent implements OnInit {
     this.fbDropZone = this.data.fbDropZone;
     this.bfDropZone = this.data.bfDropZone;
     this.ffDropZone = this.data.ffDropZone;
-    this.wasAudioPlayed = this.data.wasAudioPlayed;
+    this.audioPlayed = this.data.audioPlayed;
   }
     
   ngOnInit() {
@@ -114,8 +114,8 @@ export class PollPageComponent implements OnInit {
       (audios.item(i) as HTMLElement).classList.remove('move');
     }
     
-    if (this.stopTheDrop) {
-      this.stopTheDrop = false; 
+    if (this.dropStopped) {
+      this.dropStopped = false; 
       if (this.draggingContainer.id === 'audioPool') {
         document.getElementById('audioPool').style.animationName = 'refresh-pool';
       }
@@ -156,7 +156,7 @@ export class PollPageComponent implements OnInit {
   }
   
   public onDragReleased(event: CdkDragRelease): void {
-    if (this.draggingConteinerChanged && !this.isOverNewContainer) {
+    if (this.draggingConteinerChanged && !this.draggableOverNewContainer) {
       // Need custom animation
       let dragPreview = document.getElementsByClassName('cdk-drag-preview').item(0) as HTMLElement;
       
@@ -166,9 +166,9 @@ export class PollPageComponent implements OnInit {
       dragPreview.classList.add('no-mouse-transition');
       dragPreview.classList.add('move');
       
-      this.stopTheDrop = true;
+      this.dropStopped = true;
     }
-    if (this.isOverNewContainer && this.currentDropZoneId !== 'audioPool') {
+    if (this.draggableOverNewContainer && this.currentDropZoneId !== 'audioPool') {
       let audioAndPlaceholder = document.getElementById(this.currentDropZoneId).children;
       let placeholder = (audioAndPlaceholder.item(1) as HTMLElement);
       
@@ -190,7 +190,7 @@ export class PollPageComponent implements OnInit {
     if (dropZoneId !== 'audioPool') (event.target as HTMLElement).style.setProperty('--after-opacity', '1');
         
     this.draggingConteinerChanged = this.draggingContainer.id !== dropZoneId;
-    if (this.draggingConteinerChanged) this.isOverNewContainer = true;
+    if (this.draggingConteinerChanged) this.draggableOverNewContainer = true;
     
     if (this[dropZoneId][this.currentTestIndex].length === 0) return;
     if (!this.draggingConteinerChanged) return;
@@ -225,7 +225,7 @@ export class PollPageComponent implements OnInit {
     
     (event.target as HTMLElement).style.setProperty('--after-opacity', '0');
     
-    if (this.isOverNewContainer) this.isOverNewContainer = false;
+    if (this.draggableOverNewContainer) this.draggableOverNewContainer = false;
     if (!this.dragging) return;
     if (this[dropZoneId][this.currentTestIndex].length === 0) return;
     if (this.draggingContainer.id === dropZoneId) return;
@@ -245,9 +245,9 @@ export class PollPageComponent implements OnInit {
   public onAudioButtonClick(clickedButton: PlayAudioButtonComponent): void {
     if (this.verboseLog) {
       let allAudioData = this.audioPool[this.currentTestIndex]
-      .concat(this.fbDropZone[this.currentTestIndex])
-      .concat(this.bfDropZone[this.currentTestIndex])
-      .concat(this.ffDropZone[this.currentTestIndex]);
+        .concat(this.fbDropZone[this.currentTestIndex])
+        .concat(this.bfDropZone[this.currentTestIndex])
+        .concat(this.ffDropZone[this.currentTestIndex]);
       
       let clickedAudioData = allAudioData.find((audioData) => { return audioData.id === clickedButton.audioId });
       
@@ -261,11 +261,11 @@ export class PollPageComponent implements OnInit {
       }
     }
     
-    this.wasAudioPlayed[this.currentTestIndex][clickedButton.audioId - 1] = true;
+    this.audioPlayed[this.currentTestIndex][clickedButton.audioId - 1] = true;
     
     this.audioButtons.toArray().forEach((audioButton) => {           
       if(audioButton === clickedButton) {
-        if(clickedButton.isPlaying() == true) {
+        if(clickedButton.playing) {
           clickedButton.pause();
           this.audio.pause();
         } else {
@@ -296,9 +296,9 @@ export class PollPageComponent implements OnInit {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.isFurtherHelpOpen = false;
+      this.furtherHelpOpen = false;
     });
-    this.isFurtherHelpOpen = true;
+    this.furtherHelpOpen = true;
   }
       
   private getAllIndexes(arr, val): any[] {
@@ -316,7 +316,7 @@ export class PollPageComponent implements OnInit {
         break;
 
       case ProblemName.NotPlayed:
-        let notPlayedAudiosIndices = this.getAllIndexes(this.wasAudioPlayed[this.currentTestIndex], false);
+        let notPlayedAudiosIndices = this.getAllIndexes(this.audioPlayed[this.currentTestIndex], false);
         switch(notPlayedAudiosIndices.length) {
           case 1:
             this.popUp.showProblemMessage('audio ' + (notPlayedAudiosIndices[0] + 1) + ' wasn\'t played');
@@ -362,13 +362,13 @@ export class PollPageComponent implements OnInit {
       this.fbDropZone[i] = [];
       this.bfDropZone[i] = [];
       this.ffDropZone[i] = [];
-      this.wasAudioPlayed[i] = [false, false, false];
+      this.audioPlayed[i] = [false, false, false];
     }
   }
 
   private initKeyboardNavigation() {
     this.keyboardNav.activeCondition = () => {
-      return this.audio.isAllPollAudioLoaded() && !this.isFurtherHelpOpen;
+      return this.audio.isAllPollAudioLoaded() && !this.furtherHelpOpen;
     };
 
     this.keyboardNav.goBackCondition = () => { return this.leaveTestCondition; }
@@ -461,9 +461,9 @@ export class PollPageComponent implements OnInit {
       assignedSetId: this.audio.pollAudioSet.id,
       userInfo: {
         age: this.data.questionnaire.age,
-        hearing_difficulties: this.data.questionnaire.hearingDifficulties,
+        hearing_difficulties: this.data.questionnaire.hearingDifficultiesPresent,
         headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
-        listening_test_participated: this.data.questionnaire.listeningTestParticipation
+        listening_test_participated: this.data.questionnaire.listeningTestParticipated
       }
     };
     
@@ -482,7 +482,7 @@ export class PollPageComponent implements OnInit {
         done: false,
         problem: ProblemName.NotMatched
       };
-    } else if (this.wasAudioPlayed[this.currentTestIndex].includes(false)) {
+    } else if (this.audioPlayed[this.currentTestIndex].includes(false)) {
       return {
         done: false,
         problem: ProblemName.NotPlayed

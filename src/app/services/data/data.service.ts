@@ -21,7 +21,7 @@ export class DataService {
   public fbDropZone = [];
   public bfDropZone = [];
   public ffDropZone = [];
-  public wasAudioPlayed = Array<boolean[]>(10);
+  public audioPlayed = Array<boolean[]>(10);
   public startDate: Date;
 
   // Dialog with warning on page leave

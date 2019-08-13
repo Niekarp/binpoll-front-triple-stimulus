@@ -43,7 +43,7 @@ export class QuestionnairePageComponent implements OnInit {
 
   public get formValid(): boolean {
     return this.model.age !== undefined &&
-        this.model.hearingDifficulties !== undefined &&
-        this.model.listeningTestParticipation !== undefined 
+        this.model.hearingDifficultiesPresent !== undefined &&
+        this.model.listeningTestParticipated !== undefined 
   }
 }

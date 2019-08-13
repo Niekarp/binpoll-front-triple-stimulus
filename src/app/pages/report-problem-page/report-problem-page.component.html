@@ -14,7 +14,7 @@
     <b>Credits:</b> to see a list of credits, <a routerLink="/credits" target="_blank">click here</a>
   </div>
   <div class="navigation-buttons-container">
-    <app-navigation-button text="Send report" [condition]="false" [disabled]="isReportSend" 
+    <app-navigation-button text="Send report" [condition]="false" [disabled]="reportSent" 
         (failure)="onSendReportButtonClick()">
     </app-navigation-button> 
   </div>

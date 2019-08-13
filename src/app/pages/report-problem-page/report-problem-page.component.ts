@@ -10,7 +10,7 @@ import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
   styleUrls: ['./report-problem-page.component.scss']
 })
 export class ReportProblemPageComponent implements OnInit {
-  public isReportSend: boolean = false;
+  public reportSent: boolean = false;
   public message: string = '';
 
   constructor(
@@ -25,14 +25,14 @@ export class ReportProblemPageComponent implements OnInit {
   ngOnInit() { }
 
   public onSendReportButtonClick(): void {
-    if (this.isReportSend) {
+    if (this.reportSent) {
       this.popUp.showSuccessMessage('report already sent');
-    } else if (!this.isReportSend && /\S/.test(this.message)) {
+    } else if (!this.reportSent && /\S/.test(this.message)) {
       let problemReport = {
         user_info: {
           headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
-          hearing_difficulties: this.data.questionnaire.hearingDifficulties,
-          listening_test_participated: this.data.questionnaire.listeningTestParticipation,
+          hearing_difficulties: this.data.questionnaire.hearingDifficultiesPresent,
+          listening_test_participated: this.data.questionnaire.listeningTestParticipated,
           age: this.data.questionnaire.age,
         },
         message: this.message
@@ -40,7 +40,7 @@ export class ReportProblemPageComponent implements OnInit {
 
       this.api.sendProblemReport(problemReport).subscribe(() => {
         this.popUp.showSuccessMessage('report has been sent');
-        this.isReportSend = true;
+        this.reportSent = true;
       });
     } else {
       this.popUp.showProblemMessage('report field must not be empty');

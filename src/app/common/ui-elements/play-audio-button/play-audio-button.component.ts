@@ -21,7 +21,7 @@ export class PlayAudioButtonComponent implements OnInit {
   @Output()
   public onInit = new EventEmitter();
 
-  private playState: boolean = false;
+  public playing: boolean = false;
 
   constructor() { }
 
@@ -34,7 +34,7 @@ export class PlayAudioButtonComponent implements OnInit {
   }
 
   public toggle(): void {
-    if(this.playState) {
+    if(this.playing) {
       this.pause();
     } else {
       this.play();
@@ -43,16 +43,12 @@ export class PlayAudioButtonComponent implements OnInit {
 
   public pause(): void {
     this.buttonIcon._elementRef.nativeElement.textContent = 'play_circle_outline';
-    this.playState = false;
+    this.playing = false;
   }
 
   public play(): void {
     this.buttonIcon._elementRef.nativeElement.textContent = 'pause';
-    this.playState = true;
-  }
-
-  public isPlaying(): boolean {
-    return this.playState;
+    this.playing = true;
   }
 
   public focus(): void {

@@ -10,7 +10,7 @@ import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
   styleUrls: ['./finish-page.component.scss']
 })
 export class FinishPageComponent implements OnInit {
-  public isCommeentSend: boolean = false;
+  public commentSend: boolean = false;
   private comment: string = '';
 
   constructor(
@@ -25,12 +25,12 @@ export class FinishPageComponent implements OnInit {
   ngOnInit() { }
 
   public onSendCommentButtonClick(): void {
-    if (this.isCommeentSend) {
+    if (this.commentSend) {
       this.popUp.showSuccessMessage('comment already sent');
-    } else if (!this.isCommeentSend && /\S/.test(this.comment)) {
+    } else if (!this.commentSend && /\S/.test(this.comment)) {
       this.apiClient.sendComment(this.comment).subscribe(() => {
         this.popUp.showSuccessMessage('comment has been sent');
-        this.isCommeentSend = true;
+        this.commentSend = true;
       });
     } else {
       this.popUp.showProblemMessage('comment field must not be empty');
