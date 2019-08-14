@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { ConfigService } from '../config/config.service'
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ConfigService } from '../config/config.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, mergeMap, retryWhen, delay, tap } from 'rxjs/operators';
 import { DataService } from '../data/data.service';
-import { PollData } from "../../models/poll-data.model"
-import { ProblemReport } from "../../models/problem-report.model"
+import { PollData } from '../../models/poll-data.model';
+import { ProblemReport } from '../../models/problem-report.model';
 import { UrlConfig } from 'src/app/models/url-config.model';
 import { SampleSet } from '../../models/sample-set.model';
 import { Sample } from 'src/app/models/sample.model';
@@ -20,7 +20,7 @@ export class ApiClientService {
   constructor(
       private data: DataService,
       private http: HttpClient,
-      private configService: ConfigService) { 
+      private configService: ConfigService) {
     this.urlConfigObservable = configService.getConfig();
   }
 
@@ -29,8 +29,8 @@ export class ApiClientService {
         mergeMap(config => {
           return this.http.get<SampleSet>(config.apiUrl + 'generate_set').pipe(
               map(audioSet => {
-                let samples = audioSet.samples as string[][];
-                let mappedSamples = [] as Sample[][];
+                const samples = audioSet.samples as string[][];
+                const mappedSamples = [] as Sample[][];
 
                 samples.forEach((sampleVariants, sampleIndex) => {
                   mappedSamples[sampleIndex] = sampleVariants.map(sampleVariantName => ({
@@ -90,54 +90,54 @@ export class ApiClientService {
         }),
         catchError(this.handleError));
   }
-  
-  public sendPollData(pollData: PollData): Observable<Object> {
+
+  public sendPollData(pollData: PollData): Observable<object> {
     return this.urlConfigObservable.pipe(
         mergeMap(config => {
-          let url: string = config.apiUrl + 'poll_data/';
-          let pollDataToSend = {
-            'start_date': pollData.startDate.toISOString(),
-            'end_date': pollData.endDate.toISOString(),
-            'assigned_set_id': pollData.assignedSetId,
-            'answers': pollData.answer,
-            'user_info': pollData.userInfo,
-            'seed': this.data.seed
+          const url: string = config.apiUrl + 'poll_data/';
+          const pollDataToSend = {
+            start_date: pollData.startDate.toISOString(),
+            end_date: pollData.endDate.toISOString(),
+            assigned_set_id: pollData.assignedSetId,
+            answers: pollData.answer,
+            user_info: pollData.userInfo,
+            seed: this.data.seed
           };
           return this.http.post(url, pollDataToSend);
         }),
         catchError(this.handleError));
   }
 
-  public sendComment(comment: string): Observable<Object> {
+  public sendComment(comment: string): Observable<object> {
     return this.urlConfigObservable.pipe(
         mergeMap(config => {
-          let url: string = config.apiUrl + 'comment/';
+          const url: string = config.apiUrl + 'comment/';
           return this.http.post(url, {
-            'poll_data': this.data.dataResponseId,
-            'message': comment
+            poll_data: this.data.dataResponseId,
+            message: comment
           });
         }),
         catchError(this.handleError));
   }
 
-  public sendProblemReport(report: ProblemReport): Observable<Object> {
+  public sendProblemReport(report: ProblemReport): Observable<object> {
     return this.urlConfigObservable.pipe(
         mergeMap(config => {
-          let url: string = config.apiUrl + 'problem/';
+          const url: string = config.apiUrl + 'problem/';
           return this.http.post(url, report);
         }),
         catchError(this.handleError));
   }
 
-  public sendConsoleMessage(message: ConsoleMessage): Observable<Object> {
+  public sendConsoleMessage(message: ConsoleMessage): Observable<object> {
     return this.urlConfigObservable.pipe(
         mergeMap(config => {
-          let url: string = config.apiUrl + 'log/';
+          const url: string = config.apiUrl + 'log/';
           return this.http.post(url, message.content, { headers: new HttpHeaders({'MESSAGE-TYPE': message.type}) });
         }));
   }
 
-  private handleError(error: Error) {
+  private handleError(error: Error): Observable<never> {
     console.error(error);
     return throwError('api request error occured');
   }

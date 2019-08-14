@@ -9,7 +9,5 @@ export class CreditsPageComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() { }
 }

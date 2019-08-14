@@ -10,8 +10,8 @@ import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
   styleUrls: ['./finish-page.component.scss']
 })
 export class FinishPageComponent implements OnInit {
-  public commentSend: boolean = false;
-  private comment: string = '';
+  public commentSend = false;
+  private comment = '';
 
   constructor(
       private popUp: PopUpService,

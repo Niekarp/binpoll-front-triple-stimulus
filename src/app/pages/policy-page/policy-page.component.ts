@@ -15,7 +15,7 @@ export class PolicyPageComponent implements OnInit {
   }
 
   @HostListener('window:keydown', ['$event'])
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'ArrowLeft') {
       this.keyboardNav.active = true;
       this.router.navigate(['/'], { replaceUrl: true });

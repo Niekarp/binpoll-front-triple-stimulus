@@ -22,8 +22,11 @@ export class NavigationButtonComponent implements OnInit {
 
   @Input()
   set disabled(b: boolean) {
-    if (b) this.button._elementRef.nativeElement.style.backgroundColor = 'gray';
-    else   this.button._elementRef.nativeElement.style.backgroundColor = 'rgb(91, 155, 213)';
+    if (b) {
+      this.button._elementRef.nativeElement.style.backgroundColor = 'gray';
+    } else {
+      this.button._elementRef.nativeElement.style.backgroundColor = 'rgb(91, 155, 213)';
+    }
   }
 
   @Output()

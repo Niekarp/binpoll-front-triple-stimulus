@@ -9,9 +9,9 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
 })
 export class AcousticScenesPageComponent implements OnInit {
   constructor(private keyboardNav: KeyboardNavigationService) { }
-  
+
   ngOnInit() {
-    this.keyboardNav.goBackCondition = () => { return true; };
-    this.keyboardNav.goNextCondition = () => { return true; };
+    this.keyboardNav.goBackCondition = (): boolean => true;
+    this.keyboardNav.goNextCondition = (): boolean => true;
   }
 }

@@ -31,9 +31,7 @@ export class DataService {
   public exampleVideoUrl = null;
 
   // Audio download (used in audio-service)
-  public redownloadStarted: boolean = false;
-  public redownloadSuccessLogged: boolean = false;
-  public redownloadCount: number = 1;
-
-  constructor() { }
+  public redownloadStarted = false;
+  public redownloadSuccessLogged = false;
+  public redownloadCount = 1;
 }

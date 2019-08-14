@@ -10,31 +10,29 @@ export class PlayAudioButtonComponent implements OnInit {
   @ViewChild('buttonIcon') buttonIcon: MatIcon;
 
   @Input()
-  public text: string = '';
+  public text = '';
 
   @Input()
-  public audioId: number = 0;
+  public audioId = 0;
 
   @Output()
-  public onClick = new EventEmitter();
+  public buttonClick = new EventEmitter();
 
   @Output()
-  public onInit = new EventEmitter();
+  public init = new EventEmitter();
 
-  public playing: boolean = false;
-
-  constructor() { }
+  public playing = false;
 
   ngOnInit() {
-    this.onInit.emit(this);
+    this.init.emit(this);
   }
 
   public onButtonClick(): void {
-    this.onClick.emit(this);
+    this.buttonClick.emit(this);
   }
 
   public toggle(): void {
-    if(this.playing) {
+    if (this.playing) {
       this.pause();
     } else {
       this.play();

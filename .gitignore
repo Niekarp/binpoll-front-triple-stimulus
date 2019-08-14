@@ -45,3 +45,4 @@ Thumbs.db
 
 # Server specific 
 /src/assets/config.json
+.eslintrc.json

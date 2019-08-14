@@ -12,7 +12,7 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
   styleUrls: ['./headphones-test-page.component.scss']
 })
 export class HeadphonesTestPageComponent implements OnInit {
-  @ViewChild('leftAudioButton')  leftAudioButton:  PlayAudioButtonComponent;
+  @ViewChild('leftAudioButton')  leftAudioButton: PlayAudioButtonComponent;
   @ViewChild('rightAudioButton') rightAudioButton: PlayAudioButtonComponent;
   @ViewChild('spinnerText') spinnerText: ElementRef;
 
@@ -23,12 +23,12 @@ export class HeadphonesTestPageComponent implements OnInit {
       private keyboardNav: KeyboardNavigationService) {
   }
 
-  ngOnInit() {
-    this.keyboardNav.goBackCondition = () => { return this.audio.isAllTestAudioLoaded(); };
-    this.keyboardNav.goNextCondition = () => { return this.audio.isAllTestAudioLoaded(); };
-    this.keyboardNav.onGoNextConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
-    this.keyboardNav.onGoBackConditionOK = () => { this.audio.pauseHeadphonesTestAudio(); };
-    
+  ngOnInit(): void {
+    this.keyboardNav.goBackCondition = (): boolean => this.audio.isAllTestAudioLoaded();
+    this.keyboardNav.goNextCondition = (): boolean => this.audio.isAllTestAudioLoaded();
+    this.keyboardNav.onGoNextConditionOK = (): void => this.audio.pauseHeadphonesTestAudio();
+    this.keyboardNav.onGoBackConditionOK = (): void => this.audio.pauseHeadphonesTestAudio();
+
     this.audio.loadAudioPlayers();
 
     if (!this.audio.isAllTestAudioLoaded()) {
@@ -36,32 +36,32 @@ export class HeadphonesTestPageComponent implements OnInit {
         this.spinner.show();
       }, 100);
 
-      this.audio.notifyOnAllTestAudioLoaded(() => { 
-        // console.log('audio loaded'); 
+      this.audio.notifyOnAllTestAudioLoaded(() => {
+        // console.log('audio loaded');
         this.spinner.hide();
-      }, () => { 
+      }, () => {
         this.spinnerText.nativeElement.innerText = 'loading audio' +
           '(' + this.audio.getTestLoadingProgressPercentage() + '%)';
       }, () => {
-        console.error('loading audio timeout') 
+        console.error('loading audio timeout');
       });
     }
 
-    this.audio.headphonesTestLeftChannelAudio.onended = () => {
-      this.leftAudioButton.toggle();
-    }
-    this.audio.headphonesTestRightChannelAudio.onended = () => {
-      this.rightAudioButton.toggle();
-    }
+    this.audio.headphonesTestLeftChannelAudio.onended = (): void => this.leftAudioButton.toggle();
+    this.audio.headphonesTestRightChannelAudio.onended = (): void => this.rightAudioButton.toggle();
   }
 
   public onLeftAudioButtonClick(): void {
-    if (!this.audio.headphonesTestRightChannelAudio.paused) this.toggleRightAudioButtonAndAudio();
+    if (!this.audio.headphonesTestRightChannelAudio.paused) {
+      this.toggleRightAudioButtonAndAudio();
+    }
     this.toggleLeftAudioButtonAndAudio();
   }
 
   public onRightAudioButtonClick(): void {
-    if (!this.audio.headphonesTestLeftChannelAudio.paused) this.toggleLeftAudioButtonAndAudio();
+    if (!this.audio.headphonesTestLeftChannelAudio.paused) {
+      this.toggleLeftAudioButtonAndAudio();
+    }
     this.toggleRightAudioButtonAndAudio();
   }
 

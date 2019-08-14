@@ -1,4 +1,4 @@
 export interface Age {
-  value: string,
-  viewValue: string
+  value: string;
+  viewValue: string;
 }

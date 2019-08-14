@@ -16,14 +16,14 @@ export class PopUpService {
   }
 
   private showMessage(message: string, success: boolean): void {
-    let panelClass = success ? ['my-snackbar-confirm'] : ['my-snackbar-problem'];
-    let $snackbar = this.snackbar.open(message, null, {
+    const panelClass = success ? ['my-snackbar-confirm'] : ['my-snackbar-problem'];
+    const $snackbar = this.snackbar.open(message, null, {
       duration: 2000,
-      verticalPosition: "top",
-      panelClass: panelClass
+      verticalPosition: 'top',
+      panelClass
     });
     $snackbar.afterOpened().subscribe(() => {
-      ($snackbar as any).containerInstance._elementRef.nativeElement.parentElement.style.pointerEvents = 'none';
+      document.getElementsByClassName('mat-snack-bar-container')[0].parentElement.style.pointerEvents = 'none';
     });
   }
 }

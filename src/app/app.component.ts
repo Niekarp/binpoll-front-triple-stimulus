@@ -38,7 +38,7 @@ export class AppComponent {
     });
   }
 
-  onActivate($event) {
+  onActivate(): void {
     this.keyboardNav.restart();
   }
 

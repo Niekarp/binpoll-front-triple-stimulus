@@ -1,7 +1,6 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { Router } from '@angular/router';
-import { EventEmitter } from 'protractor';
 
 @Component({
   selector: 'app-further-help-dialog',
@@ -13,16 +12,16 @@ export class FurtherHelpDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<FurtherHelpDialogComponent>, private router: Router) { }
 
   ngOnInit() {
-    this.dialogRef.afterOpen().subscribe(() => {
+    this.dialogRef.afterOpened().subscribe(() => {
       window.scrollTo(0, 0);
     });
   }
 
-  onBackButtonClick() {
+  onBackButtonClick(): void {
     this.dialogRef.close();
   }
 
-  onReportProblemClick() {
+  onReportProblemClick(): void {
     this.dialogRef.close();
     this.router.navigateByUrl('/report-problem', { skipLocationChange: true });
   }

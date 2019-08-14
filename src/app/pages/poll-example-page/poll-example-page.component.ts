@@ -11,7 +11,7 @@ export class PollExamplePageComponent implements OnInit {
   constructor(public data: DataService, private keyboardNav: KeyboardNavigationService) { }
 
   ngOnInit() {
-    this.keyboardNav.goBackCondition = () => { return true; };
-    this.keyboardNav.goNextCondition = () => { return true; };
+    this.keyboardNav.goBackCondition = (): boolean => true;
+    this.keyboardNav.goNextCondition = (): boolean => true;
   }
 }

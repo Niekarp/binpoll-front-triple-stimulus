@@ -1,8 +1,6 @@
 export class Questionnaire {
-	public age: string;
-	public hearingDifficultiesPresent: boolean;
-	public listeningTestParticipated: boolean;
-	public typedHeadphonesMakeAndModel: string;
-
-	constructor () { };
+  public age: string;
+  public hearingDifficultiesPresent: boolean;
+  public listeningTestParticipated: boolean;
+  public typedHeadphonesMakeAndModel: string;
 }

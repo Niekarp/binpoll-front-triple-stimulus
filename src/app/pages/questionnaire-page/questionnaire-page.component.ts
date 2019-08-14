@@ -33,17 +33,16 @@ export class QuestionnairePageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.keyboardNav.goBackCondition = () => { return true; }
-    this.keyboardNav.goNextCondition = () => { return this.formValid };
-    this.keyboardNav.onGoNextConditionFail = () => { 
-      this.popUp.showProblemMessage(this.EMPTY_FIELDS_POP_UP_MESSAGE);
-    }
+    this.keyboardNav.goBackCondition = (): boolean => true;
+    this.keyboardNav.goNextCondition = (): boolean => this.formValid;
+    this.keyboardNav.onGoNextConditionFail =
+      (): void => this.popUp.showProblemMessage(this.EMPTY_FIELDS_POP_UP_MESSAGE);
     this.audio.loadAudioPlayers();
   }
 
   public get formValid(): boolean {
     return this.model.age !== undefined &&
         this.model.hearingDifficultiesPresent !== undefined &&
-        this.model.listeningTestParticipated !== undefined 
+        this.model.listeningTestParticipated !== undefined;
   }
 }

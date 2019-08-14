@@ -12,21 +12,21 @@ import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
 export class WelcomePageComponent implements OnInit {
   public appVersion: string;
   public testCount: number;
-  public readonly ACCEPT_TERMS_POP_UP_MESSAGE : string = 'terms and policy must be accepted';
+  public readonly ACCEPT_TERMS_POP_UP_MESSAGE: string = 'terms and policy must be accepted';
 
   constructor(
       public data: DataService,
       public popUp: PopUpService,
       private config: ConfigService,
-      private keyboardNav: KeyboardNavigationService) { 
+      private keyboardNav: KeyboardNavigationService) {
     this.appVersion = config.APP_VERSION;
     this.testCount = config.TEST_COUNT;
   }
 
   ngOnInit() {
     this.keyboardNav.active = true;
-    this.keyboardNav.goNextCondition = () => { return this.data.consentChecked; };
-    this.keyboardNav.onGoNextConditionFail = () => { 
+    this.keyboardNav.goNextCondition = (): boolean => this.data.consentChecked;
+    this.keyboardNav.onGoNextConditionFail = (): void => {
       this.popUp.showProblemMessage(this.ACCEPT_TERMS_POP_UP_MESSAGE);
     };
   }

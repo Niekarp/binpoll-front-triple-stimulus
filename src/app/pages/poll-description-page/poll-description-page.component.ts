@@ -15,7 +15,7 @@ export class PollDescriptionPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.keyboardNav.goBackCondition = () => { return true; }
-    this.keyboardNav.goNextCondition = () => { return true; };
+    this.keyboardNav.goBackCondition = (): boolean => true;
+    this.keyboardNav.goNextCondition = (): boolean => true;
   }
 }
