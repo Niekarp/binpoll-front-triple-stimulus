@@ -242,25 +242,7 @@ export class PollPageComponent implements OnInit {
     if (this.audio.isPlaying(initedAudio.audioId)) initedAudio.play(); 
   }
     
-  public onAudioButtonClick(clickedButton: PlayAudioButtonComponent): void {
-    if (this.verboseLog) {
-      let allAudioData = this.audioPool[this.currentTestIndex]
-        .concat(this.fbDropZone[this.currentTestIndex])
-        .concat(this.bfDropZone[this.currentTestIndex])
-        .concat(this.ffDropZone[this.currentTestIndex]);
-      
-      let clickedAudioData = allAudioData.find((audioData) => { return audioData.id === clickedButton.audioId });
-      
-      if (clickedAudioData === undefined) {
-        console.error('cannot find clicked button\'s audio data');
-      } else {
-        console.log(
-            'clicked button\'s audio: ', 
-            this.audio.getSamplesName()[this.currentTestIndex],
-            clickedAudioData.scene);
-      }
-    }
-    
+  public onAudioButtonClick(clickedButton: PlayAudioButtonComponent): void {    
     this.audioPlayed[this.currentTestIndex][clickedButton.audioId - 1] = true;
     
     this.audioButtons.toArray().forEach((audioButton) => {           

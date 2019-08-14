@@ -37,7 +37,6 @@ export class AudioService {
       private api: ApiClientService,
       private config: ConfigService,
       private data: DataService) {
-    // console.log('audio service created');
     this.audioPlayers = new AudioPlayerSet(30);
 
     if ('webkitAudioContext' in window) {
@@ -68,12 +67,9 @@ export class AudioService {
     this.loadTestAudioPlayer(rightTestUrl, rightTestPlayer);
 
     this.generateRaisedCosineEnvelope(2 * FADE_TIME_SECONDS, AUDIO_SAMPLE_RATE);
-    // console.log('raisedCosineEnvelopeFadeInOut');
-    // console.log(this.raisedCosineEnvelopeFadeInOut);
 
     // download blobs
     this.api.getSampleSet().subscribe(audioSet => {
-      // console.log(audioSet);
       this.audioSet = audioSet;
       this.data.seed = audioSet.seed;
       this.config.getConfig().subscribe(config => {
@@ -210,10 +206,6 @@ export class AudioService {
 
   private downloadAudioSet(audioSet: {[id: string]: any}): void {
     const samples: Array<object[]> = audioSet['samples'];
-    const sampleNames: Array<string> = audioSet['sampleNames'];
-
-    // console.log(samples);
-    // console.log(sampleNames);
 
     for (let sample_i = 0; sample_i < samples.length; ++sample_i) {
       for (let sampleScene_i = 0; sampleScene_i < 3; ++sampleScene_i) {
@@ -238,7 +230,6 @@ export class AudioService {
       audio.load();
 
       this.testLoadedCount += 1;
-      // console.log('headset-test loaded audio count: ' + this.testLoadedCount);
     });
 
     this.audioRequests.push(request);
@@ -265,7 +256,6 @@ export class AudioService {
     }
 
     const sourceNode = this.audioContext.createBufferSource();
-    // sourceNode.onended = () => {console.log("end");};
     sourceNode.buffer = audioBuffer;
     sourceNode.connect(this.gainNode);
     this.gainNode.connect(this.audioContext.destination);

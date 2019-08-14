@@ -37,7 +37,6 @@ export class HeadphonesTestPageComponent implements OnInit {
       }, 100);
 
       this.audio.notifyOnAllTestAudioLoaded(() => {
-        // console.log('audio loaded');
         this.spinner.hide();
       }, () => {
         this.spinnerText.nativeElement.innerText = 'loading audio' +
