@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.2](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.1.1...v2.1.2) (2019-08-14)
+
+
+### Bug Fixes
+
+* const/readonly properties capitalized ([8347188](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/8347188))
+* **audio:** move audio requests to api service, add message after redownload audio success ([d55310c](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/d55310c))
+* remove debug console logs ([6a2f835](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/6a2f835))
+* resolve eslint indicated problems ([bcbedb5](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/bcbedb5))
+* stop audio download on report page ([82846e5](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/82846e5))
+
+
+
 ### [2.1.1](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.1.0...v2.1.1) (2019-08-09)
 
 
