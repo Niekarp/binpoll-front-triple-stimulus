@@ -38,10 +38,9 @@ export class ReportProblemPageComponent implements OnInit {
         message: this.message
       };
 
-      this.api.sendProblemReport(problemReport).subscribe(() => {
-        this.popUp.showSuccessMessage('report has been sent');
-        this.reportSent = true;
-      });
+      this.api.sendProblemReport(problemReport).subscribe();
+      this.popUp.showSuccessMessage('report has been sent');
+      this.reportSent = true;
     } else {
       this.popUp.showProblemMessage('report field must not be empty');
     }

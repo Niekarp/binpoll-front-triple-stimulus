@@ -159,7 +159,6 @@ export class AudioService {
 
   public play(audioIndex: number, variantIndex: number): void {
     this.audioContext.resume().then(() => {
-      // this.currentlyPlayingAudioId = index + 1;
       this.playAudioBuffer(this.audioPlayers.pollBuffers[audioIndex][variantIndex]);
       this.currentlyPlayingAudioId = variantIndex + 1;
     });
