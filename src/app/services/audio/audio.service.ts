@@ -17,16 +17,17 @@ const FADE_TIME_SECONDS = 0.005;
 })
 export class AudioService {
   private audioContext: AudioContext;
-  private loaded = false;
-  private currentlyPlayingSources: AudioBufferSourceNode[] = [];
   private gainNode: GainNode;
   private audioLastStartTime = 0;
   private raisedCosineEnvelopeFadeInOut: Float32Array;
+
+  private currentlyPlayingSources: AudioBufferSourceNode[] = [];
   private currentlyPlayingAudioId: number = null;
 
   private audioPlayers: AudioPlayerSet;
   // { id: -1, samples: Array<Object[]>(), samplesNames: Array<string>() };
   private audioSet: {[id: string]: any};
+  private loaded = false;
   private pollLoadedCount = 0;
   private testLoadedCount = 0;
 
@@ -72,9 +73,7 @@ export class AudioService {
     this.api.getSampleSet().subscribe(audioSet => {
       this.audioSet = audioSet;
       this.data.seed = audioSet.seed;
-      this.config.getConfig().subscribe(config => {
-        this.downloadAudioSet(audioSet);
-      });
+      this.downloadAudioSet(audioSet);
     });
   }
 

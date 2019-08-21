@@ -15,41 +15,42 @@ import { ConsoleMessage } from 'src/app/models/console-message.model';
   providedIn: 'root'
 })
 export class ApiClientService {
-  private urlConfigObservable: Observable<UrlConfig>;
+  private urlConfig: UrlConfig;
 
   constructor(
       private data: DataService,
       private http: HttpClient,
-      private configService: ConfigService) {
-    this.urlConfigObservable = configService.getConfig();
+      private config: ConfigService) {
+    this.urlConfig = config.urlConfig;
+  }
+
+  // Method intended to be called by urlConfigProvider
+  public getUrlConfig(url): Observable<UrlConfig> {
+    return this.http.get<UrlConfig>(url).pipe(catchError(this.handleError));
   }
 
   public getSampleSet(): Observable<SampleSet> {
-    return this.urlConfigObservable.pipe(
-        mergeMap(config => {
-          return this.http.get<SampleSet>(config.apiUrl + 'generate_set').pipe(
-              map(audioSet => {
-                const samples = audioSet.samples as string[][];
-                const mappedSamples = [] as Sample[][];
+    const url = `${this.urlConfig.apiUrl}/generate_set/`;
+    return this.http.get<SampleSet>(url).pipe(
+        map(audioSet => {
+          const samples = audioSet.samples as string[][];
+          const mappedSamples = [] as Sample[][];
 
-                samples.forEach((sampleVariants, sampleIndex) => {
-                  mappedSamples[sampleIndex] = sampleVariants.map(sampleVariantName => ({
-                    url: config.pollSoundsUrl + sampleVariantName,
-                    scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
-                  }));
-                });
-                audioSet.samples = mappedSamples;
+          samples.forEach((sampleVariants, sampleIndex) => {
+            mappedSamples[sampleIndex] = sampleVariants.map(sampleVariantName => ({
+              url: this.urlConfig.pollSoundsUrl + sampleVariantName,
+              scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
+            }));
+          });
+          audioSet.samples = mappedSamples;
 
-                return audioSet;
-              }));
+          return audioSet;
         }),
         catchError(this.handleError));
   }
 
   public getAudioPlayer(url: string): Observable<Blob> {
-    return this.http.get(url, {responseType: 'blob'}).pipe(
-        catchError(this.handleError)
-    );
+    return this.http.get(url, { responseType: 'blob'} ).pipe(catchError(this.handleError));
   }
 
   public getAudioBlob(url: string): Observable<ArrayBuffer> {
@@ -84,57 +85,41 @@ export class ApiClientService {
   }
 
   public getExampleVideo(): Observable<Blob> {
-    return this.urlConfigObservable.pipe(
-        mergeMap(config => {
-          return this.http.get(config.exampleVideoAssetUrl + 'poll-example-movie.mov', {responseType: 'blob'});
-        }),
-        catchError(this.handleError));
+    const url = `${this.urlConfig.exampleVideoAssetUrl}/poll-example-movie.mov/`;
+    return this.http.get(url, {responseType: 'blob'}).pipe(catchError(this.handleError));
   }
 
   public sendPollData(pollData: PollData): Observable<object> {
-    return this.urlConfigObservable.pipe(
-        mergeMap(config => {
-          const url: string = config.apiUrl + 'poll_data/';
-          const pollDataToSend = {
-            start_date: pollData.startDate.toISOString(),
-            end_date: pollData.endDate.toISOString(),
-            assigned_set_id: pollData.assignedSetId,
-            answers: pollData.answer,
-            user_info: pollData.userInfo,
-            seed: this.data.seed
-          };
-          return this.http.post(url, pollDataToSend);
-        }),
-        catchError(this.handleError));
+    const url = `${this.urlConfig.apiUrl}/poll_data/`;
+    const pollDataToSend = {
+      start_date: pollData.startDate.toISOString(),
+      end_date: pollData.endDate.toISOString(),
+      assigned_set_id: pollData.assignedSetId,
+      answers: pollData.answer,
+      user_info: pollData.userInfo,
+      seed: this.data.seed
+    };
+    return this.http.post(url, pollDataToSend).pipe(catchError(this.handleError));
   }
 
   public sendComment(comment: string): Observable<object> {
-    return this.urlConfigObservable.pipe(
-        mergeMap(config => {
-          const url: string = config.apiUrl + 'comment/';
-          return this.http.post(url, {
-            poll_data: this.data.dataResponseId,
-            message: comment
-          });
-        }),
-        catchError(this.handleError));
+    const url = `${this.urlConfig.apiUrl}/comment/`;
+    const commentToSend = {
+      poll_data: this.data.dataResponseId,
+      message: comment
+    };
+    return this.http.post(url, commentToSend).pipe(catchError(this.handleError));
   }
 
   public sendProblemReport(report: ProblemReport): Observable<object> {
-    return this.urlConfigObservable.pipe(
-        mergeMap(config => {
-          const url: string = config.apiUrl + 'problem/';
-          return this.http.post(url, report);
-        }),
-        catchError(this.handleError));
+    const url = `${this.urlConfig.apiUrl}/problem/`;
+    return this.http.post(url, report).pipe(catchError(this.handleError));
   }
 
   public sendConsoleMessage(message: ConsoleMessage): Observable<object> {
-    return this.urlConfigObservable.pipe(
-        mergeMap(config => {
-          const url: string = config.apiUrl + 'log/';
-          return this.http.post(url, message.content, { headers: new HttpHeaders({'MESSAGE-TYPE': message.type}) });
-        }));
+    const url = `${this.urlConfig.apiUrl}/log/`;
+    const headers = new HttpHeaders({'MESSAGE-TYPE': message.type});
+    return this.http.post(url, message.content, { headers }).pipe(catchError(this.handleError));
   }
 
   private handleError(error: Error): Observable<never> {

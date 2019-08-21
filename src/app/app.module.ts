@@ -1,9 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { 
@@ -41,6 +41,8 @@ import { PollExamplePageComponent } from './pages/poll-example-page/poll-example
 import { AdditionalInformationPageComponent } from './pages/additional-information-page/additional-information-page.component';
 import { AcousticScenesPageComponent } from './pages/acoustic-scenes-page/acoustic-scenes-page.component';
 import { HeadphonesTestPageComponent } from './pages/headphones-test-page/headphones-test-page.component';
+import { urlConfigProvider, ConfigService } from './services/config/config.service';
+import { ApiClientService } from './services/api-client/api-client.service';
 
 
 @NgModule({
@@ -85,7 +87,14 @@ import { HeadphonesTestPageComponent } from './pages/headphones-test-page/headph
     NgxSpinnerModule,
     DragDropModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: urlConfigProvider,
+      multi: true,
+      deps: [ApiClientService, ConfigService]
+    }
+  ],
   entryComponents: [
     FurtherHelpDialogComponent
   ],
