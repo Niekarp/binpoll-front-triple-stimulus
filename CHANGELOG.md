@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.1.2...v2.2.0) (2019-08-23)
+
+
+### Bug Fixes
+
+* prevent sending multiple comments/reports ([9f88219](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/9f88219))
+* **config.json:** config download once ([306f6e9](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/306f6e9))
+
+
+### Features
+
+* refactor snake case & add request handling strategy ([792e0d1](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/792e0d1))
+
+
+
 ### [2.1.2](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.1.1...v2.1.2) (2019-08-14)
 
 
