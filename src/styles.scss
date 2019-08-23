@@ -124,17 +124,35 @@ nav {
 	text-align: center;
 }
 
-.my-snackbar-problem {
-	@extend .my-snackbar;
-	background: tomato;
-}
-
 .my-snackbar-confirm {
 	@extend .my-snackbar;
 	background: green;
 }
 
-.my-snackbar-problem, .my-snackbar-confirm {
+.my-snackbar-warning {
+  @extend .my-snackbar;
+  background: peru;
+}
+
+.my-snackbar-problem {
+	@extend .my-snackbar;
+	background: tomato;
+}
+
+.my-snackbar-fatal {
+  @extend .my-snackbar;
+	min-width: 100% !important;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  font-size: 50px !important;
+	background: darkred;
+}
+
+.my-snackbar-confirm, .my-snackbar-problem, .my-snackbar-warning, .my-snackbar-fatal {
 	.mat-simple-snackbar {
 		justify-content: center;
 		font-size: 24px;

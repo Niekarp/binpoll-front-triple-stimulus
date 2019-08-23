@@ -13,6 +13,7 @@ import { moveItemInArray, CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, 
 import * as $ from 'jquery';
 import { ConfigService } from 'src/app/services/config/config.service';
 import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
+import { PollData } from 'src/app/models/poll-data.model';
 
 interface TestStatus { done: boolean, problem: null | ProblemName };
 enum ProblemName { NotMatched, NotPlayed };
@@ -425,7 +426,7 @@ export class PollPageComponent implements OnInit {
 
   // When test is completed
 
-  private prepareAndSendPollAnswer() {
+  private prepareAndSendPollAnswer(): void {
     let sampleNames = this.audio.getSamplesName();
     let answer = {};
     for (let i = 0; i < 10; ++i) {
@@ -436,19 +437,14 @@ export class PollPageComponent implements OnInit {
       };
     }
 
-    let pollData = {
-      startDate: this.data.startDate,
-      endDate: new Date(),
-      answer: answer,
-      assignedSetId: this.audio.pollAudioSet.id,
-      userInfo: {
-        age: this.data.questionnaire.age,
-        hearing_difficulties: this.data.questionnaire.hearingDifficultiesPresent,
-        headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
-        listening_test_participated: this.data.questionnaire.listeningTestParticipated
-      }
-    };
-    
+    const pollData = new PollData(
+        this.data.startDate.toISOString(),
+        new Date().toISOString(),
+        this.audio.pollAudioSet.id,
+        answer,
+        this.data.questionnaire.toUserInfo(),
+        this.data.seed);
+
     this.apiClient.sendPollData(pollData).subscribe((response) => {
       this.data.dataResponseId = response['id'];
     });

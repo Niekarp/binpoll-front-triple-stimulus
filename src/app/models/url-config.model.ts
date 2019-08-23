@@ -1,5 +1,5 @@
 export class UrlConfig {
-  apiUrl: string;
-  pollSoundsUrl: string;
-  exampleVideoAssetUrl: string;
+  public apiUrl: string;
+  public pollSoundsUrl: string;
+  public exampleVideoAssetUrl: string;
 }

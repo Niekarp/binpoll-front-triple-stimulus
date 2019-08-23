@@ -3,6 +3,7 @@ import { ApiClientService } from 'src/app/services/api-client/api-client.service
 import { DataService } from 'src/app/services/data/data.service';
 import { AudioService } from 'src/app/services/audio/audio.service';
 import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
+import { ProblemReport } from 'src/app/models/problem-report.model';
 
 @Component({
   selector: 'app-report-problem-page',
@@ -28,16 +29,7 @@ export class ReportProblemPageComponent implements OnInit {
     if (this.reportSent) {
       this.popUp.showSuccessMessage('report already sent');
     } else if (!this.reportSent && /\S/.test(this.message)) {
-      const problemReport = {
-        user_info: {
-          headphones_make_and_model: this.data.questionnaire.typedHeadphonesMakeAndModel,
-          hearing_difficulties: this.data.questionnaire.hearingDifficultiesPresent,
-          listening_test_participated: this.data.questionnaire.listeningTestParticipated,
-          age: this.data.questionnaire.age,
-        },
-        message: this.message
-      };
-
+      const problemReport = new ProblemReport(this.data.questionnaire.toUserInfo(), this.message);
       this.api.sendProblemReport(problemReport).subscribe();
       this.popUp.showSuccessMessage('report has been sent');
       this.reportSent = true;

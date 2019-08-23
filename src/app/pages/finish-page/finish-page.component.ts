@@ -3,6 +3,7 @@ import { AudioService } from 'src/app/services/audio/audio.service';
 import { ApiClientService } from 'src/app/services/api-client/api-client.service';
 import { DataService } from 'src/app/services/data/data.service';
 import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
+import { UserComment } from 'src/app/models/user-comment';
 
 @Component({
   selector: 'app-finish-page',
@@ -28,7 +29,8 @@ export class FinishPageComponent implements OnInit {
     if (this.commentSend) {
       this.popUp.showSuccessMessage('comment already sent');
     } else if (!this.commentSend && /\S/.test(this.comment)) {
-      this.apiClient.sendComment(this.comment).subscribe();
+      const userComment = new UserComment(this.data.dataResponseId, this.comment);
+      this.apiClient.sendComment(userComment).subscribe();
       this.popUp.showSuccessMessage('comment has been sent');
       this.commentSend = true;
     } else {

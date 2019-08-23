@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from '../config/config.service';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, mergeMap, retryWhen, delay, tap } from 'rxjs/operators';
+import { catchError, map, retryWhen, delay, tap, timeout, take } from 'rxjs/operators';
 import { DataService } from '../data/data.service';
 import { PollData } from '../../models/poll-data.model';
 import { ProblemReport } from '../../models/problem-report.model';
@@ -10,6 +10,9 @@ import { UrlConfig } from 'src/app/models/url-config.model';
 import { SampleSet } from '../../models/sample-set.model';
 import { Sample } from 'src/app/models/sample.model';
 import { ConsoleMessage } from 'src/app/models/console-message.model';
+import { PopUpService } from '../pop-up/pop-up.service';
+import { KeyboardNavigationService } from '../keyboard-navigation/keyboard-navigation.service';
+import { UserComment } from 'src/app/models/user-comment';
 
 @Injectable({
   providedIn: 'root'
@@ -20,47 +23,103 @@ export class ApiClientService {
   constructor(
       private data: DataService,
       private http: HttpClient,
-      private config: ConfigService) {
+      private popUp: PopUpService,
+      private config: ConfigService,
+      private keyboardNav: KeyboardNavigationService) {
     this.urlConfig = config.urlConfig;
   }
 
   // Method intended to be called by urlConfigProvider
-  public getUrlConfig(url): Observable<UrlConfig> {
-    return this.http.get<UrlConfig>(url).pipe(catchError(this.handleError));
+  public getUrlConfig(url: string): Observable<UrlConfig> {
+    const request = this.http.get<UrlConfig>(url);
+    return this.pipeStandardRequestStrategy(request, false);
   }
 
   public getSampleSet(): Observable<SampleSet> {
     const url = `${this.urlConfig.apiUrl}/generate_set/`;
-    return this.http.get<SampleSet>(url).pipe(
-        map(audioSet => {
-          const samples = audioSet.samples as string[][];
-          const mappedSamples = [] as Sample[][];
 
-          samples.forEach((sampleVariants, sampleIndex) => {
-            mappedSamples[sampleIndex] = sampleVariants.map(sampleVariantName => ({
-              url: this.urlConfig.pollSoundsUrl + sampleVariantName,
-              scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
-            }));
-          });
-          audioSet.samples = mappedSamples;
-
-          return audioSet;
-        }),
-        catchError(this.handleError));
+    const request = this.http.get<SampleSet>(url);
+    return this.pipeStandardRequestStrategy(request).pipe(
+        map(audioSet => this.projectAudioSet(audioSet)));
   }
 
   public getAudioPlayer(url: string): Observable<Blob> {
-    return this.http.get(url, { responseType: 'blob'} ).pipe(catchError(this.handleError));
+    const request = this.http.get(url, { responseType: 'blob'} );
+    return this.pipeStandardRequestStrategy(request);
   }
 
   public getAudioBlob(url: string): Observable<ArrayBuffer> {
-    return this.http.get(url, {responseType: 'arraybuffer'}).pipe(
+    const request = this.http.get(url, {responseType: 'arraybuffer'});
+    return this.pipeAudioRequestStrategy(request);
+  }
+
+  public getExampleVideo(): Observable<Blob> {
+    // trailing url slash is ommited here to prevent blob type from being empty
+    const url = `${this.urlConfig.exampleVideoAssetUrl}/poll-example-movie.mov`;
+    const request = this.http.get(url, {responseType: 'blob'});
+    return this.pipeStandardRequestStrategy(request);
+  }
+
+  public sendPollData(pollData: PollData): Observable<object> {
+    const url = `${this.urlConfig.apiUrl}/poll_data/`;
+    const request = this.http.post(url, pollData.toSnakeCase());
+    return this.pipeStandardRequestStrategy(request);
+  }
+
+  public sendComment(userComment: UserComment): Observable<object> {
+    const url = `${this.urlConfig.apiUrl}/comment/`;
+    const request = this.http.post(url, userComment.toSnakeCase());
+    return this.pipeStandardRequestStrategy(request);
+  }
+
+  public sendProblemReport(report: ProblemReport): Observable<object> {
+    const url = `${this.urlConfig.apiUrl}/problem/`;
+    const request = this.http.post(url, report.toSnakeCase());
+    return this.pipeStandardRequestStrategy(request);
+  }
+
+  public sendConsoleMessage(message: ConsoleMessage): Observable<object> {
+    const url = `${this.urlConfig.apiUrl}/log/`;
+    const headers = new HttpHeaders({'MESSAGE-TYPE': message.type});
+
+    const request = this.http.post(url, message.content, { headers });
+    return this.pipeStandardRequestStrategy(request);
+  }
+
+  private pipeStandardRequestStrategy<T>(observable: Observable<T>, stopApp = true): Observable<T> {
+    const retryCount = 3;
+    const timeoutTime = 6500;
+    const retryInterval = 5000;
+
+    return observable.pipe(
+        timeout(timeoutTime),
+        retryWhen(errors => {
+          return errors.pipe(
+              map((error, index) => {
+                if (index === retryCount) {
+                  throw error;
+                }
+                return error;
+              }),
+              delay(retryInterval),
+              take(retryCount + 1));
+        }),
+        catchError(err => this.handleError(err, stopApp)));
+  }
+
+  private pipeAudioRequestStrategy(observable: Observable<ArrayBuffer>): Observable<ArrayBuffer> {
+    const retryCount = 10;
+    const timeoutTime = 60000;
+    const retryInterval = 15000;
+    let downloadCount = 0;
+
+    return observable.pipe(
+        timeout(timeoutTime),
         retryWhen(errors => {
           if (!this.data.redownloadStarted) {
             this.data.redownloadStarted = true;
             console.warn('retrying audio download started');
           }
-          let downloadCount = 0;
           return errors.pipe(
               tap(error => {
                 downloadCount += 1;
@@ -69,61 +128,49 @@ export class ApiClientService {
                   console.error(error);
                   this.data.redownloadCount += 1;
                 }
-                if (downloadCount >= 10) {
-                  throw 'could not download audio after 10 attempts';
+                if (downloadCount >= retryCount) {
+                  throw new Error('could not download audio after 10 attempts');
                 }
               }),
-              delay(25000));
+              delay(retryInterval));
         }),
-        tap(response => {
+        tap(() => {
           if (this.data.redownloadStarted && !this.data.redownloadSuccessLogged) {
             this.data.redownloadSuccessLogged = true;
             console.info('audio downloaded after redownload');
           }
         }),
-        catchError(this.handleError));
+        catchError(err => this.handleError(err, true)));
   }
 
-  public getExampleVideo(): Observable<Blob> {
-    const url = `${this.urlConfig.exampleVideoAssetUrl}/poll-example-movie.mov/`;
-    return this.http.get(url, {responseType: 'blob'}).pipe(catchError(this.handleError));
-  }
-
-  public sendPollData(pollData: PollData): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/poll_data/`;
-    const pollDataToSend = {
-      start_date: pollData.startDate.toISOString(),
-      end_date: pollData.endDate.toISOString(),
-      assigned_set_id: pollData.assignedSetId,
-      answers: pollData.answer,
-      user_info: pollData.userInfo,
-      seed: this.data.seed
-    };
-    return this.http.post(url, pollDataToSend).pipe(catchError(this.handleError));
-  }
-
-  public sendComment(comment: string): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/comment/`;
-    const commentToSend = {
-      poll_data: this.data.dataResponseId,
-      message: comment
-    };
-    return this.http.post(url, commentToSend).pipe(catchError(this.handleError));
-  }
-
-  public sendProblemReport(report: ProblemReport): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/problem/`;
-    return this.http.post(url, report).pipe(catchError(this.handleError));
-  }
-
-  public sendConsoleMessage(message: ConsoleMessage): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/log/`;
-    const headers = new HttpHeaders({'MESSAGE-TYPE': message.type});
-    return this.http.post(url, message.content, { headers }).pipe(catchError(this.handleError));
-  }
-
-  private handleError(error: Error): Observable<never> {
+  private handleError(error: Error, stopApp: boolean): Observable<never> {
     console.error(error);
+
+    if (stopApp && !this.data.appStop) {
+      this.data.appStop = true;
+      this.popUp.showFatalMessage(`Fatal error occured. 
+          Cannot connect to the server. 
+          Please try fulfilling the test later. 
+          We are sorry for the this condition.`);
+      this.keyboardNav.active = false;
+      this.data.shouldDisplayDialogWithWarning = false;
+    }
+
     return throwError('api request error occured');
+  }
+
+  private projectAudioSet(audioSet: SampleSet): SampleSet {
+    const samples = audioSet.samples as string[][];
+    const mappedSamples = [] as Sample[][];
+
+    samples.forEach((sampleVariants, sampleIndex) => {
+      mappedSamples[sampleIndex] = sampleVariants.map(sampleVariantName => ({
+        url: this.urlConfig.pollSoundsUrl + sampleVariantName,
+        scene: sampleVariantName.substring(sampleVariantName.length - 6, sampleVariantName.length - 4)
+      }));
+    });
+    audioSet.samples = mappedSamples;
+
+    return audioSet;
   }
 }

@@ -1,6 +1,12 @@
 import { UserInfo } from './user-info.model';
 
 export class ProblemReport {
-  public user_info: UserInfo;
-  public message: string;
+  constructor(public userInfo: UserInfo, public message: string) { }
+
+  public toSnakeCase(): object {
+    return {
+      user_info: this.userInfo.toSnakeCase(),
+      message: this.message
+    };
+  }
 }

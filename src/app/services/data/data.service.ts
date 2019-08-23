@@ -5,6 +5,9 @@ import { Questionnaire } from 'src/app/models/questionnaire.model';
   providedIn: 'root'
 })
 export class DataService {
+  // Application control
+  public appStop = false;
+
   // Api
   public dataResponseId = null;
   public seed = null;
