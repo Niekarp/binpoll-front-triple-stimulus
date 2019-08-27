@@ -13,6 +13,7 @@ import { ConsoleMessage } from 'src/app/models/console-message.model';
 import { PopUpService } from '../pop-up/pop-up.service';
 import { KeyboardNavigationService } from '../keyboard-navigation/keyboard-navigation.service';
 import { UserComment } from 'src/app/models/user-comment';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,7 @@ export class ApiClientService {
       private http: HttpClient,
       private popUp: PopUpService,
       private config: ConfigService,
+      private spinner: NgxSpinnerService,
       private keyboardNav: KeyboardNavigationService) {
     this.urlConfig = config.urlConfig;
   }
@@ -153,6 +155,7 @@ export class ApiClientService {
           We are sorry for the this condition.`);
       this.keyboardNav.active = false;
       this.data.shouldDisplayDialogWithWarning = false;
+      this.spinner.hide();
     }
 
     return throwError('api request error occured');
