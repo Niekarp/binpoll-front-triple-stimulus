@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.1](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.2.0...v2.2.1) (2019-08-27)
+
+
+### Bug Fixes
+
+* api slashes ([b9ccf8a](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/b9ccf8a))
+* delete log loop ([1a0aceb](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/1a0aceb))
+* hide spinner on fatal error ([0b4aa43](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/0b4aa43))
+* remove slash at the end of urls ([45c325d](https://github.com/Niekarp/binpoll-front-triple-stimulus/commit/45c325d))
+
+
+
 ## [2.2.0](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.1.2...v2.2.0) (2019-08-23)
 
 
