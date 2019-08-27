@@ -36,7 +36,7 @@ export class ApiClientService {
   }
 
   public getSampleSet(): Observable<SampleSet> {
-    const url = `${this.urlConfig.apiUrl}/generate_set`;
+    const url = `${this.urlConfig.apiUrl}/generate_set/`;
 
     const request = this.http.get<SampleSet>(url);
     return this.pipeStandardRequestStrategy(request).pipe(
@@ -60,25 +60,25 @@ export class ApiClientService {
   }
 
   public sendPollData(pollData: PollData): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/poll_data`;
+    const url = `${this.urlConfig.apiUrl}/poll_data/`;
     const request = this.http.post(url, pollData.toSnakeCase());
     return this.pipeStandardRequestStrategy(request);
   }
 
   public sendComment(userComment: UserComment): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/comment`;
+    const url = `${this.urlConfig.apiUrl}/comment/`;
     const request = this.http.post(url, userComment.toSnakeCase());
     return this.pipeStandardRequestStrategy(request);
   }
 
   public sendProblemReport(report: ProblemReport): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/problem`;
+    const url = `${this.urlConfig.apiUrl}/problem/`;
     const request = this.http.post(url, report.toSnakeCase());
     return this.pipeStandardRequestStrategy(request);
   }
 
   public sendConsoleMessage(message: ConsoleMessage): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/log`;
+    const url = `${this.urlConfig.apiUrl}/log/`;
     const headers = new HttpHeaders({'MESSAGE-TYPE': message.type});
 
     const request = this.http.post(url, message.content, { headers });
