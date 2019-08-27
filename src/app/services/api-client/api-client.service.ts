@@ -82,7 +82,7 @@ export class ApiClientService {
     const headers = new HttpHeaders({'MESSAGE-TYPE': message.type});
 
     const request = this.http.post(url, message.content, { headers });
-    return this.pipeStandardRequestStrategy(request);
+    return request;
   }
 
   private pipeStandardRequestStrategy<T>(observable: Observable<T>, stopApp = true): Observable<T> {
