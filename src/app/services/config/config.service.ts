@@ -11,7 +11,7 @@ import { ApiClientService } from '../api-client/api-client.service.js';
 export class ConfigService {
   public readonly APP_VERSION = npmAppVersion;
   public readonly TEST_COUNT = 10;
-  public readonly URL_CONFIG_URL = 'assets/config.json/';
+  public readonly URL_CONFIG_URL = 'assets/config.json';
 
   public urlConfig = new UrlConfig();
 }
