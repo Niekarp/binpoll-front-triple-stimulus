@@ -47,7 +47,7 @@ export class ApiClientService {
 
   public getAudioPlayer(url: string): Observable<Blob> {
     const request = this.http.get(url, { responseType: 'blob'} );
-    return this.pipeStandardRequestStrategy(request);
+    return this.pipeAudioRequestStrategy(request);
   }
 
   public getAudioBlob(url: string): Observable<ArrayBuffer> {
@@ -58,7 +58,7 @@ export class ApiClientService {
   public getExampleVideo(): Observable<Blob> {
     const url = `${this.urlConfig.exampleVideoAssetUrl}/poll-example-movie.mov`;
     const request = this.http.get(url, {responseType: 'blob'});
-    return this.pipeStandardRequestStrategy(request);
+    return this.pipeStandardRequestStrategy(request, false);
   }
 
   public sendPollData(pollData: PollData): Observable<object> {
@@ -108,7 +108,7 @@ export class ApiClientService {
         catchError(err => this.handleError(err, stopApp)));
   }
 
-  private pipeAudioRequestStrategy(observable: Observable<ArrayBuffer>): Observable<ArrayBuffer> {
+  private pipeAudioRequestStrategy<T>(observable: Observable<T>): Observable<T> {
     const retryCount = 10;
     const timeoutTime = 60000;
     const retryInterval = 15000;
