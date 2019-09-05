@@ -25,3 +25,4 @@ Angular 2+, Angular Materials
 <img src="readme images/poll.png">
 <img src="readme images/error.png">
 <img src="readme images/popup.png">
+<img src="readme images/fatal.png">
