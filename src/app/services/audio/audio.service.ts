@@ -26,7 +26,7 @@ export class AudioService {
 
   private audioPlayers: AudioPlayerSet;
   // { id: -1, samples: Array<Object[]>(), samplesNames: Array<string>() };
-  private audioSet: {[id: string]: any};
+  private audioSet: {[setId: string]: any};
   private loaded = false;
   private pollLoadedCount = 0;
   private testLoadedCount = 0;
@@ -135,7 +135,7 @@ export class AudioService {
 
   // Audio data getters
 
-  public get pollAudioSet(): { [id: string]: any } {
+  public get pollAudioSet(): { [setId: string]: any } {
     return this.audioSet;
   }
 
