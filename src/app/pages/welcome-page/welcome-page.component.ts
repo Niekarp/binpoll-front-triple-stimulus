@@ -3,6 +3,8 @@ import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/
 import { DataService } from 'src/app/services/data/data.service';
 import { ConfigService } from 'src/app/services/config/config.service';
 import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
+import { Router } from '@angular/router';
+import { ApiClientService } from 'src/app/services/api-client/api-client.service';
 
 @Component({
   selector: 'app-welcome-page',
@@ -18,7 +20,9 @@ export class WelcomePageComponent implements OnInit {
       public data: DataService,
       public popUp: PopUpService,
       private config: ConfigService,
-      private keyboardNav: KeyboardNavigationService) {
+      private keyboardNav: KeyboardNavigationService,
+      public router: Router,
+      public apiClient: ApiClientService) {
     this.appVersion = config.APP_VERSION;
     this.testCount = config.TEST_COUNT;
   }
@@ -33,5 +37,11 @@ export class WelcomePageComponent implements OnInit {
 
   public onPolicyClick(): void {
     this.keyboardNav.active = false;
+  }
+
+  public captchaResolved(captchaResponse: string): void {
+    this.apiClient.authorize(captchaResponse).subscribe((response) => {
+      this.router.navigateByUrl('/questionnaire', { skipLocationChange: true });
+    });
   }
 }

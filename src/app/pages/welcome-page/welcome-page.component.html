@@ -25,11 +25,19 @@
 <nav class="page-navigation">
   <div class="navigation-note">To begin click the Start button or use keyboard arrows.</div>
   <div class="navigation-buttons-container">
-    <app-navigation-button text="Start" destinationUrl="/questionnaire" 
+    <!--<app-navigation-button text="Start" destinationUrl="/questionnaire" 
         [condition]="data.consentChecked" [disabled]="!data.consentChecked" 
+        (failure)="popUp.showProblemMessage(ACCEPT_TERMS_POP_UP_MESSAGE)">
+    </app-navigation-button>-->
+    <app-navigation-button text="Start" [condition]="data.consentChecked" [disabled]="!data.consentChecked"
+        (success)="captchaRef.execute()"
         (failure)="popUp.showProblemMessage(ACCEPT_TERMS_POP_UP_MESSAGE)">
     </app-navigation-button>
   </div>
 </nav>
 
 <div id="version-box">v. {{ appVersion }}</div>
+
+<re-captcha #captchaRef="reCaptcha" size="invisible" (resolved)="captchaResolved($event)" 
+    siteKey="6LdIsbkUAAAAAPBkzsJMlTwsPczyhtnPA27EJ_Rr">
+</re-captcha>

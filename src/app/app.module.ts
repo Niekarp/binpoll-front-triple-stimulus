@@ -44,6 +44,7 @@ import { HeadphonesTestPageComponent } from './pages/headphones-test-page/headph
 import { urlConfigProvider, ConfigService } from './services/config/config.service';
 import { ApiClientService } from './services/api-client/api-client.service';
 
+import { RecaptchaModule } from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import { ApiClientService } from './services/api-client/api-client.service';
     MatCheckboxModule,
     HttpClientModule,
     NgxSpinnerModule,
-    DragDropModule
+    DragDropModule,
+    RecaptchaModule
   ],
   providers: [
     {

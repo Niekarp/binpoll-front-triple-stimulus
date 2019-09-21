@@ -87,6 +87,12 @@ export class ApiClientService {
     return request;
   }
 
+  public authorize(captchaResponse: string): Observable<object>  {
+    const url = `${this.urlConfig.apiUrl}/auth/`;
+    const request = this.http.post(url, {'captcha_response': captchaResponse});
+    return this.pipeStandardRequestStrategy(request)
+  }
+
   private pipeStandardRequestStrategy<T>(observable: Observable<T>, stopApp = true): Observable<T> {
     const retryCount = 3;
     const timeoutTime = 6500;

@@ -42,7 +42,9 @@ export class NavigationButtonComponent implements OnInit {
   navigate(): void {
     if (this.condition || this.condition === undefined) {
       this.success.emit();
-      this.router.navigateByUrl(this.destinationUrl, { skipLocationChange: true });
+      if (!!this.destinationUrl) {
+        this.router.navigateByUrl(this.destinationUrl, { skipLocationChange: true });
+      }
     } else {
       this.failure.emit();
     }
