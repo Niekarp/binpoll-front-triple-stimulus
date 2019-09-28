@@ -38,7 +38,7 @@ export class ApiClientService {
   }
 
   public getSampleSet(): Observable<SampleSet> {
-    const url = `${this.urlConfig.apiUrl}/generate_set/`;
+    const url = `${this.urlConfig.apiUrl}/retain/`;
 
     const request = this.http.get<SampleSet>(url);
     return this.pipeStandardRequestStrategy(request).pipe(
