@@ -155,10 +155,10 @@ export class ApiClientService {
 
     if (stopApp && !this.data.appStop) {
       this.data.appStop = true;
-      this.popUp.showFatalMessage(`Fatal error occured. 
+      this.popUp.showFatalMessage(`An error occured. 
           Cannot connect to the server. 
-          Please try fulfilling the test later. 
-          We are sorry for the this condition.`);
+          Please try completing the test later. 
+          We are sorry for this condition.`);
       this.keyboardNav.active = false;
       this.data.shouldDisplayDialogWithWarning = false;
       this.spinner.hide();
