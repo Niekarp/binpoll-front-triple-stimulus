@@ -43,7 +43,7 @@
 	background-color: $primary-color-light;
 	font-size: 28px;
 	color: white;
-	span { 
+	span > span{ 
 		line-height: $nav-button-height;
 	}
 }

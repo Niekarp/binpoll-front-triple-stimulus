@@ -18,6 +18,9 @@ export class NavigationButtonComponent implements OnInit {
   public destinationUrl: string;
 
   @Input()
+  public loading: boolean;
+
+  @Input()
   public condition: boolean;
 
   @Input()

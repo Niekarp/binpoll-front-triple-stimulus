@@ -14,6 +14,7 @@ import { ApiClientService } from 'src/app/services/api-client/api-client.service
 export class WelcomePageComponent implements OnInit {
   public appVersion: string;
   public testCount: number;
+  public authStarted: boolean;
   public readonly ACCEPT_TERMS_POP_UP_MESSAGE: string = 'terms and policy must be accepted';
 
   constructor(
@@ -25,6 +26,7 @@ export class WelcomePageComponent implements OnInit {
       public apiClient: ApiClientService) {
     this.appVersion = config.APP_VERSION;
     this.testCount = config.TEST_COUNT;
+    this.authStarted = false;
   }
 
   ngOnInit() {
@@ -43,5 +45,6 @@ export class WelcomePageComponent implements OnInit {
     this.apiClient.authorize(captchaResponse).subscribe((response) => {
       this.router.navigateByUrl('/questionnaire', { skipLocationChange: true });
     });
+    this.authStarted = true;
   }
 }
