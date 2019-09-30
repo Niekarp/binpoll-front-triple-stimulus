@@ -62,7 +62,7 @@ export class ApiClientService {
   }
 
   public sendPollData(pollData: PollData): Observable<object> {
-    const url = `${this.urlConfig.apiUrl}/poll_data/`;
+    const url = `${this.urlConfig.apiUrl}/complete/`;
     const request = this.http.post(url, pollData.toSnakeCase());
     return this.pipeStandardRequestStrategy(request);
   }
