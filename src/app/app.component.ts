@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { KeyboardNavigationService } from './services/keyboard-navigation/keyboard-navigation.service';
 import { DataService } from './services/data/data.service';
 import { ApiClientService } from './services/api-client/api-client.service';
@@ -27,7 +27,12 @@ export class AppComponent {
     this.keyboardNav.router = this.router;
     this.keyboardNav.active = true;
 
-    logService.setLoggingToServer();
+    const subscription = this.router.events.subscribe(value => {
+      if (value instanceof NavigationEnd && (value as NavigationEnd).url === '/questionnaire') {
+        logService.setLoggingToServer();
+        subscription.unsubscribe();
+      }
+    });
 
     // Preload video
     this.api.getExampleVideo().subscribe(response => {
