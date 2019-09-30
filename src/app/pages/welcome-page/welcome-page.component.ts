@@ -6,6 +6,7 @@ import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
 import { Router } from '@angular/router';
 import { ApiClientService } from 'src/app/services/api-client/api-client.service';
 import { RecaptchaComponent } from 'ng-recaptcha';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-welcome-page',
@@ -18,7 +19,8 @@ export class WelcomePageComponent implements OnInit {
   public appVersion: string;
   public testCount: number;
   public authStarted: boolean;
-  public readonly ACCEPT_TERMS_POP_UP_MESSAGE: string = 'terms and policy must be accepted';
+  public readonly ACCEPT_TERMS_POP_UP_MESSAGE = 'terms and policy must be accepted';
+  private readonly BAD_CAPTCHA_RESPONSE = 'invalid recaptcha answer. please try again';
 
   constructor(
       public data: DataService,
@@ -53,10 +55,17 @@ export class WelcomePageComponent implements OnInit {
   }
 
   public captchaResolved(captchaResponse: string): void {
+    if (!captchaResponse) { return; }
     this.authStarted = true;
     this.apiClient.authorize(captchaResponse).subscribe((response) => {
       this.data.captchaResolved = true;
       this.onStartButtonClick();
+    }, error => {
+      if (error instanceof HttpErrorResponse && error.status === 403) {
+        this.authStarted = false;
+        this.captchaRef.reset();
+        this.popUp.showProblemMessage(this.BAD_CAPTCHA_RESPONSE);
+      }
     });
   }
 }

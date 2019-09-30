@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { ConfigService } from '../config/config.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, retryWhen, delay, tap, timeout, take } from 'rxjs/operators';
@@ -37,9 +37,14 @@ export class ApiClientService {
     return this.pipeStandardRequestStrategy(request, false);
   }
 
+  public authorize(captchaResponse: string): Observable<object>  {
+    const url = `${this.urlConfig.apiUrl}/auth/`;
+    const request = this.http.post(url, {captcha_response: captchaResponse});
+    return this.pipeAuthRequestStrategy(request);
+  }
+
   public getSampleSet(): Observable<SampleSet> {
     const url = `${this.urlConfig.apiUrl}/retain/`;
-
     const request = this.http.get<SampleSet>(url);
     return this.pipeStandardRequestStrategy(request).pipe(
         map(audioSet => this.projectAudioSet(audioSet)));
@@ -85,12 +90,6 @@ export class ApiClientService {
 
     const request = this.http.post(url, message.content, { headers });
     return request;
-  }
-
-  public authorize(captchaResponse: string): Observable<object>  {
-    const url = `${this.urlConfig.apiUrl}/auth/`;
-    const request = this.http.post(url, {'captcha_response': captchaResponse});
-    return this.pipeStandardRequestStrategy(request)
   }
 
   private pipeStandardRequestStrategy<T>(observable: Observable<T>, stopApp = true): Observable<T> {
@@ -148,6 +147,36 @@ export class ApiClientService {
           }
         }),
         catchError(err => this.handleError(err, true)));
+  }
+
+  private pipeAuthRequestStrategy<T>(observable: Observable<T>, stopApp = true): Observable<T> {
+    const retryCount = 3;
+    const timeoutTime = 6500;
+    const retryInterval = 5000;
+
+    return observable.pipe(
+        timeout(timeoutTime),
+        retryWhen(errors => {
+          return errors.pipe(
+              map((error, index) => {
+                if (error instanceof HttpErrorResponse && error.status === 403) {
+                  throw error;
+                }
+                if (index === retryCount) {
+                  throw error;
+                }
+                return error;
+              }),
+              delay(retryInterval),
+              take(retryCount + 1));
+        }),
+        catchError(err => {
+          if (err instanceof HttpErrorResponse && err.status === 403) {
+            return throwError(err);
+          } else {
+            return this.handleError(err, stopApp);
+          }
+        }));
   }
 
   private handleError(error: Error, stopApp: boolean): Observable<never> {
