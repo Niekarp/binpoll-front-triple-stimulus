@@ -9,7 +9,6 @@ export class DataService {
   public appStop = false;
 
   // Api
-  public dataResponseId = null;
   public seed = null;
 
   // Welcome page data

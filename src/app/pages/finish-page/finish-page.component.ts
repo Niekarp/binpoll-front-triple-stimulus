@@ -29,7 +29,7 @@ export class FinishPageComponent implements OnInit {
     if (this.commentSend) {
       this.popUp.showSuccessMessage('comment already sent');
     } else if (!this.commentSend && /\S/.test(this.comment)) {
-      const userComment = new UserComment(this.data.dataResponseId, this.comment);
+      const userComment = new UserComment(this.comment);
       this.apiClient.sendComment(userComment).subscribe();
       this.popUp.showSuccessMessage('comment has been sent');
       this.commentSend = true;

@@ -69,7 +69,7 @@ export class ApiClientService {
 
   public sendComment(userComment: UserComment): Observable<object> {
     const url = `${this.urlConfig.apiUrl}/comment/`;
-    const request = this.http.post(url, userComment.toSnakeCase());
+    const request = this.http.post(url, userComment);
     return this.pipeStandardRequestStrategy(request);
   }
 
