@@ -440,7 +440,6 @@ export class PollPageComponent implements OnInit {
     const pollData = new PollData(
         this.data.startDate.toISOString(),
         new Date().toISOString(),
-        this.audio.pollAudioSet.setId,
         answer,
         this.data.questionnaire.toUserInfo(),
         this.data.seed);
