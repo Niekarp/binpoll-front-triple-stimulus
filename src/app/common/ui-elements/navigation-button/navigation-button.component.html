@@ -1,5 +1,6 @@
 <a #button mat-raised-button class="navigation-button" 
     (click)="onNavigationButtonClick()"
     (keydown)="onNavigationButtonKeydown($event)">
-  {{ text }}
+  <span *ngIf="!loading">{{ text }}</span>
+  <div *ngIf="loading" id="loading"></div>
 </a>

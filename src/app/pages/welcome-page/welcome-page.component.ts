@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { KeyboardNavigationService } from 'src/app/services/keyboard-navigation/keyboard-navigation.service';
 import { DataService } from 'src/app/services/data/data.service';
 import { ConfigService } from 'src/app/services/config/config.service';
 import { PopUpService } from 'src/app/services/pop-up/pop-up.service';
 import { Router } from '@angular/router';
 import { ApiClientService } from 'src/app/services/api-client/api-client.service';
+import { RecaptchaComponent } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-welcome-page',
@@ -12,8 +13,11 @@ import { ApiClientService } from 'src/app/services/api-client/api-client.service
   styleUrls: ['./welcome-page.component.scss']
 })
 export class WelcomePageComponent implements OnInit {
+  @ViewChild('captchaRef')
+  public captchaRef: RecaptchaComponent;
   public appVersion: string;
   public testCount: number;
+  public authStarted: boolean;
   public readonly ACCEPT_TERMS_POP_UP_MESSAGE: string = 'terms and policy must be accepted';
 
   constructor(
@@ -25,6 +29,7 @@ export class WelcomePageComponent implements OnInit {
       public apiClient: ApiClientService) {
     this.appVersion = config.APP_VERSION;
     this.testCount = config.TEST_COUNT;
+    this.authStarted = false;
   }
 
   ngOnInit() {
@@ -39,9 +44,19 @@ export class WelcomePageComponent implements OnInit {
     this.keyboardNav.active = false;
   }
 
-  public captchaResolved(captchaResponse: string): void {
-    this.apiClient.authorize(captchaResponse).subscribe((response) => {
+  public onStartButtonClick(): void {
+    if (this.data.captchaResolved) {
       this.router.navigateByUrl('/questionnaire', { skipLocationChange: true });
+    } else {
+      this.captchaRef.execute();
+    }
+  }
+
+  public captchaResolved(captchaResponse: string): void {
+    this.authStarted = true;
+    this.apiClient.authorize(captchaResponse).subscribe((response) => {
+      this.data.captchaResolved = true;
+      this.onStartButtonClick();
     });
   }
 }

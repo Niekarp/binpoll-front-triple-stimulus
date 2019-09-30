@@ -14,6 +14,7 @@ export class DataService {
 
   // Welcome page data
   public consentChecked = false;
+  public captchaResolved = false;
 
   // Questionnaire page data
   public questionnaire = new Questionnaire();
