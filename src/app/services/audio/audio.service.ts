@@ -74,6 +74,10 @@ export class AudioService {
       this.audioSet = audioSet;
       this.data.seed = audioSet.seed;
       this.downloadAudioSet(audioSet);
+
+      this.data.renewIntervalId = setInterval(() => {
+        this.api.sendRenewRequest().subscribe(() => {}, error => clearInterval(this.data.renewIntervalId));
+      }, 120000);
     });
   }
 

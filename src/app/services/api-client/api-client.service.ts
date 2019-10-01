@@ -66,6 +66,12 @@ export class ApiClientService {
     return this.pipeStandardRequestStrategy(request, false);
   }
 
+  public sendRenewRequest(): Observable<object> {
+    const url = `${this.urlConfig.apiUrl}/renew/`;
+    const request = this.http.post(url, {});
+    return this.pipeStandardRequestStrategy(request, true, 3, 6500, 30000);
+  }
+
   public sendPollData(pollData: PollData): Observable<object> {
     const url = `${this.urlConfig.apiUrl}/complete/`;
     const request = this.http.post(url, pollData.toSnakeCase());
@@ -92,11 +98,12 @@ export class ApiClientService {
     return request;
   }
 
-  private pipeStandardRequestStrategy<T>(observable: Observable<T>, stopApp = true): Observable<T> {
-    const retryCount = 3;
-    const timeoutTime = 6500;
-    const retryInterval = 5000;
-
+  private pipeStandardRequestStrategy<T>(
+      observable: Observable<T>,
+      stopApp = true,
+      retryCount = 3,
+      timeoutTime = 6500,
+      retryInterval = 5000): Observable<T> {
     return observable.pipe(
         timeout(timeoutTime),
         retryWhen(errors => {

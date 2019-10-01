@@ -10,6 +10,7 @@ export class DataService {
 
   // Api
   public seed = null;
+  public renewIntervalId = null;
 
   // Welcome page data
   public consentChecked = false;

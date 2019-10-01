@@ -444,7 +444,7 @@ export class PollPageComponent implements OnInit {
         this.data.questionnaire.toUserInfo(),
         this.data.seed);
 
-    this.apiClient.sendPollData(pollData).subscribe();
+    this.apiClient.sendPollData(pollData).subscribe(() => clearInterval(this.data.renewIntervalId));
   }
 
   // Other
