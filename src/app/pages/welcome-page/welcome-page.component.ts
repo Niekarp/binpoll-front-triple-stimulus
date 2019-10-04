@@ -36,9 +36,15 @@ export class WelcomePageComponent implements OnInit {
 
   ngOnInit() {
     this.keyboardNav.active = true;
-    this.keyboardNav.goNextCondition = (): boolean => this.data.consentChecked;
+    this.keyboardNav.goNextCondition = (): boolean => {
+      return this.data.consentChecked && this.data.captchaResolved;
+    };
     this.keyboardNav.onGoNextConditionFail = (): void => {
-      this.popUp.showProblemMessage(this.ACCEPT_TERMS_POP_UP_MESSAGE);
+      if (!this.data.consentChecked) {
+        this.popUp.showProblemMessage(this.ACCEPT_TERMS_POP_UP_MESSAGE);
+      } else if (!this.data.captchaResolved) {
+        this.captchaRef.execute();
+      }
     };
   }
 
