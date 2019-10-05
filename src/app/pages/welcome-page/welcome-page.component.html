@@ -37,5 +37,5 @@
 <div id="version-box">v. {{ appVersion }}</div>
 
 <re-captcha #captchaRef="reCaptcha" size="invisible" (resolved)="captchaResolved($event)" 
-    siteKey="6LdIsbkUAAAAAPBkzsJMlTwsPczyhtnPA27EJ_Rr">
+    [siteKey]="siteKey">
 </re-captcha>

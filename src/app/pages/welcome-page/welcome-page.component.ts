@@ -19,6 +19,7 @@ export class WelcomePageComponent implements OnInit {
   public captchaRef: RecaptchaComponent;
   public appVersion: string;
   public testCount: number;
+  public siteKey: string;
   public authStarted: boolean;
   public readonly ACCEPT_TERMS_POP_UP_MESSAGE = 'terms and policy must be accepted';
   private readonly BAD_CAPTCHA_RESPONSE = 'invalid recaptcha answer. please try again';
@@ -34,6 +35,7 @@ export class WelcomePageComponent implements OnInit {
       public audio: AudioService) {
     this.appVersion = config.APP_VERSION;
     this.testCount = config.TEST_COUNT;
+    this.siteKey = config.siteKey;
     this.authStarted = false;
   }
 

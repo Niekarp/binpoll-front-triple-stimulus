@@ -14,6 +14,7 @@ export class ConfigService {
   public readonly URL_CONFIG_URL = 'assets/config.json';
 
   public urlConfig = new UrlConfig();
+  public siteKey: string;
 }
 
 export function urlConfigProvider(api: ApiClientService, config: ConfigService): () => Promise<void> {
@@ -23,6 +24,7 @@ export function urlConfigProvider(api: ApiClientService, config: ConfigService):
           .toPromise()
           .then(urlconfig => {
             Object.assign(config.urlConfig, urlconfig);
+            config.siteKey = urlconfig.siteKey;
             resolve();
           });
     });
