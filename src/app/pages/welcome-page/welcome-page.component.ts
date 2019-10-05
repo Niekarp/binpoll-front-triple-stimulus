@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ApiClientService } from 'src/app/services/api-client/api-client.service';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AudioService } from 'src/app/services/audio/audio.service';
 
 @Component({
   selector: 'app-welcome-page',
@@ -21,6 +22,7 @@ export class WelcomePageComponent implements OnInit {
   public authStarted: boolean;
   public readonly ACCEPT_TERMS_POP_UP_MESSAGE = 'terms and policy must be accepted';
   private readonly BAD_CAPTCHA_RESPONSE = 'invalid recaptcha answer. please try again';
+  private readonly NO_AVAILABLE_AUDIO_SETS = 'there are no available audio sets. please try again later';
 
   constructor(
       public data: DataService,
@@ -28,7 +30,8 @@ export class WelcomePageComponent implements OnInit {
       private config: ConfigService,
       private keyboardNav: KeyboardNavigationService,
       public router: Router,
-      public apiClient: ApiClientService) {
+      public apiClient: ApiClientService,
+      public audio: AudioService) {
     this.appVersion = config.APP_VERSION;
     this.testCount = config.TEST_COUNT;
     this.authStarted = false;
@@ -63,9 +66,18 @@ export class WelcomePageComponent implements OnInit {
   public captchaResolved(captchaResponse: string): void {
     if (!captchaResponse) { return; }
     this.authStarted = true;
-    this.apiClient.authorize(captchaResponse).subscribe((response) => {
-      this.data.captchaResolved = true;
-      this.onStartButtonClick();
+    this.apiClient.authorize(captchaResponse).subscribe(async (response: any) => {
+      const result = await this.audio.loadAudioPlayers();
+      if (result === 'ok') {
+        this.data.captchaResolved = true;
+        this.onStartButtonClick();
+      } else if (result === 'not available') {
+        this.authStarted = false;
+        this.popUp.showProblemMessage(this.NO_AVAILABLE_AUDIO_SETS, 30 * 1000);
+      } else {
+        this.authStarted = false;
+        this.popUp.showProblemMessage('something went wrong');
+      }
     }, error => {
       if (error instanceof HttpErrorResponse && error.status === 403) {
         this.authStarted = false;

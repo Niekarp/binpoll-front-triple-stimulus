@@ -8,15 +8,15 @@ export class PopUpService {
   constructor(private snackbar: MatSnackBar) { }
 
   public showSuccessMessage(message: string): void {
-    this.showStandardMessage(message, 0);
+    this.showStandardMessage(message, 0, 2000);
   }
 
   public showWarningMessage(message: string): void {
-    this.showStandardMessage(message, 1);
+    this.showStandardMessage(message, 1, 2000);
   }
 
-  public showProblemMessage(message: string): void {
-    this.showStandardMessage(message, 2);
+  public showProblemMessage(message: string, duration: number = 2000): void {
+    this.showStandardMessage(message, 2, duration);
   }
 
   public showFatalMessage(message: string): void {
@@ -27,10 +27,10 @@ export class PopUpService {
     });
   }
 
-  private showStandardMessage(message: string, type: number): void {
+  private showStandardMessage(message: string, type: number, duration: number): void {
     const panelClass = this.getSnackbarPanelClass(type);
     const $snackbar = this.snackbar.open(message, null, {
-      duration: 2000,
+      duration,
       verticalPosition: 'top',
       panelClass
     });

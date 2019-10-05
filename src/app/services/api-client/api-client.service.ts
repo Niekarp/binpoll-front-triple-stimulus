@@ -204,6 +204,7 @@ export class ApiClientService {
   }
 
   private projectAudioSet(audioSet: SampleSet): SampleSet {
+    if ((audioSet as any).state === 'fail') { return audioSet; }
     const samples = audioSet.samples as string[][];
     const mappedSamples = [] as Sample[][];
 

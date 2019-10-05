@@ -46,38 +46,48 @@ export class AudioService {
       this.audioContext = new AudioContext();
     }
     this.gainNode = this.audioContext.createGain();
-    this.loadAudioPlayers();
   }
 
   // Loading audio
 
-  public loadAudioPlayers(): void {
-    if (this.loaded) { return; }
-    this.loaded = true;
-    this.testLoadedCount = 0;
-    this.pollLoadedCount = 0;
+  public loadAudioPlayers(): Promise<string> {
+    return new Promise(resolve => {
+      if (this.loaded) { resolve(''); return; }
+      this.loaded = true;
+      this.testLoadedCount = 0;
+      this.pollLoadedCount = 0;
 
-    const baseUrl = '/assets/headphones-test-sounds/';
+      const baseUrl = '/assets/headphones-test-sounds/';
 
-    const leftTestUrl = baseUrl + 'Hungarian_1_hrtf4_sector2.wav';
-    const rightTestUrl = baseUrl + 'Hungarian_1_hrtf4_sector4.wav';
-    const leftTestPlayer = this.audioPlayers.headphonesTestPlayers.get('left');
-    const rightTestPlayer = this.audioPlayers.headphonesTestPlayers.get('right');
+      const leftTestUrl = baseUrl + 'Hungarian_1_hrtf4_sector2.wav';
+      const rightTestUrl = baseUrl + 'Hungarian_1_hrtf4_sector4.wav';
+      const leftTestPlayer = this.audioPlayers.headphonesTestPlayers.get('left');
+      const rightTestPlayer = this.audioPlayers.headphonesTestPlayers.get('right');
 
-    this.loadTestAudioPlayer(leftTestUrl, leftTestPlayer);
-    this.loadTestAudioPlayer(rightTestUrl, rightTestPlayer);
+      this.loadTestAudioPlayer(leftTestUrl, leftTestPlayer);
+      this.loadTestAudioPlayer(rightTestUrl, rightTestPlayer);
 
-    this.generateRaisedCosineEnvelope(2 * FADE_TIME_SECONDS, AUDIO_SAMPLE_RATE);
+      this.generateRaisedCosineEnvelope(2 * FADE_TIME_SECONDS, AUDIO_SAMPLE_RATE);
 
-    // download blobs
-    this.api.getSampleSet().subscribe(audioSet => {
-      this.audioSet = audioSet;
-      this.data.seed = audioSet.seed;
-      this.downloadAudioSet(audioSet);
+      // download blobs
+      this.api.getSampleSet().subscribe(audioSet => {
+        const response = audioSet as any;
+        if (response && response.state === 'fail' && response.reason === 'not available') {
+          this.loaded = false;
+          resolve('not available');
+          return;
+        }
 
-      this.data.renewIntervalId = setInterval(() => {
-        this.api.sendRenewRequest().subscribe(() => {}, error => clearInterval(this.data.renewIntervalId));
-      }, 120000);
+        this.audioSet = audioSet;
+        this.data.seed = audioSet.seed;
+        this.downloadAudioSet(audioSet);
+
+        this.data.renewIntervalId = setInterval(() => {
+          this.api.sendRenewRequest().subscribe(() => {}, error => clearInterval(this.data.renewIntervalId));
+        }, 120000);
+
+        resolve('ok');
+      });
     });
   }
 
