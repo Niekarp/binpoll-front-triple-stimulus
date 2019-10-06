@@ -8,6 +8,7 @@ import { ApiClientService } from 'src/app/services/api-client/api-client.service
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AudioService } from 'src/app/services/audio/audio.service';
+import { ForbiddenError } from 'src/app/models/forbidden-error.model';
 
 @Component({
   selector: 'app-welcome-page',
@@ -81,7 +82,7 @@ export class WelcomePageComponent implements OnInit {
         this.popUp.showProblemMessage('something went wrong');
       }
     }, error => {
-      if (error instanceof HttpErrorResponse && error.status === 403) {
+      if (error instanceof ForbiddenError) {
         this.authStarted = false;
         this.captchaRef.reset();
         this.popUp.showProblemMessage(this.BAD_CAPTCHA_RESPONSE);

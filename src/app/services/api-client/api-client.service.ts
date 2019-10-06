@@ -14,6 +14,7 @@ import { PopUpService } from '../pop-up/pop-up.service';
 import { KeyboardNavigationService } from '../keyboard-navigation/keyboard-navigation.service';
 import { UserComment } from 'src/app/models/user-comment';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ForbiddenError } from 'src/app/models/forbidden-error.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,7 @@ export class ApiClientService {
   public authorize(captchaResponse: string): Observable<object>  {
     const url = `${this.urlConfig.apiUrl}/auth/`;
     const request = this.http.post(url, {captcha_response: captchaResponse});
-    return this.pipeAuthRequestStrategy(request);
+    return this.pipeStandardRequestStrategy(request);
   }
 
   public getSampleSet(): Observable<SampleSet> {
@@ -109,6 +110,9 @@ export class ApiClientService {
         retryWhen(errors => {
           return errors.pipe(
               map((error, index) => {
+                if (error instanceof HttpErrorResponse && error.status === 403) {
+                  throw error;
+                }
                 if (index === retryCount) {
                   throw error;
                 }
@@ -117,7 +121,13 @@ export class ApiClientService {
               delay(retryInterval),
               take(retryCount + 1));
         }),
-        catchError(err => this.handleError(err, stopApp)));
+        catchError(error => {
+          if (error instanceof HttpErrorResponse && error.status === 403) {
+            return throwError(new ForbiddenError(error.error));
+          } else {
+            return this.handleError(error, stopApp);
+          }
+        }));
   }
 
   private pipeAudioRequestStrategy<T>(observable: Observable<T>): Observable<T> {
@@ -154,36 +164,6 @@ export class ApiClientService {
           }
         }),
         catchError(err => this.handleError(err, true)));
-  }
-
-  private pipeAuthRequestStrategy<T>(observable: Observable<T>, stopApp = true): Observable<T> {
-    const retryCount = 3;
-    const timeoutTime = 6500;
-    const retryInterval = 5000;
-
-    return observable.pipe(
-        timeout(timeoutTime),
-        retryWhen(errors => {
-          return errors.pipe(
-              map((error, index) => {
-                if (error instanceof HttpErrorResponse && error.status === 403) {
-                  throw error;
-                }
-                if (index === retryCount) {
-                  throw error;
-                }
-                return error;
-              }),
-              delay(retryInterval),
-              take(retryCount + 1));
-        }),
-        catchError(err => {
-          if (err instanceof HttpErrorResponse && err.status === 403) {
-            return throwError(err);
-          } else {
-            return this.handleError(err, stopApp);
-          }
-        }));
   }
 
   private handleError(error: Error, stopApp: boolean): Observable<never> {
