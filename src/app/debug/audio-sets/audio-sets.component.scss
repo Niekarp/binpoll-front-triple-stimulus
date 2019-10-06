@@ -1,0 +1,16 @@
+#audio-sets-container {
+  width: 2808px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 300px;
+  align-items: flex-end;
+}
+
+.audio-set {
+  color: white;
+  margin: 2px;
+  flex: 0 0 50px;
+  text-align: center;
+  transition: height 2s;
+}

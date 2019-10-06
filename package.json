@@ -30,6 +30,7 @@
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
     "jquery": "^3.4.1",
+    "js-md5": "^0.7.3",
     "json-prune": "^1.1.0",
     "ng-recaptcha": "^5.0.0",
     "ngx-spinner": "^7.1.4",

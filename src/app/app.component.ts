@@ -21,7 +21,9 @@ export class AppComponent {
       public api: ApiClientService,
       public logService: LogService,
       private sanitizer: DomSanitizer) {
-    if (window.location.pathname === '/credits') { return; }
+    if (window.location.pathname === '/credits' || /\/debug(\/|$)/.test(window.location.pathname)) {
+      return;
+    }
 
     this.router.navigate(['/'], { replaceUrl: true });
     this.keyboardNav.router = this.router;

@@ -14,6 +14,7 @@ import { AcousticScenesPageComponent } from './pages/acoustic-scenes-page/acoust
 import { HeadphonesTestPageComponent } from './pages/headphones-test-page/headphones-test-page.component';
 
 const routes: Routes = [
+  { path: 'debug', loadChildren: () => import('./debug/debug.module').then(module => module.DebugModule) },
   { path: 'credits', component: CreditsPageComponent },
   { path: '', component: WelcomePageComponent },
   { path: 'questionnaire', component: QuestionnairePageComponent },
