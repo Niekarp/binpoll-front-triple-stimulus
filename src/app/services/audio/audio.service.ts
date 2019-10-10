@@ -5,6 +5,7 @@ import { ApiClientService } from '../api-client/api-client.service';
 import { Subscription } from 'rxjs';
 import { ConfigService } from 'src/app/services/config/config.service';
 import { DataService } from '../data/data.service';
+import { ForbiddenError } from 'src/app/models/forbidden-error.model';
 
 
 const AUDIO_SAMPLE_RATE = 44100;
@@ -71,13 +72,6 @@ export class AudioService {
 
       // download blobs
       this.api.getSampleSet().subscribe(audioSet => {
-        const response = audioSet as any;
-        if (response && response.state === 'fail' && response.reason === 'not available') {
-          this.loaded = false;
-          resolve('not available');
-          return;
-        }
-
         this.audioSet = audioSet;
         this.data.seed = audioSet.seed;
         this.downloadAudioSet(audioSet);
@@ -87,6 +81,12 @@ export class AudioService {
         }, 120000);
 
         resolve('ok');
+      }, error => {
+        if (error instanceof ForbiddenError) {
+          this.loaded = false;
+          resolve(error.message);
+          return;
+        }
       });
     });
   }
