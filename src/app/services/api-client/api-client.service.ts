@@ -15,6 +15,7 @@ import { KeyboardNavigationService } from '../keyboard-navigation/keyboard-navig
 import { UserComment } from 'src/app/models/user-comment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ForbiddenError } from 'src/app/models/forbidden-error.model';
+import { ControlService } from '../control/control.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,7 @@ export class ApiClientService {
       private http: HttpClient,
       private popUp: PopUpService,
       private config: ConfigService,
+      private control: ControlService,
       private spinner: NgxSpinnerService,
       private keyboardNav: KeyboardNavigationService) {
     this.urlConfig = config.urlConfig;
@@ -169,15 +171,12 @@ export class ApiClientService {
   private handleError(error: Error, stopApp: boolean): Observable<never> {
     console.error(error);
 
-    if (stopApp && !this.data.appStop) {
-      this.data.appStop = true;
-      this.popUp.showFatalMessage(`An error occured. 
+    if (stopApp) {
+      this.control.stopApplication(
+          `An error occured. 
           Cannot connect to the server. 
           Please try completing the test later. 
           We are sorry for this condition.`);
-      this.keyboardNav.active = false;
-      this.data.shouldDisplayDialogWithWarning = false;
-      this.spinner.hide();
     }
 
     return throwError('api request error occured');
