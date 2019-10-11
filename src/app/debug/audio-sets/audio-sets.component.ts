@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ConfigService } from 'src/app/services/config/config.service';
 
 @Component({
   selector: 'app-audio-sets',
@@ -7,10 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AudioSetsComponent implements OnInit {
 
-  private REQUEST_URL = 'http://localhost/api/available_audio_set/';
+  private REQUEST_URL = `${this.config.urlConfig.apiUrl}/available_audio_set/`;
   private REFRESH_INTERVAL = 5 * 1000;
 
-  constructor() {
+  constructor(public config: ConfigService) {
   }
 
   ngOnInit() {
@@ -21,7 +22,6 @@ export class AudioSetsComponent implements OnInit {
 
       const response = fetch(this.REQUEST_URL, { mode: 'cors' }).then(response => {
         response.json().then(data => {
-          debugger
           const audioSets = data;
           let j = 0;
           for (let i = 0; i < 156; ++i) {
