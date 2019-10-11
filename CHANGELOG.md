@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/pawel-antoniuk/binpoll-b2-docker/compare/v2.2.2...v3.0.0) (2019-10-11)
+
+
+### Bug Fixes
+
+* **403:** adjust no audio sets error ([5d3200f](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/5d3200f))
+* **403:** handle 403 errors ([84d3bb8](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/84d3bb8))
+* **captcha:** remove error messages ([b970796](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/b970796))
+* **captcha:** resolve captcha once per test ([8f6eb31](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/8f6eb31))
+* **comment:** remove pollData field ([586611d](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/586611d))
+* **fatal-error:** change text ([785cc1d](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/785cc1d))
+* **keyboard-nav:** remove captcha skipping ([1f6b292](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/1f6b292))
+* **log-service:** start log service after auth ([9c63f79](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/9c63f79))
+* **poll-data:** remove the use of audio-set-id ([653261f](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/653261f))
+* **sample-set-model:** remove setId ([b2b979c](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/b2b979c))
+
+
+### Features
+
+* **captcha:** add captcha failed message ([0d307d6](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/0d307d6))
+* **debug:** add debug module ([88db416](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/88db416))
+* **nav-button:** add loading state with animation ([48fef10](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/48fef10))
+* **retain:** add problem message when no audioSets available ([32048d5](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/32048d5))
+* **session:** add interval renew request ([631a397](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/631a397))
+* **siteKey:** add siteKey to config ([3e6a991](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/3e6a991))
+* add captcha protection, change api, add debug panel ([99785a3](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/99785a3))
+
+
+### BREAKING CHANGES
+
+* start test B2
+
+
+
 ### [2.2.2](https://github.com/Niekarp/binpoll-front-triple-stimulus/compare/v2.2.1...v2.2.2) (2019-08-28)
 
 
