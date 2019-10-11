@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.2](https://github.com/pawel-antoniuk/binpoll-b2-docker/compare/v3.0.1...v3.0.2) (2019-10-11)
+
+
+### Bug Fixes
+
+* resolve minor production problems ([f72e5bf](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/f72e5bf))
+
+
+
 ### [3.0.1](https://github.com/pawel-antoniuk/binpoll-b2-docker/compare/v3.0.0...v3.0.1) (2019-10-11)
 
 
