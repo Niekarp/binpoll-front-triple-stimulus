@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/pawel-antoniuk/binpoll-b2-docker/compare/v3.0.0...v3.0.1) (2019-10-11)
+
+
+### Bug Fixes
+
+* **403:** remove state & reason fields ([ea4f038](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/ea4f038))
+* **403:** stop app on session expire ([d93a83b](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/d93a83b))
+
+
+
 ## [3.0.0](https://github.com/pawel-antoniuk/binpoll-b2-docker/compare/v2.2.2...v3.0.0) (2019-10-11)
 
 
