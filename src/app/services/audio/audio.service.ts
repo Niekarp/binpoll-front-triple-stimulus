@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { ConfigService } from 'src/app/services/config/config.service';
 import { DataService } from '../data/data.service';
 import { ForbiddenError } from 'src/app/models/forbidden-error.model';
+import { ControlService } from '../control/control.service';
 
 
 const AUDIO_SAMPLE_RATE = 44100;
@@ -38,6 +39,7 @@ export class AudioService {
       private http: HttpClient,
       private api: ApiClientService,
       private config: ConfigService,
+      private control: ControlService,
       private data: DataService) {
     this.audioPlayers = new AudioPlayerSet(30);
 
@@ -77,7 +79,14 @@ export class AudioService {
         this.downloadAudioSet(audioSet);
 
         this.data.renewIntervalId = setInterval(() => {
-          this.api.sendRenewRequest().subscribe(() => {}, error => clearInterval(this.data.renewIntervalId));
+          this.api.sendRenewRequest().subscribe(() => {},
+            error => {
+              if (error instanceof ForbiddenError && error.code === 201) {
+                // session expired
+                this.control.stopApplication('Your session has expired. Refresh the page and try again');
+              }
+              clearInterval(this.data.renewIntervalId);
+            });
         }, 120000);
 
         resolve('ok');
