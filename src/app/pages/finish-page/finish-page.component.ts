@@ -12,7 +12,7 @@ import { UserComment } from 'src/app/models/user-comment';
 })
 export class FinishPageComponent implements OnInit {
   public commentSend = false;
-  private comment = '';
+  public comment = '';
 
   constructor(
       private popUp: PopUpService,
