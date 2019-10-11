@@ -26,7 +26,7 @@ enum ProblemName { NotMatched, NotPlayed };
 export class PollPageComponent implements OnInit {
   @ViewChildren('audioButtons') audioButtons: QueryList<PlayAudioButtonComponent>;
   @ViewChild('spinnerText') spinnerText: ElementRef;
-  
+
   public audioPool: any[][];
   public fbDropZone: any[][];
   public bfDropZone: any[][];
