@@ -87,7 +87,7 @@ export class AudioService {
               }
               clearInterval(this.data.renewIntervalId);
             });
-        }, 120000);
+        }, 60000);
 
         resolve('ok');
       }, error => {

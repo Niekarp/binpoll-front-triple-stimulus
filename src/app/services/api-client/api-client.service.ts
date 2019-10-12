@@ -72,7 +72,7 @@ export class ApiClientService {
   public sendRenewRequest(): Observable<object> {
     const url = `${this.urlConfig.apiUrl}/renew/`;
     const request = this.http.post(url, {});
-    return this.pipeStandardRequestStrategy(request, true, 3, 6500, 30000);
+    return this.pipeStandardRequestStrategy(request, true, 5, 45000, 30000);
   }
 
   public sendPollData(pollData: PollData): Observable<object> {
