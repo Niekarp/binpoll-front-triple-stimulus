@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.9](https://github.com/pawel-antoniuk/binpoll-b2-docker/compare/v3.0.8...v3.0.9) (2019-10-18)
+
+
+### Bug Fixes
+
+* **headphone-test-audio:** lower volume ([0c2a7ac](https://github.com/pawel-antoniuk/binpoll-b2-docker/commit/0c2a7ac))
+
+
+
 ### [3.0.8](https://github.com/pawel-antoniuk/binpoll-b2-docker/compare/v3.0.7...v3.0.8) (2019-10-14)
 
 
